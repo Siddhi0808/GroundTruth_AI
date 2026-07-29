@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GroundTruth AI - Evaluation History</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-dark text-light">
+    <nav class="navbar">
+        <div class="logo">🛡️ GroundTruth <span class="badge">AI</span></div>
+        <div class="nav-links">
+            <a href="/">Detector</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/history" class="active">History</a>
+            <a href="/docs" target="_blank">API Docs</a>
+        </div>
+    </nav>
+    <main class="container">
+        <header class="hero">
+            <h1>Recent Evaluation Log</h1>
+        </header>
+        <div class="card" id="history-list">
+            <p>Loading inspection history...</p>
+        </div>
+    </main>
+
+    <script>
+        async function fetchHistory() {
+            try {
+                const res = await fetch('/api/history');
+                const data = await res.json();
+                const container = document.getElementById('history-list');
+                if(!data || data.length === 0) {
+                    container.innerHTML = '<p>No history records found.</p>';
+                    return;
+                }
+                container.innerHTML = data.map(item => `
+                    <div style="border-bottom: 1px solid #374151; padding: 1rem 0;">
+                        <span style="color: ${item.verdict === 'Supported' ? '#10b981' : '#ef4444'}; font-weight: bold;">[${item.verdict}]</span>
+                        <strong>Query:</strong> ${item.query}<br>
+                        <small style="color: #9ca3af;">Response: ${item.llm_response}</small>
+                    </div>
+                `).join('');
+            } catch(e) {}
+        }
+        fetchHistory();
+    </script>
+</body>
+</html>

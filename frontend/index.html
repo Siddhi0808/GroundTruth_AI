@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroundTruth AI - Hallucination Detection Engine</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+    <nav class="navbar">
+        <div class="logo">
+            <span class="shield-icon">🛡️</span> GroundTruth <span class="badge">AI</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="active">Detector</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/history">History</a>
+            <a href="/docs" target="_blank" class="api-doc-link">API Docs</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="hero">
+            <h1>RAG-Based LLM Hallucination Detection</h1>
+            <p>Verify machine-generated responses against embedded truth sources with full provenance tracking.</p>
+        </header>
+
+        <!-- Knowledge Base Ingestion Widget -->
+        <div class="card upload-card" style="margin-bottom: 1.5rem; background: #111827;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="font-size: 1.1rem; font-weight: 600;">📁 Knowledge Base Ingestion</h3>
+                    <p style="font-size: 0.85rem; color: #9ca3af; margin-top: 2px;">Upload custom .txt or .pdf files to expand the ground-truth vector corpus.</p>
+                </div>
+                <form id="upload-form" style="display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="file" id="file-input" accept=".txt,.pdf" style="display: none;" required>
+                    <button type="button" class="btn-preset" onclick="document.getElementById('file-input').click()">Choose File</button>
+                    <span id="file-name-display" style="font-size: 0.8rem; color: #3b82f6;">No file selected</span>
+                    <button type="submit" id="btn-upload" class="btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" disabled>Upload & Index</button>
+                </form>
+            </div>
+            <div id="upload-status" style="font-size: 0.85rem; margin-top: 0.5rem; display: none;"></div>
+        </div>
+
+        <div class="grid-layout">
+            <!-- Left Panel: Input Form -->
+            <section class="card input-card">
+                <h2>Inspection Inputs</h2>
+                <form id="detect-form">
+                    <div class="form-group">
+                        <label for="query">User Query / Prompt</label>
+                        <input type="text" id="query" placeholder="e.g. What is the main advantage of memory-mapped I/O?" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="llm_response">LLM Generated Response</label>
+                        <textarea id="llm_response" rows="5" placeholder="e.g. The main advantage is using standard read/write instructions..." required></textarea>
+                    </div>
+
+                    <button type="submit" id="btn-submit" class="btn-primary">
+                        <span id="btn-text">Detect Hallucination</span>
+                        <div id="btn-spinner" class="spinner hidden"></div>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Right Panel: Result Screen -->
+            <section class="card result-card" id="result-card">
+                <h2>Evaluation Report</h2>
+                
+                <div id="placeholder-state" class="empty-state">
+                    <div class="radar-icon">📡</div>
+                    <p>Enter a query and LLM response to initiate vector context matching and verification.</p>
+                </div>
+
+                <!-- Pipeline Status Tracker -->
+                <div id="pipeline-status" class="pipeline-status hidden">
+                    <div class="step step-1"><span>1</span> Context Retrieval</div>
+                    <div class="step step-2"><span>2</span> Claim Verification</div>
+                    <div class="step step-3"><span>3</span> Verdict Judgment</div>
+                </div>
+
+                <div id="result-content" class="result-content hidden">
+                    <!-- Verdict Header -->
+                    <div class="verdict-banner" id="verdict-banner">
+                        <div class="verdict-title" id="verdict-text">Supported</div>
+                        <div class="confidence-box">
+                            <span>Confidence</span>
+                            <strong id="confidence-val">0%</strong>
+                        </div>
+                    </div>
+
+                    <!-- Progress Gauge -->
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="confidence-bar"></div>
+                    </div>
+
+                    <!-- Reason Box -->
+                    <div class="explanation-box">
+                        <h3>Analysis Explanation</h3>
+                        <p id="explanation-text">...</p>
+                    </div>
+
+                    <!-- Evidence Cards -->
+                    <div class="evidence-section">
+                        <h3>Retrieved Context Evidence</h3>
+                        <div id="evidence-container" class="evidence-list"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
