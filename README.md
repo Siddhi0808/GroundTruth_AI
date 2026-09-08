@@ -17,6 +17,7 @@ GroundTruth AI inspects a Large Language Model's response against a verified, em
 - [Running the Application](#running-the-application)
 - [API Reference](#api-reference)
 - [Frontend](#frontend)
+- [Benchmark Evaluation & Performance Metrics](#benchmark-evaluation--performance-metrics)
 - [Roadmap](#roadmap)
 
 ---
@@ -151,8 +152,17 @@ groundtruth-ai/
 │   ├── script.js               # Detector page logic
 │   ├── dashboard.js            # Dashboard stats logic
 │   └── style.css               # Dark-themed styling
+├── tests/
+│   ├── test_benchmark_1000.py  # 1,000-query high-difficulty benchmark suite
+│   ├── test_benchmark_500.py   # 500-query evaluation suite
+│   ├── test_benchmark.py       # Baseline evaluation suite
+│   ├── test_judge.py           # Unit test for LLM judge
+│   ├── test_chunker.py         # Unit test for text chunker
+│   ├── test_retriever.py       # Unit test for vector retriever
+│   ├── test_cases_1000.json    # 1,000 test cases across 5 categories
+│   └── benchmark_results_*.json # Benchmark results and evaluation logs
 ├── data/
-│   └── documents/               # Ground-truth source documents (PDF/TXT corpus)
+│   └── documents/              # Ground-truth source documents (411 PDF/TXT corpus)
 └── requirements.txt
 ```
 
@@ -370,13 +380,89 @@ The frontend is intentionally dependency-free (no bundler, no framework) and is 
 
 ---
 
+## Benchmark Evaluation & Performance Metrics
+
+GroundTruth AI features an automated end-to-end evaluation suite located in [`tests/`](./tests) to validate retrieval grounding and hallucination detection accuracy against a scaled, diverse knowledge base.
+
+### Knowledge Base Corpus Scale
+
+The embedded knowledge base in [`data/documents/`](./data/documents) contains **411 documents** (337 `.txt` and 74 `.pdf` files) indexed with **709 chunks**:
+
+| Document Category | Format | Count | Line Count / Specifications |
+| :--- | :--- | :---: | :--- |
+| **Micro Documents** | `.txt` | **85** | **Strictly 2 lines each** (fundamental constants, astronomy, chemistry, CS) |
+| **Medium Documents** | `.txt` & `.pdf` | **241** | **15 to 40 lines each** (discoveries, history, geography, biotechnology) |
+| **Comprehensive Documents** | `.txt` | **85** | **110 to 176 lines each** (deep reference treatises on operating systems, vaccines, LLMs) |
+| **Total Corpus** | | **411** | *(337 `.txt`, 74 `.pdf`)* |
+
+---
+
+### 1,000-Query High-Difficulty Benchmark Results
+
+The 1,000-sample benchmark (`tests/test_benchmark_1000.py`) evaluates the hallucination engine against 5 challenging query archetypes:
+
+- **Total Evaluations:** 1,000 queries
+- **Correct Predictions:** **893 / 1,000**
+- **Overall Benchmark Accuracy:** **89.30%**
+- **Average Latency:** **0.0629s per query** (62.89s total run time)
+
+#### 🔲 2x2 Confusion Matrix
+
+| | Predicted: **Supported** | Predicted: **Hallucinated** | Total Actual |
+| :--- | :---: | :---: | :---: |
+| **Actual: Supported** | **254** *(TP)* | **46** *(FN)* | 300 |
+| **Actual: Hallucinated / Out-of-Corpus** | **61** *(FP)* | **639** *(TN)* | 700 |
+| **Total Predicted** | 315 | 685 | 1,000 |
+
+#### 📈 Per-Class Precision, Recall & F1-Score
+
+| Class | Precision | Recall | F1-Score | Support |
+| :--- | :---: | :---: | :---: | :---: |
+| **Supported** | **80.63%** | **84.67%** | **82.60%** | 300 |
+| **Hallucinated** | **93.28%** | **91.29%** | **92.27%** | 700 |
+| **Macro Average** | **86.96%** | **87.98%** | **87.44%** | 1,000 |
+| **Weighted Average** | **89.49%** | **89.30%** | **89.37%** | 1,000 |
+
+#### 🔍 Granular Accuracy Breakdown by Difficulty Category
+
+| Test Category | Difficulty | Description | Accuracy | Correct / Total |
+| :--- | :---: | :--- | :---: | :---: |
+| **Fine-Grained Numerical Perturbations** | Hard | Near-miss constants, altered exponents, dates, or measurements | **100.00%** | 150 / 150 |
+| **Plausible Zero-Evidence Out-of-Corpus** | Extreme | Realistic domain queries with zero presence in the knowledge base | **100.00%** | 150 / 150 |
+| **Adversarial Inversions & Negations** | Hard | High lexical overlap reversing causal direction or adding negations | **90.00%** | 180 / 200 |
+| **Synthesized & Paraphrased Supported Facts** | Hard | Multi-sentence facts with synonyms and passive/active voice shifts | **84.67%** | 254 / 300 |
+| **High-Overlap Cross-Entity Role Swaps** | Hard | Swapped co-mentioned scientists, inventors, or historical actors | **79.50%** | 159 / 200 |
+
+---
+
+### Running the Benchmark & Test Suites
+
+All tests and benchmark suites are unified in the [`tests/`](./tests) folder and can be executed with standard Python:
+
+```bash
+# Run the 1,000-query high-difficulty benchmark
+python tests/test_benchmark_1000.py
+
+# Run the 500-query benchmark
+python tests/test_benchmark_500.py
+
+# Run unit tests
+python tests/test_judge.py
+python tests/test_retriever.py
+python tests/test_chunker.py
+```
+
+Benchmark output logs, classifications, and JSON reports are automatically saved to `tests/benchmark_results_1000.json`.
+
+---
+
 ## Roadmap
 
 - [ ] Multi-model judge ensemble (cross-validate Ollama verdicts against a secondary LLM)
 - [ ] Per-document knowledge base management (delete/re-index individual sources)
 - [ ] Streaming verdict responses via Server-Sent Events
 - [ ] Authentication & multi-tenant knowledge bases
-- [ ] Automated evaluation benchmark suite for judge accuracy
+- [x] Automated evaluation benchmark suite for judge accuracy
 
 ---
 

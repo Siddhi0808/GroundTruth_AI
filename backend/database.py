@@ -20,6 +20,9 @@ DB_HOST = os.getenv("POSTGRES_HOST", "localhost")
 DB_PORT = os.getenv("POSTGRES_PORT", "5432")
 DB_NAME = os.getenv("POSTGRES_DB", "groundtruth")
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SQLITE_DB_PATH = os.path.join(BASE_DIR, "groundtruth_fallback.db")
+
 # Connection string
 if DB_PASSWORD:
     DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
@@ -34,7 +37,7 @@ try:
     USE_SQLITE = False
 except Exception as e:
     logger.warning(f"PostgreSQL connection failed ({e}). Falling back to local SQLite database.")
-    DATABASE_URL = "sqlite:///./groundtruth_fallback.db"
+    DATABASE_URL = f"sqlite:///{SQLITE_DB_PATH}"
     engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
     USE_SQLITE = True
 
@@ -54,6 +57,37 @@ class DetectionHistory(Base):
 
 def init_db():
     Base.metadata.create_all(bind=engine)
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        is_postgres = hasattr(conn, "status") or "psycopg" in str(type(conn)).lower()
+        if is_postgres:
+            cursor.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS document_chunks (
+                    id SERIAL PRIMARY KEY,
+                    source TEXT NOT NULL,
+                    file_hash TEXT NOT NULL,
+                    chunk_number INTEGER NOT NULL,
+                    content TEXT NOT NULL,
+                    embedding vector(384)
+                );
+            """)
+        else:
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS document_chunks (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    source TEXT NOT NULL,
+                    file_hash TEXT NOT NULL,
+                    chunk_number INTEGER NOT NULL,
+                    content TEXT NOT NULL
+                );
+            """)
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        logger.warning(f"Document chunks table initialization notice: {e}")
 
 def get_db():
     db = SessionLocal()
@@ -65,7 +99,7 @@ def get_db():
 def get_connection():
     """Provides direct raw database connections for retriever/vector queries."""
     if USE_SQLITE:
-        conn = sqlite3.connect("./groundtruth_fallback.db")
+        conn = sqlite3.connect(SQLITE_DB_PATH)
         conn.row_factory = sqlite3.Row
         return conn
     else:

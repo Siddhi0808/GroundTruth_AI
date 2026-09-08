@@ -1,0 +1,264 @@
+{
+  "timestamp": "2026-09-06 15:54:06",
+  "total_samples": 14,
+  "overall_accuracy": 92.86,
+  "elapsed_seconds": 113.35,
+  "confusion_matrix": {
+    "labels": [
+      "Supported",
+      "Hallucinated"
+    ],
+    "matrix": [
+      [
+        6,
+        1
+      ],
+      [
+        0,
+        7
+      ]
+    ],
+    "actual_supported_predicted_supported": 6,
+    "actual_supported_predicted_hallucinated": 1,
+    "actual_hallucinated_predicted_supported": 0,
+    "actual_hallucinated_predicted_hallucinated": 7
+  },
+  "metrics_per_class": {
+    "Supported": {
+      "precision": 100.0,
+      "recall": 85.71,
+      "f1_score": 92.31
+    },
+    "Hallucinated": {
+      "precision": 87.5,
+      "recall": 100.0,
+      "f1_score": 93.33
+    }
+  },
+  "sample_results": [
+    {
+      "id": 1,
+      "category": "Inventions",
+      "query": "Who invented the practical telephone and when was it patented?",
+      "response": "Alexander Graham Bell received a patent for the practical telephone in 1876.",
+      "expected": "Supported",
+      "predicted": "Supported",
+      "confidence": 100.0,
+      "correct": true,
+      "reason": "The LLM response is supported by the knowledge base context, which states that Alexander Graham Bell received a patent for the telephone in 1876 and is widely credited with inventing the first practical telephone.",
+      "retrieved_sources": [
+        "telephone.txt",
+        "newton.txt",
+        "moon.txt"
+      ]
+    },
+    {
+      "id": 2,
+      "category": "Inventions",
+      "query": "Who invented the telephone and when?",
+      "response": "Thomas Edison invented the telephone in 1879 at Menlo Park.",
+      "expected": "Hallucinated",
+      "predicted": "Hallucinated",
+      "confidence": 80.0,
+      "correct": true,
+      "reason": "The LLM response attributes the invention of the telephone to Thomas Edison, but the knowledge base context only supports Alexander Graham Bell as the inventor and provides a patent date (1876) that predates Edison's claimed invention year (1879). Additionally, there is no mention of Edison in the knowledge base context.",
+      "retrieved_sources": [
+        "telephone.txt",
+        "newton.txt",
+        "moon.txt"
+      ]
+    },
+    {
+      "id": 3,
+      "category": "Physics",
+      "query": "What major theory did Albert Einstein develop?",
+      "response": "Albert Einstein was a theoretical physicist who developed the theory of relativity.",
+      "expected": "Supported",
+      "predicted": "Supported",
+      "confidence": 100.0,
+      "correct": true,
+      "reason": "The LLM response accurately states that Albert Einstein was a theoretical physicist who developed the theory of relativity, which is supported by the Knowledge Base Context in [einstein.txt].",
+      "retrieved_sources": [
+        "einstein.txt",
+        "newton.txt",
+        "telephone.txt"
+      ]
+    },
+    {
+      "id": 4,
+      "category": "Physics",
+      "query": "When was Albert Einstein born and when did he pass away?",
+      "response": "Albert Einstein was born in 1920 and died in 2005.",
+      "expected": "Hallucinated",
+      "predicted": "Hallucinated",
+      "confidence": 50.0,
+      "correct": true,
+      "reason": "The provided response incorrectly states Albert Einstein's birth year as 1920 and death year as 2005, when in fact according to the knowledge base context, he was born in 1879 and died in 1955.",
+      "retrieved_sources": [
+        "einstein.txt",
+        "newton.txt",
+        "moon.txt"
+      ]
+    },
+    {
+      "id": 5,
+      "category": "Astronomy",
+      "query": "How old is Earth and what is its atmosphere composed of?",
+      "response": "Earth is about 4.54 billion years old and has an atmosphere mostly composed of nitrogen and oxygen.",
+      "expected": "Supported",
+      "predicted": "Hallucinated",
+      "confidence": 35.0,
+      "correct": false,
+      "reason": "The LLM response states that Earth is 'the only known planet to support life', which is not supported by the Knowledge Base Context. While it does mention that Earth has liquid water and a breathable atmosphere, the phrase 'only known planet to support life' implies additional information about Earth being unique in this regard. However, the Knowledge Base Context does not provide specific details on why Earth supports life or if there are other planets with similar conditions.",
+      "retrieved_sources": [
+        "earth.txt",
+        "solar_system.txt",
+        "internet.txt"
+      ]
+    },
+    {
+      "id": 6,
+      "category": "Astronomy",
+      "query": "What is the atmosphere of Earth composed of?",
+      "response": "Earth has an atmosphere composed entirely of pure carbon dioxide and helium.",
+      "expected": "Hallucinated",
+      "predicted": "Hallucinated",
+      "confidence": 80.0,
+      "correct": true,
+      "reason": "The LLM response claims that Earth's atmosphere is composed entirely of pure carbon dioxide and helium, which contradicts the knowledge base context stating that it has a breathable atmosphere mostly composed of nitrogen and oxygen.",
+      "retrieved_sources": [
+        "earth.txt",
+        "solar_system.txt",
+        "internet.txt"
+      ]
+    },
+    {
+      "id": 7,
+      "category": "Architecture",
+      "query": "Where is the Taj Mahal located and who built it?",
+      "response": "The Taj Mahal is a white marble mausoleum in Agra, India, built by Mughal emperor Shah Jahan.",
+      "expected": "Supported",
+      "predicted": "Supported",
+      "confidence": 100.0,
+      "correct": true,
+      "reason": "The LLM response is supported by the Knowledge Base Context as it accurately states the Taj Mahal's location (Agra, India) and builder (Mughal emperor Shah Jahan), which are both verified in the context facts 'taj_mahal.txt' and does not introduce any new or unsupported claims.",
+      "retrieved_sources": [
+        "taj_mahal.txt",
+        "india.txt",
+        "eiffel.txt"
+      ]
+    },
+    {
+      "id": 8,
+      "category": "Architecture",
+      "query": "Who built the Taj Mahal and when was construction completed?",
+      "response": "The Taj Mahal was commissioned by Emperor Akbar and completed in the year 1850.",
+      "expected": "Hallucinated",
+      "predicted": "Hallucinated",
+      "confidence": 80.0,
+      "correct": true,
+      "reason": "The LLM response incorrectly states that Emperor Akbar commissioned the Taj Mahal and that construction was completed in 1850. However, the knowledge base context clearly states that the Taj Mahal was built by Mughal emperor Shah Jahan and that construction began in 1632, with completion in 1653. This discrepancy indicates hallucination.",
+      "retrieved_sources": [
+        "taj_mahal.txt",
+        "eiffel.txt",
+        "einstein.txt"
+      ]
+    },
+    {
+      "id": 9,
+      "category": "Physics",
+      "query": "What laws is Sir Isaac Newton best known for?",
+      "response": "Sir Isaac Newton is best known for formulating the laws of motion and universal gravitation.",
+      "expected": "Supported",
+      "predicted": "Supported",
+      "confidence": 100.0,
+      "correct": true,
+      "reason": "The LLM response directly quotes the KNOWLEDGE BASE CONTEXT ([newton.txt]) stating that Sir Isaac Newton is best known for formulating the laws of motion and universal gravitation.",
+      "retrieved_sources": [
+        "newton.txt",
+        "einstein.txt",
+        "telephone.txt"
+      ]
+    },
+    {
+      "id": 10,
+      "category": "Physics",
+      "query": "What did Sir Isaac Newton discover?",
+      "response": "Sir Isaac Newton is best known for inventing the steam engine and discovering nuclear fission.",
+      "expected": "Hallucinated",
+      "predicted": "Hallucinated",
+      "confidence": 80.0,
+      "correct": true,
+      "reason": "The LLM response claims that Sir Isaac Newton invented the steam engine and discovered nuclear fission, which are not supported by the provided Knowledge Base Context. The context only mentions Newton's contributions to mathematics, physics, astronomy, calculus, optics, and his laws of motion and universal gravitation. ",
+      "retrieved_sources": [
+        "newton.txt",
+        "einstein.txt",
+        "telephone.txt"
+      ]
+    },
+    {
+      "id": 11,
+      "category": "Astronomy",
+      "query": "How many planets are in the Solar System?",
+      "response": "The eight planets in the Solar System are Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune.",
+      "expected": "Supported",
+      "predicted": "Supported",
+      "confidence": 100.0,
+      "correct": true,
+      "reason": "The response correctly lists the eight planets in our Solar System: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. This information is supported by both [solar_system.txt] and [earth.txt], which explicitly state that the eight planets are part of the Solar System.",
+      "retrieved_sources": [
+        "solar_system.txt",
+        "earth.txt",
+        "india.txt"
+      ]
+    },
+    {
+      "id": 12,
+      "category": "Astronomy",
+      "query": "How many planets are in the Solar System?",
+      "response": "The Solar System has twelve official major planets, including Ceres and Pluto.",
+      "expected": "Hallucinated",
+      "predicted": "Hallucinated",
+      "confidence": 75.0,
+      "correct": true,
+      "reason": "The LLM response states that the Solar System has twelve official major planets, including Ceres and Pluto. However, according to the knowledge base context [solar_system.txt], only eight planets are recognized (Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune). The inclusion of Ceres and Pluto as major planets is not supported by the provided context.",
+      "retrieved_sources": [
+        "solar_system.txt",
+        "earth.txt",
+        "india.txt"
+      ]
+    },
+    {
+      "id": 13,
+      "category": "Architecture",
+      "query": "Where is the Eiffel Tower and when was it completed?",
+      "response": "The Eiffel Tower is located on the Champ de Mars in Paris and was completed in 1889.",
+      "expected": "Supported",
+      "predicted": "Supported",
+      "confidence": 100.0,
+      "correct": true,
+      "reason": "The Eiffel Tower's location on the Champ de Mars in Paris is supported by [eiffel.txt]. The completion year of 1889 is also consistent with [eiffel.txt], which states it was completed for the Exposition Universelle.",
+      "retrieved_sources": [
+        "eiffel.txt",
+        "taj_mahal.txt",
+        "moon.txt"
+      ]
+    },
+    {
+      "id": 14,
+      "category": "Architecture",
+      "query": "Where is the Eiffel Tower and who built it?",
+      "response": "The Eiffel Tower is a landmark located in Berlin, Germany, completed in 1965.",
+      "expected": "Hallucinated",
+      "predicted": "Hallucinated",
+      "confidence": 85.0,
+      "correct": true,
+      "reason": "The LLM response claims the Eiffel Tower is located in Berlin, Germany, and completed in 1965, which contradicts the KB context stating it was built in Paris, France, and completed in 1889. Additionally, there is no information about the construction year of the Eiffel Tower in the provided knowledge base context.",
+      "retrieved_sources": [
+        "eiffel.txt",
+        "taj_mahal.txt",
+        "telephone.txt"
+      ]
+    }
+  ]
+}

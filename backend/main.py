@@ -101,7 +101,8 @@ async def health_check():
 async def detect_hallucination(request: DetectionRequest, db: Session = Depends(get_db)):
     try:
         # Step 1: Retrieve Evidence via RAG
-        retrieved_docs = retrieve_context(request.query, top_k=request.top_k)
+        top_k = request.top_k or 3
+        retrieved_docs = retrieve_context(request.query, top_k=top_k)
         
         evidence_list = []
         similarity_scores = []
@@ -131,6 +132,7 @@ async def detect_hallucination(request: DetectionRequest, db: Session = Depends(
 
         verdict = eval_result.get("verdict", "Hallucinated")
         confidence = float(eval_result.get("confidence", 0.85))
+        confidence_pct = round(confidence * 100, 2) if confidence <= 1.0 else round(confidence, 2)
         reason = eval_result.get("reason", eval_result.get("explanation", "Evaluation completed."))
 
         # Step 3: Save to DB History
@@ -139,7 +141,7 @@ async def detect_hallucination(request: DetectionRequest, db: Session = Depends(
                 query=request.query,
                 llm_response=request.llm_response,
                 verdict=verdict,
-                confidence=confidence,
+                confidence=confidence_pct,
                 reason=reason
             )
             db.add(history_entry)
@@ -150,14 +152,14 @@ async def detect_hallucination(request: DetectionRequest, db: Session = Depends(
 
         return DetectionResponse(
             verdict=verdict,
-            confidence=round(confidence * 100, 2) if confidence <= 1.0 else round(confidence, 2),
-            confidence_score=round(confidence * 100, 2) if confidence <= 1.0 else round(confidence, 2),
+            confidence=confidence_pct,
+            confidence_score=confidence_pct,
             reason=reason,
             explanation=reason,
             retrieved_evidence=evidence_list,
             similarity_scores=similarity_scores,
             metadata={
-                "top_k_requested": request.top_k,
+                "top_k_requested": top_k,
                 "evidence_count": len(evidence_list),
                 "model_used": "Llama-3.2-3B-RAG-Judge"
             }
@@ -175,9 +177,10 @@ async def upload_document(file: UploadFile = File(...)):
     """Uploads a .txt or .pdf file, chunks it, and ingests it into the vector database matching exact schema."""
     filename = file.filename
     extracted_text = ""
+    fn_lower = filename.lower() if filename else ""
 
     # Validate file extension
-    if not (filename.endswith(".txt") or filename.endswith(".pdf")):
+    if not (fn_lower.endswith(".txt") or fn_lower.endswith(".pdf")):
         raise HTTPException(
             status_code=400, 
             detail="Unsupported file format. Please upload a .txt or .pdf file."
@@ -188,7 +191,7 @@ async def upload_document(file: UploadFile = File(...)):
         file_hash = hashlib.md5(file_bytes).hexdigest()
 
         # Extract text from file
-        if filename.endswith(".pdf"):
+        if fn_lower.endswith(".pdf"):
             pdf_reader = pypdf.PdfReader(io.BytesIO(file_bytes))
             for page in pdf_reader.pages:
                 page_text = page.extract_text()
@@ -311,7 +314,7 @@ async def get_history(limit: int = 10, db: Session = Depends(get_db)):
                 "query": r.query,
                 "llm_response": r.llm_response,
                 "verdict": r.verdict,
-                "confidence": r.confidence,
+                "confidence": round(r.confidence * 100, 2) if r.confidence is not None and r.confidence <= 1.0 else (round(r.confidence, 2) if r.confidence is not None else 0.0),
                 "reason": r.reason,
                 "created_at": r.created_at.isoformat() if r.created_at else None
             }

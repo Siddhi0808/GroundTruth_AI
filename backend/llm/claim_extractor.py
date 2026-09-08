@@ -1,5 +1,8 @@
+import json
+import logging
 import ollama
 
+logger = logging.getLogger("groundtruth_ai")
 
 def extract_claims(response: str):
 
@@ -20,21 +23,18 @@ Response:
 {response}
 """
 
-    result = ollama.chat(
-        model="llama3.2:3b",
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
-
-    text = result["message"]["content"]
-
-    import json
-
     try:
+        result = ollama.chat(
+            model="llama3.2",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+        text = result["message"]["content"]
         return json.loads(text)
-    except:
+    except Exception as e:
+        logger.warning(f"Ollama claim extraction unavailable ({e}). Falling back to raw response.")
         return [response]
