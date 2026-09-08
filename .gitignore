@@ -17,6 +17,7 @@ env/
 *.sqlite3
 data/documents/*
 !data/documents/.gitkeep
+!data/documents/telephone.txt
 
 # IDE & OS files
 .DS_Store
