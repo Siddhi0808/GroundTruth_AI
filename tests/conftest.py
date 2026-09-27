@@ -5,10 +5,15 @@
 """
 import os
 import sys
+import tempfile
 from pathlib import Path
 
 os.environ.setdefault("USE_LLM", "false")
 os.environ.setdefault("ALLOW_SQLITE_FALLBACK", "false")
+# Safety net: anything that configures the database before a test fixture does (e.g. the app's lifespan
+# when the `client` fixture is created before `db_backend`) gets a throwaway SQLite file, never the
+# developer's real database from the environment or .env.
+os.environ["DATABASE_URL"] = f"sqlite:///{Path(tempfile.mkdtemp(prefix='gt_tests_')) / 'unconfigured.db'}"
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
