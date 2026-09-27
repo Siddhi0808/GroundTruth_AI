@@ -1,99 +1,74 @@
-import hashlib
-import os
-from pathlib import Path
+"""Batch ingestion of data/documents/ and the indexing helper shared with the upload endpoint.
 
+Usage:
+    python -m backend.rag.ingest            # index files not yet in the database (dedup by content hash)
+    python -m backend.rag.ingest --rebuild  # delete all chunks and re-index every file (needed after
+                                            # changing chunking or the embedding model)
+"""
+import argparse
+import logging
+from typing import List
+
+from backend import config
+from backend import database as db
+from backend.rag.chunker import chunk_text  # re-exported for backward compatibility
 from backend.rag.document_loader import load_documents
-from backend.rag.embeddings import get_embedding
-from backend.database import get_connection
+from backend.rag.embeddings import get_embeddings
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DOCUMENT_FOLDER = str(BASE_DIR / "data" / "documents")
+logger = logging.getLogger("groundtruth_ai")
 
-def chunk_text(text, chunk_size=500):
-    words = text.split()
-    chunks = []
-    for i in range(0, len(words), chunk_size):
-        chunk = " ".join(words[i:i+chunk_size])
-        chunks.append(chunk)
-    return chunks
+__all__ = ["chunk_text", "prepare_chunks", "index_document", "ingest"]
 
-def ingest():
-    documents = load_documents(DOCUMENT_FOLDER)
-    connection = get_connection()
-    cursor = connection.cursor()
 
-    is_postgres = hasattr(connection, "status") or "psycopg" in str(type(connection)).lower()
+def prepare_chunks(text: str):
+    """Chunk and (on PostgreSQL) embed. Done before opening a transaction so the DB is not held
+    during model inference. SQLite mode stores no vectors, so no embeddings are computed there."""
+    chunks = chunk_text(text)
+    embeddings = get_embeddings(chunks) if (chunks and db.is_postgres()) else None
+    return chunks, embeddings
 
-    if is_postgres:
-        cursor.execute("CREATE EXTENSION IF NOT EXISTS vector;")
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS document_chunks (
-                id SERIAL PRIMARY KEY,
-                source TEXT NOT NULL,
-                file_hash TEXT NOT NULL,
-                chunk_number INTEGER NOT NULL,
-                content TEXT NOT NULL,
-                embedding vector(384)
-            );
-        """)
-    else:
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS document_chunks (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                source TEXT NOT NULL,
-                file_hash TEXT NOT NULL,
-                chunk_number INTEGER NOT NULL,
-                content TEXT NOT NULL
-            );
-        """)
-    connection.commit()
 
-    for doc in documents:
-        if not doc.get("content", "").strip():
-            continue
+def index_document(conn, source: str, file_hash: str, chunks: List[str], embeddings) -> int:
+    """Insert prepared chunks inside the caller's transaction. Returns rows inserted (0 if already indexed)."""
+    return db.insert_chunks(conn, source, file_hash, chunks, embeddings)
 
-        file_hash = hashlib.md5(doc["content"].encode("utf-8")).hexdigest()
 
-        if is_postgres:
-            cursor.execute("SELECT COUNT(*) FROM document_chunks WHERE source = %s;", (doc["source"],))
-            row = cursor.fetchone()
-            existing = list(row.values())[0] if isinstance(row, dict) else row[0]
-        else:
-            cursor.execute("SELECT COUNT(*) FROM document_chunks WHERE source = ?;", (doc["source"],))
-            row = cursor.fetchone()
-            existing = row[0] if hasattr(row, "__getitem__") else 0
+def ingest(rebuild: bool = False, folder=None) -> dict:
+    db.init_db()
+    folder = folder or config.DOCUMENTS_DIR
+    documents = load_documents(folder)
+    stats = {"files": len(documents), "indexed": 0, "skipped_existing": 0, "empty": 0, "chunks": 0}
 
-        if existing:
-            print(f"✓ Skipping {doc['source']} (unchanged)")
-            continue
+    with db.db_connection() as conn:
+        if rebuild:
+            cur = conn.cursor()
+            cur.execute("DELETE FROM document_chunks;")
+            cur.close()
+            conn.commit()
+            logger.info("Rebuild: deleted all existing chunks")
+            db.DEDUP_CONSTRAINT_OK = db.ensure_chunk_schema(conn)
 
-        chunks = chunk_text(doc["content"])
-        print(f"{doc['source']}: {len(chunks)} chunks")
+        for doc in documents:
+            if not doc["content"].strip():
+                stats["empty"] += 1
+                logger.warning("Skipping %s: no extractable text", doc["source"])
+                continue
+            existing = db.find_document_by_hash(conn, doc["file_hash"])
+            if existing:
+                stats["skipped_existing"] += 1
+                continue
+            chunks, embeddings = prepare_chunks(doc["content"])
+            inserted = index_document(conn, doc["source"], doc["file_hash"], chunks, embeddings)
+            conn.commit()  # one transaction per document
+            stats["indexed"] += 1
+            stats["chunks"] += inserted
+            print(f"✓ {doc['source']}: {inserted} chunks")
+    print(f"Ingest complete ({db.BACKEND}): {stats}")
+    return stats
 
-        for index, chunk in enumerate(chunks, start=1):
-            embedding = get_embedding(chunk)
-            if is_postgres:
-                cursor.execute(
-                    """
-                    INSERT INTO document_chunks (source, file_hash, chunk_number, content, embedding)
-                    VALUES (%s, %s, %s, %s, %s::vector)
-                    """,
-                    (doc["source"], file_hash, index, chunk, str(embedding))
-                )
-            else:
-                cursor.execute(
-                    """
-                    INSERT INTO document_chunks (source, file_hash, chunk_number, content)
-                    VALUES (?, ?, ?, ?)
-                    """,
-                    (doc["source"], file_hash, index, chunk)
-                )
-
-        connection.commit()
-        print(f"✓ Stored {doc['source']}")
-
-    cursor.close()
-    connection.close()
 
 if __name__ == "__main__":
-    ingest()
+    logging.basicConfig(level=logging.INFO)
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--rebuild", action="store_true", help="delete all chunks and re-index every file")
+    ingest(rebuild=parser.parse_args().rebuild)

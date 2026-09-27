@@ -1,4 +1,5 @@
-FROM python:3.11-slim
+# Same Python version as the dev venv and CI (the pinned requirements need Python >= 3.12)
+FROM python:3.13-slim
 
 WORKDIR /app
 
@@ -11,10 +12,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Install Python dependencies. The extra index provides CPU-only PyTorch wheels (e.g. torch 2.13.0+cpu),
+# which satisfy the torch==2.13.0 pin without pulling several GB of CUDA libraries into the image.
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
 
 # Copy project files
 COPY . .

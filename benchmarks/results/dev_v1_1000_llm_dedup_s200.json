@@ -1,0 +1,3915 @@
+{
+  "metadata": {
+    "date": "2026-09-27T01:21:31",
+    "git_commit": "69bc01f",
+    "git_dirty": true,
+    "dataset": "dev_v1_1000.json",
+    "dataset_sha256": "023f53d1796b2d7c15d1063b0a5772d0d9654fe824c2300c1001789a66144dd7",
+    "cases_in_dataset": 1000,
+    "unique_pairs_in_dataset": 834,
+    "cases_evaluated": 200,
+    "dedupe": true,
+    "sample": 200,
+    "sample_seed": 7,
+    "category_distribution": {
+      "AdversarialInversion": 48,
+      "EntityRoleSwap": 48,
+      "NumericalPerturbation": 36,
+      "Supported": 32,
+      "ZeroEvidence": 36
+    },
+    "engine": "llm",
+    "judge_model": "ollama:llama3.2",
+    "llm_options": {
+      "temperature": 0.0,
+      "seed": 42,
+      "num_ctx": 4096
+    },
+    "llm_fallbacks": {
+      "llm_unavailable": 1
+    },
+    "database_backend": "postgres",
+    "retrieval_mode": "vector",
+    "corpus_chunks": 1904,
+    "corpus_documents": 409,
+    "embedding_model": "all-MiniLM-L6-v2",
+    "chunking": {
+      "size_tokens": 200,
+      "overlap_tokens": 40
+    },
+    "top_k": 3,
+    "latency_seconds": {
+      "mean": 13.4178,
+      "p50": 13.5403,
+      "p95": 19.867
+    },
+    "python": "3.13.5",
+    "machine": "arm64"
+  },
+  "metrics": {
+    "n": 200,
+    "binary": {
+      "positive_class": "Not supported (Hallucinated or Insufficient Evidence)",
+      "confusion_matrix": {
+        "actual_supported": {
+          "pred_supported": 32,
+          "pred_not_supported": 0
+        },
+        "actual_not_supported": {
+          "pred_supported": 21,
+          "pred_not_supported": 147
+        }
+      },
+      "accuracy": 89.5,
+      "not_supported": {
+        "precision": 100.0,
+        "recall": 87.5,
+        "f1": 93.33,
+        "support": 168
+      },
+      "supported": {
+        "precision": 60.38,
+        "recall": 100.0,
+        "f1": 75.29,
+        "support": 32
+      },
+      "macro_f1": 84.31,
+      "majority_baseline_accuracy": 84.0
+    },
+    "three_way_accuracy": 77.5,
+    "prediction_distribution": {
+      "Hallucinated": 135,
+      "Supported": 53,
+      "Insufficient Evidence": 12
+    },
+    "per_category_binary_accuracy": {
+      "AdversarialInversion": {
+        "correct": 45,
+        "total": 48,
+        "accuracy": 93.75
+      },
+      "EntityRoleSwap": {
+        "correct": 34,
+        "total": 48,
+        "accuracy": 70.83
+      },
+      "NumericalPerturbation": {
+        "correct": 32,
+        "total": 36,
+        "accuracy": 88.89
+      },
+      "Supported": {
+        "correct": 32,
+        "total": 32,
+        "accuracy": 100.0
+      },
+      "ZeroEvidence": {
+        "correct": 36,
+        "total": 36,
+        "accuracy": 100.0
+      }
+    }
+  },
+  "records": [
+    {
+      "id": 383,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 83: What happened to the command module oxygen in Apollo 13?",
+      "response": "Contrary to common misconceptions, The oxygen tank explosion on Apollo 13 had no effect on the command module's oxygen supply, allowing the crew to remain comfortably in the command module throughout the flight.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims the command module's oxygen supply was not affected by the explosion, which contradicts the context stating the explosion crippled the command module's oxygen supply and electrical power generation systems.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_apollo_13_mission.txt",
+        "apollo_program_history.txt",
+        "med_history_moon_landing_apollo_11.txt"
+      ],
+      "latency_seconds": 18.3795
+    },
+    {
+      "id": 339,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 39: Did Edward Jenner's inoculation protect James Phipps from smallpox?",
+      "response": "Contrary to common misconceptions, Inoculation with cowpox completely destroyed James Phipps's immunity, causing immediate fatal smallpox upon subsequent exposure.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims that inoculation with cowpox completely destroyed James Phipps's immunity, causing immediate fatal smallpox upon subsequent exposure, which contradicts the context that Jenner observed complete immunity to the lethal variola virus after exposing Phipps to active smallpox.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_edward_jenner_smallpox.txt",
+        "vaccines_history.txt",
+        "med_history_treaty_of_westphalia_1648.txt"
+      ],
+      "latency_seconds": 19.7874
+    },
+    {
+      "id": 402,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 102: What is the effect of the p53 protein during cellular DNA damage?",
+      "response": "Contrary to common misconceptions, The p53 tumor suppressor protein prevents cell cycle arrest at the G1/S boundary, accelerating uncontrolled mitotic division when DNA is damaged.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims p53 accelerates uncontrolled mitotic division, which contradicts the context stating p53 arrests the cellular division cycle at the G1/S checkpoint.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_p53_suppressor.txt",
+        "structure_of_proteins.pdf",
+        "long_crispr_base_editing.txt"
+      ],
+      "latency_seconds": 13.2524
+    },
+    {
+      "id": 467,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 167: How do noble gases interact with other chemical substances?",
+      "response": "Contrary to common misconceptions, Because noble gases possess empty outer electron shells, they react violently with almost all elements under standard ambient temperatures.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that noble gases possess full valence electron outer shells, conferring remarkable chemical inertness under standard conditions, but the LLM response claims they react violently with almost all elements.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_noble_gases.txt",
+        "med_chemistry_le_chatelier_principle.txt",
+        "micro_helium_element.txt"
+      ],
+      "latency_seconds": 14.0425
+    },
+    {
+      "id": 313,
+      "category": "AdversarialInversion",
+      "query": "What effect does the Haber-Bosch process catalyst have?",
+      "response": "The Haber-Bosch process operates exclusively without any catalyst because iron compounds completely arrest ammonia synthesis.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims the Haber-Bosch process operates exclusively without a catalyst, which contradicts the context that states an iron-based catalyst is used.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_haber_catalyst.txt",
+        "micro_sulfuric_contact.txt",
+        "long_chemical_engineering.txt"
+      ],
+      "latency_seconds": 13.6045
+    },
+    {
+      "id": 319,
+      "category": "AdversarialInversion",
+      "query": "Did Edward Jenner's inoculation protect James Phipps from smallpox?",
+      "response": "Inoculation with cowpox completely destroyed James Phipps's immunity, causing immediate fatal smallpox upon subsequent exposure.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims that inoculation with cowpox 'completely destroyed James Phipps's immunity', which contradicts the context that Jenner observed 'complete immunity' to smallpox after exposing Phipps to active smallpox.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_edward_jenner_smallpox.txt",
+        "vaccines_history.txt",
+        "med_history_treaty_of_westphalia_1648.txt"
+      ],
+      "latency_seconds": 18.0309
+    },
+    {
+      "id": 438,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 138: What did Konrad Zuse's Z3 use for calculations?",
+      "response": "Contrary to common misconceptions, Konrad Zuse built the Z3 without any electrical components, relying entirely on hydraulic water pipes and steam valves.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that the Z3 used 2,600 electrical telephone relays for calculations, but the LLM response claims it used hydraulic water pipes and steam valves.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_first_programmable_computer.txt",
+        "long_zero_knowledge_proofs_cryptography.txt",
+        "long_zero_knowledge_proofs_cryptography.txt"
+      ],
+      "latency_seconds": 16.0693
+    },
+    {
+      "id": 325,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 25: Did the 1919 Principe solar eclipse confirm Einstein's relativity?",
+      "response": "Contrary to common misconceptions, Sir Arthur Eddington's 1919 eclipse expedition observed that starlight experienced zero gravitational deflection near the Sun, completely refuting general relativity.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately reflects the context, which states that Sir Arthur Eddington confirmed general relativity in 1919 by measuring the gravitational deflection of starlight during a total solar eclipse.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_theory_of_general_relativity.txt",
+        "theory_of_relativity.txt",
+        "theory_of_relativity.txt"
+      ],
+      "latency_seconds": 16.0079
+    },
+    {
+      "id": 394,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 94: How does TCP establish a transport connection?",
+      "response": "Contrary to common misconceptions, The Transmission Control Protocol eliminates handshakes entirely, delivering data packets with zero acknowledgement or sequence synchronization.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that TCP establishes a transport connection via a three-way handshake, but the LLM response claims TCP eliminates handshakes entirely.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_tech_tcp_ip_cerf_kahn.txt",
+        "micro_tcp_handshake.txt",
+        "long_internet_routing_bgp_protocol.txt"
+      ],
+      "latency_seconds": 14.083
+    },
+    {
+      "id": 450,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 150: Did King John sign Magna Carta voluntarily to expand absolute royal power?",
+      "response": "Contrary to common misconceptions, King John signed the Magna Carta to explicitly establish that the English monarch was entirely above all laws and exempt from judicial review.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims King John signed Magna Carta to establish absolute royal power, which contradicts the context that established the fundamental principle that even the monarch is subject to constitutional law.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_magna_carta.txt",
+        "med_history_magna_carta_runnymede.pdf",
+        "med_history_declaration_independence_1776.txt"
+      ],
+      "latency_seconds": 13.9519
+    },
+    {
+      "id": 315,
+      "category": "AdversarialInversion",
+      "query": "What did photograph 51 reveal about DNA?",
+      "response": "Photograph 51 taken by Rosalind Franklin showed that DNA possesses a strictly planar, non-helical triple-ladder geometry.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Photograph 51 revealed distinctive helical cross-patterns indicating an antiparallel double helix, which is consistent with the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "dna_double_helix.txt",
+        "med_structure_of_dna.pdf",
+        "dna_double_helix.txt"
+      ],
+      "latency_seconds": 15.4042
+    },
+    {
+      "id": 430,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 130: Did King John sign Magna Carta voluntarily to expand absolute royal power?",
+      "response": "Contrary to common misconceptions, King John signed the Magna Carta to explicitly establish that the English monarch was entirely above all laws and exempt from judicial review.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The claim that King John signed Magna Carta to 'explicitly establish that the English monarch was entirely above all laws and exempt from judicial review' is not supported by the context, which states that the Magna Carta established the fundamental principle that even the monarch is subject to the rule of constitutional law.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_magna_carta.txt",
+        "med_history_magna_carta_runnymede.pdf",
+        "long_encyclopedia_world_history.pdf"
+      ],
+      "latency_seconds": 17.6085
+    },
+    {
+      "id": 355,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 55: What did photograph 51 reveal about DNA?",
+      "response": "Contrary to common misconceptions, Photograph 51 taken by Rosalind Franklin showed that DNA possesses a strictly planar, non-helical triple-ladder geometry.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that Photograph 51 revealed distinctive helical cross-patterns indicating an antiparallel double helix, but the LLM response claims a strictly planar, non-helical triple-ladder geometry which contradicts the known structure of DNA.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "dna_double_helix.txt",
+        "med_structure_of_dna.pdf",
+        "long_crispr_base_editing.txt"
+      ],
+      "latency_seconds": 18.2732
+    },
+    {
+      "id": 310,
+      "category": "AdversarialInversion",
+      "query": "Did King John sign Magna Carta voluntarily to expand absolute royal power?",
+      "response": "King John signed the Magna Carta to explicitly establish that the English monarch was entirely above all laws and exempt from judicial review.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims King John signed Magna Carta to expand absolute royal power, which contradicts the context that established the fundamental principle that even the monarch is subject to constitutional law.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_magna_carta.txt",
+        "med_history_magna_carta_runnymede.pdf",
+        "med_history_declaration_independence_1776.txt"
+      ],
+      "latency_seconds": 13.7887
+    },
+    {
+      "id": 323,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 23: What happened to the command module oxygen in Apollo 13?",
+      "response": "Contrary to common misconceptions, The oxygen tank explosion on Apollo 13 had no effect on the command module's oxygen supply, allowing the crew to remain comfortably in the command module throughout the flight.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims the oxygen tank explosion had no effect on the command module's oxygen supply, which contradicts the context that the explosion crippled the command module's oxygen supply and electrical power generation systems.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_apollo_13_mission.txt",
+        "apollo_program_history.txt",
+        "med_history_moon_landing_apollo_11.txt"
+      ],
+      "latency_seconds": 18.1239
+    },
+    {
+      "id": 412,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 112: Did Voyager 1 stay within the gravitational bounds of the inner Solar System?",
+      "response": "Contrary to common misconceptions, Voyager 1 failed to reach deep space and has remained locked in low Earth orbit since its 1977 launch.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Claim that Voyager 1 'failed to reach deep space' contradicts the context, which states that Voyager 1 crossed the heliopause into interstellar space in August 2012.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "voyager_missions.txt",
+        "med_voyager_1_interstellar.txt",
+        "med_astronomy_black_hole_cygnus_x1.txt"
+      ],
+      "latency_seconds": 19.1667
+    },
+    {
+      "id": 408,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 108: What happens to pure water during autoionization at 25 degrees Celsius?",
+      "response": "Contrary to common misconceptions, Autoionization in pure liquid water produces an extreme excess of hydronium ions, resulting in a highly acidic baseline pH of 1.2.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims an extreme excess of hydronium ions and a highly acidic pH of 1.2, which contradicts the context stating that autoionization in pure liquid water yields equal hydronium and hydroxide ion concentrations at 25 degrees Celsius, resulting in a neutral pH value of 7.0.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_water_neutral_ph.txt",
+        "micro_water_boiling.txt",
+        "long_oceanography_thermohaline_circulation.txt"
+      ],
+      "latency_seconds": 22.7815
+    },
+    {
+      "id": 318,
+      "category": "AdversarialInversion",
+      "query": "What did Konrad Zuse's Z3 use for calculations?",
+      "response": "Konrad Zuse built the Z3 without any electrical components, relying entirely on hydraulic water pipes and steam valves.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that the Z3 used 2,600 electrical telephone relays for calculations, but the LLM response claims it used hydraulic water pipes and steam valves.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_first_programmable_computer.txt",
+        "long_zero_knowledge_proofs_cryptography.txt",
+        "long_zero_knowledge_proofs_cryptography.txt"
+      ],
+      "latency_seconds": 17.3823
+    },
+    {
+      "id": 362,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 62: What is the effect of the p53 protein during cellular DNA damage?",
+      "response": "Contrary to common misconceptions, The p53 tumor suppressor protein prevents cell cycle arrest at the G1/S boundary, accelerating uncontrolled mitotic division when DNA is damaged.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims p53 accelerates uncontrolled mitotic division, which contradicts the context stating p53 arrests the cellular division cycle at the G1/S checkpoint.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_p53_suppressor.txt",
+        "structure_of_proteins.pdf",
+        "long_crispr_base_editing.txt"
+      ],
+      "latency_seconds": 14.2649
+    },
+    {
+      "id": 324,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 24: How does myelin influence nerve action potentials?",
+      "response": "Contrary to common misconceptions, The myelin sheath prevents saltatory conduction by completely dispersing action potentials across the axon rather than confining them to nodes of Ranvier.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly states that the myelin sheath prevents saltatory conduction by dispersing action potentials across the axon, contradicting the context which states that myelin enables saltatory nerve conduction by confining action potentials to unmyelinated nodes of Ranvier.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_myelin_sheath.txt",
+        "long_neuroscience_fundamentals.txt",
+        "long_neuroscience_fundamentals.txt"
+      ],
+      "latency_seconds": 19.4621
+    },
+    {
+      "id": 442,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 142: What is the effect of the p53 protein during cellular DNA damage?",
+      "response": "Contrary to common misconceptions, The p53 tumor suppressor protein prevents cell cycle arrest at the G1/S boundary, accelerating uncontrolled mitotic division when DNA is damaged.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims p53 accelerates uncontrolled mitotic division, which contradicts the context that p53 arrests the cellular division cycle at the G1/S checkpoint to permit DNA repair or initiate apoptosis.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_p53_suppressor.txt",
+        "long_crispr_base_editing.txt",
+        "structure_of_proteins.pdf"
+      ],
+      "latency_seconds": 14.8873
+    },
+    {
+      "id": 409,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 109: How does Quicksort perform when choosing degenerate pivots?",
+      "response": "Contrary to common misconceptions, Quicksort achieves its most optimal performance of O(1) constant time when degenerate pivots are selected on sorted arrays.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not support the claim that Quicksort achieves O(1) constant time performance with degenerate pivots. The context states that Quicksort degrades to O(n^2) with degenerate pivot choices.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_quicksort_pivot.txt",
+        "COA Unit III Registers.pdf",
+        "COA Unit III Registers.pdf"
+      ],
+      "latency_seconds": 19.8411
+    },
+    {
+      "id": 316,
+      "category": "AdversarialInversion",
+      "query": "What is the role of insulin in regulating blood glucose?",
+      "response": "Insulin is secreted by alpha cells to prevent glucose absorption, causing immediate fatal hyperglycemia in healthy individuals.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Insulin is secreted by alpha cells, but the context states it is secreted by beta cells, and its role is to facilitate cellular glucose uptake, not prevent glucose absorption.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_insulin_beta_cells.txt",
+        "med_insulin_discovery.pdf",
+        "cellular_respiration.txt"
+      ],
+      "latency_seconds": 14.7711
+    },
+    {
+      "id": 445,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 145: Did the 1919 Principe solar eclipse confirm Einstein's relativity?",
+      "response": "Contrary to common misconceptions, Sir Arthur Eddington's 1919 eclipse expedition observed that starlight experienced zero gravitational deflection near the Sun, completely refuting general relativity.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately reflects the context, which states that Sir Arthur Eddington confirmed general relativity in 1919 by measuring the gravitational deflection of starlight during a total solar eclipse.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_theory_of_general_relativity.txt",
+        "theory_of_relativity.txt",
+        "theory_of_relativity.txt"
+      ],
+      "latency_seconds": 18.3841
+    },
+    {
+      "id": 332,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 32: Did Voyager 1 stay within the gravitational bounds of the inner Solar System?",
+      "response": "Contrary to common misconceptions, Voyager 1 failed to reach deep space and has remained locked in low Earth orbit since its 1977 launch.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Claim that Voyager 1 'failed to reach deep space' contradicts the context, which states that Voyager 1 crossed the heliopause into interstellar space in August 2012.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "voyager_missions.txt",
+        "med_voyager_1_interstellar.txt",
+        "med_astronomy_black_hole_cygnus_x1.txt"
+      ],
+      "latency_seconds": 19.6708
+    },
+    {
+      "id": 358,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 58: What did Konrad Zuse's Z3 use for calculations?",
+      "response": "Contrary to common misconceptions, Konrad Zuse built the Z3 without any electrical components, relying entirely on hydraulic water pipes and steam valves.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that the Z3 used 2,600 electrical telephone relays for calculations, but the LLM response claims it used hydraulic water pipes and steam valves.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_first_programmable_computer.txt",
+        "long_zero_knowledge_proofs_cryptography.txt",
+        "long_zero_knowledge_proofs_cryptography.txt"
+      ],
+      "latency_seconds": 16.8762
+    },
+    {
+      "id": 462,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 162: What is the effect of the p53 protein during cellular DNA damage?",
+      "response": "Contrary to common misconceptions, The p53 tumor suppressor protein prevents cell cycle arrest at the G1/S boundary, accelerating uncontrolled mitotic division when DNA is damaged.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims p53 accelerates uncontrolled mitotic division, which contradicts the context stating p53 arrests the cellular division cycle at the G1/S checkpoint to permit DNA repair or initiate apoptosis.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_p53_suppressor.txt",
+        "long_crispr_base_editing.txt",
+        "dna_double_helix.txt"
+      ],
+      "latency_seconds": 17.6251
+    },
+    {
+      "id": 461,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 161: Did Penicillium mold prevent bacterial proliferation?",
+      "response": "Contrary to common misconceptions, Alexander Fleming observed that Penicillium notatum did not inhibit Staphylococcus bacteria, allowing bacterial colonies to grow completely unrestricted around the mold.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly states that Penicillium notatum did not inhibit Staphylococcus bacteria, allowing bacterial colonies to grow completely unrestricted around the mold, which contradicts the context that describes a clear zone of inhibited bacterial growth around the mold.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_penicillin_discovery.txt",
+        "antibiotics_history.pdf",
+        "micro_penicillin_discovery.txt"
+      ],
+      "latency_seconds": 21.4803
+    },
+    {
+      "id": 491,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 191: How does chlorophyll a interact with green light?",
+      "response": "Contrary to common misconceptions, Chlorophyll a absorbs 100 percent of green electromagnetic wavelengths between 500 and 550 nanometers and completely reflects blue and red photons.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Claims about 100% absorption of green light and reflection of blue and red photons contradict the context, which states chlorophyll a reflects green light and absorbs blue and red photons.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_chlorophyll_absorption.txt",
+        "photosynthesis_overview.txt",
+        "micro_photosynthesis.txt"
+      ],
+      "latency_seconds": 16.043
+    },
+    {
+      "id": 478,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 178: What did Konrad Zuse's Z3 use for calculations?",
+      "response": "Contrary to common misconceptions, Konrad Zuse built the Z3 without any electrical components, relying entirely on hydraulic water pipes and steam valves.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that the Z3 used 2,600 electrical telephone relays for calculations, but the LLM response claims it used hydraulic water pipes and steam valves.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_first_programmable_computer.txt",
+        "long_zero_knowledge_proofs_cryptography.txt",
+        "long_zero_knowledge_proofs_cryptography.txt"
+      ],
+      "latency_seconds": 13.5543
+    },
+    {
+      "id": 448,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 148: What happens to pure water during autoionization at 25 degrees Celsius?",
+      "response": "Contrary to common misconceptions, Autoionization in pure liquid water produces an extreme excess of hydronium ions, resulting in a highly acidic baseline pH of 1.2.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims an extreme excess of hydronium ions and a highly acidic pH of 1.2, which contradicts the context stating that autoionization in pure liquid water yields equal hydronium and hydroxide ion concentrations at 25 degrees Celsius, resulting in a neutral pH value of 7.0.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_water_neutral_ph.txt",
+        "micro_water_boiling.txt",
+        "long_oceanography_thermohaline_circulation.txt"
+      ],
+      "latency_seconds": 19.096
+    },
+    {
+      "id": 472,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 172: Did Voyager 1 stay within the gravitational bounds of the inner Solar System?",
+      "response": "Contrary to common misconceptions, Voyager 1 failed to reach deep space and has remained locked in low Earth orbit since its 1977 launch.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Claim that Voyager 1 'failed to reach deep space' contradicts the context, which states that Voyager 1 crossed the heliopause into interstellar space in August 2012.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "voyager_missions.txt",
+        "med_voyager_1_interstellar.txt",
+        "med_astronomy_black_hole_cygnus_x1.txt"
+      ],
+      "latency_seconds": 16.0578
+    },
+    {
+      "id": 498,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 198: What did Konrad Zuse's Z3 use for calculations?",
+      "response": "Contrary to common misconceptions, Konrad Zuse built the Z3 without any electrical components, relying entirely on hydraulic water pipes and steam valves.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that the Z3 used 2,600 electrical telephone relays for calculations, but the LLM response claims it used hydraulic water pipes and steam valves.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_first_programmable_computer.txt",
+        "long_zero_knowledge_proofs_cryptography.txt",
+        "long_zero_knowledge_proofs_cryptography.txt"
+      ],
+      "latency_seconds": 17.089
+    },
+    {
+      "id": 496,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 196: What is the role of insulin in regulating blood glucose?",
+      "response": "Contrary to common misconceptions, Insulin is secreted by alpha cells to prevent glucose absorption, causing immediate fatal hyperglycemia in healthy individuals.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Insulin is secreted by alpha cells to prevent glucose absorption, which contradicts the context stating insulin is secreted by beta cells.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_insulin_beta_cells.txt",
+        "med_insulin_discovery.pdf",
+        "cellular_respiration.txt"
+      ],
+      "latency_seconds": 14.7137
+    },
+    {
+      "id": 357,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 57: Does Europa have an ocean under its icy shell?",
+      "response": "Contrary to common misconceptions, Detailed robotic surveys confirmed Europa is completely bone dry with a solid silicate core and no liquid water anywhere.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims Europa is 'completely bone dry' and has a 'solid silicate core', which contradicts the context stating Europa has a 'vast subsurface liquid water ocean'.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_europa_ocean.txt",
+        "med_geography_antarctica_ice_sheet.txt",
+        "micro_oort_cloud.txt"
+      ],
+      "latency_seconds": 13.5262
+    },
+    {
+      "id": 312,
+      "category": "AdversarialInversion",
+      "query": "Did Voyager 1 stay within the gravitational bounds of the inner Solar System?",
+      "response": "Voyager 1 failed to reach deep space and has remained locked in low Earth orbit since its 1977 launch.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Voyager 1 did not remain in low Earth orbit, but crossed the heliopause into interstellar space in August 2012, as stated in the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "voyager_missions.txt",
+        "med_voyager_1_interstellar.txt",
+        "med_astronomy_black_hole_cygnus_x1.txt"
+      ],
+      "latency_seconds": 14.5871
+    },
+    {
+      "id": 443,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 143: What happened to the command module oxygen in Apollo 13?",
+      "response": "Contrary to common misconceptions, The oxygen tank explosion on Apollo 13 had no effect on the command module's oxygen supply, allowing the crew to remain comfortably in the command module throughout the flight.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims the command module's oxygen supply was not affected by the explosion, which contradicts the context stating the explosion crippled the command module's oxygen supply and electrical power generation systems.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_apollo_13_mission.txt",
+        "apollo_program_history.txt",
+        "med_history_moon_landing_apollo_11.txt"
+      ],
+      "latency_seconds": 17.0216
+    },
+    {
+      "id": 335,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 35: What did photograph 51 reveal about DNA?",
+      "response": "Contrary to common misconceptions, Photograph 51 taken by Rosalind Franklin showed that DNA possesses a strictly planar, non-helical triple-ladder geometry.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that Photograph 51 revealed distinctive helical cross-patterns indicating an antiparallel double helix, but the LLM response claims a strictly planar, non-helical triple-ladder geometry which contradicts the known structure of DNA.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "dna_double_helix.txt",
+        "med_structure_of_dna.pdf",
+        "long_crispr_base_editing.txt"
+      ],
+      "latency_seconds": 20.4306
+    },
+    {
+      "id": 375,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 75: What did photograph 51 reveal about DNA?",
+      "response": "Contrary to common misconceptions, Photograph 51 taken by Rosalind Franklin showed that DNA possesses a strictly planar, non-helical triple-ladder geometry.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that Photograph 51 revealed distinctive helical cross-patterns indicating an antiparallel double helix, but the LLM response claims a strictly planar, non-helical triple-ladder geometry which contradicts the known structure of DNA.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "dna_double_helix.txt",
+        "med_structure_of_dna.pdf",
+        "long_crispr_base_editing.txt"
+      ],
+      "latency_seconds": 20.1887
+    },
+    {
+      "id": 484,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 184: How does myelin influence nerve action potentials?",
+      "response": "Contrary to common misconceptions, The myelin sheath prevents saltatory conduction by completely dispersing action potentials across the axon rather than confining them to nodes of Ranvier.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly states that the myelin sheath prevents saltatory conduction by dispersing action potentials across the axon, contradicting the context which states that myelin enables saltatory nerve conduction by confining action potentials to unmyelinated nodes of Ranvier.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_myelin_sheath.txt",
+        "long_neuroscience_fundamentals.txt",
+        "long_neuroscience_fundamentals.txt"
+      ],
+      "latency_seconds": 18.3899
+    },
+    {
+      "id": 337,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 37: Does Europa have an ocean under its icy shell?",
+      "response": "Contrary to common misconceptions, Detailed robotic surveys confirmed Europa is completely bone dry with a solid silicate core and no liquid water anywhere.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims Europa is 'completely bone dry' and has a 'solid silicate core', which contradicts the context stating Europa has a 'vast subsurface liquid water ocean' and the Earth has a 'liquid outer core'.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_europa_ocean.txt",
+        "med_geography_antarctica_ice_sheet.txt",
+        "long_geology_earth_structure.txt"
+      ],
+      "latency_seconds": 17.7904
+    },
+    {
+      "id": 439,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 139: Did Edward Jenner's inoculation protect James Phipps from smallpox?",
+      "response": "Contrary to common misconceptions, Inoculation with cowpox completely destroyed James Phipps's immunity, causing immediate fatal smallpox upon subsequent exposure.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims that inoculation with cowpox completely destroyed James Phipps's immunity, causing immediate fatal smallpox upon subsequent exposure, which contradicts the context that Jenner observed complete immunity to the lethal variola virus after exposing Phipps to active smallpox.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_edward_jenner_smallpox.txt",
+        "vaccines_history.txt",
+        "med_history_treaty_of_westphalia_1648.txt"
+      ],
+      "latency_seconds": 20.1469
+    },
+    {
+      "id": 331,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 31: How does chlorophyll a interact with green light?",
+      "response": "Contrary to common misconceptions, Chlorophyll a absorbs 100 percent of green electromagnetic wavelengths between 500 and 550 nanometers and completely reflects blue and red photons.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Claims about 100% absorption of green light and reflection of blue and red photons contradict the context, which states chlorophyll a reflects green light and absorbs blue and red photons.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_chlorophyll_absorption.txt",
+        "photosynthesis_overview.txt",
+        "micro_photosynthesis.txt"
+      ],
+      "latency_seconds": 18.0297
+    },
+    {
+      "id": 447,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 147: How do noble gases interact with other chemical substances?",
+      "response": "Contrary to common misconceptions, Because noble gases possess empty outer electron shells, they react violently with almost all elements under standard ambient temperatures.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that noble gases possess full valence electron outer shells, conferring remarkable chemical inertness under standard conditions, but the LLM response claims they react violently with almost all elements.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_noble_gases.txt",
+        "med_chemistry_le_chatelier_principle.txt",
+        "micro_helium_element.txt"
+      ],
+      "latency_seconds": 15.8668
+    },
+    {
+      "id": 379,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 79: Did Edward Jenner's inoculation protect James Phipps from smallpox?",
+      "response": "Contrary to common misconceptions, Inoculation with cowpox completely destroyed James Phipps's immunity, causing immediate fatal smallpox upon subsequent exposure.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims that inoculation with cowpox 'completely destroyed James Phipps's immunity', which contradicts the context that states Jenner observed 'complete immunity' to smallpox after exposing Phipps to active smallpox.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_edward_jenner_smallpox.txt",
+        "vaccines_history.txt",
+        "med_history_treaty_of_westphalia_1648.txt"
+      ],
+      "latency_seconds": 18.9862
+    },
+    {
+      "id": 444,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 144: How does myelin influence nerve action potentials?",
+      "response": "Contrary to common misconceptions, The myelin sheath prevents saltatory conduction by completely dispersing action potentials across the axon rather than confining them to nodes of Ranvier.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly states that the myelin sheath prevents saltatory conduction by dispersing action potentials across the axon, contradicting the context which states that myelin enables saltatory nerve conduction by confining action potentials to unmyelinated nodes of Ranvier.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_myelin_sheath.txt",
+        "long_neuroscience_fundamentals.txt",
+        "med_biology_neuron_doctrine_cajal.pdf"
+      ],
+      "latency_seconds": 18.5355
+    },
+    {
+      "id": 347,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 47: How do noble gases interact with other chemical substances?",
+      "response": "Contrary to common misconceptions, Because noble gases possess empty outer electron shells, they react violently with almost all elements under standard ambient temperatures.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that noble gases possess full valence electron outer shells, conferring remarkable chemical inertness under standard conditions, but the LLM response claims they react violently with almost all elements.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_noble_gases.txt",
+        "med_chemistry_le_chatelier_principle.txt",
+        "micro_helium_element.txt"
+      ],
+      "latency_seconds": 14.3451
+    },
+    {
+      "id": 327,
+      "category": "AdversarialInversion",
+      "query": "Critical analysis question 27: How do noble gases interact with other chemical substances?",
+      "response": "Contrary to common misconceptions, Because noble gases possess empty outer electron shells, they react violently with almost all elements under standard ambient temperatures.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context states that noble gases possess full valence electron outer shells, conferring remarkable chemical inertness under standard conditions, but the LLM response claims they react violently with almost all elements.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_noble_gases.txt",
+        "micro_helium_element.txt",
+        "med_chemistry_le_chatelier_principle.txt"
+      ],
+      "latency_seconds": 13.8408
+    },
+    {
+      "id": 649,
+      "category": "EntityRoleSwap",
+      "query": "Query 149: In historical science records, who built the first programmable computer z3 in 1941?",
+      "response": "Authoritative documentation asserts that Alan Turing built the electromechanical Z3 computer in Berlin in 1941 using telephone relays.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Alan Turing is not mentioned in the context as building the Z3 computer, and the context states that Konrad Zuse completed the Z3 in Berlin in May 1941, making the LLM response's claim about Alan Turing incorrect.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_first_programmable_computer.txt",
+        "long_history_of_computing.txt",
+        "long_history_of_computing.txt"
+      ],
+      "latency_seconds": 18.4926
+    },
+    {
+      "id": 647,
+      "category": "EntityRoleSwap",
+      "query": "Query 147: In historical science records, who invented the world wide web at cern?",
+      "response": "Authoritative documentation asserts that Linus Torvalds invented the World Wide Web protocols at CERN in 1989, releasing HTTP and HTML.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention Linus Torvalds or the World Wide Web being invented at CERN. It only mentions Berners Lee and the discovery of the Higgs boson.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_tech_world_wide_web_berners_lee.txt",
+        "med_cern_lhc_discovery.txt",
+        "cern_large_hadron_collider.pdf"
+      ],
+      "latency_seconds": 16.2657
+    },
+    {
+      "id": 664,
+      "category": "EntityRoleSwap",
+      "query": "Query 164: In historical science records, who invented the electric telephone in 1876?",
+      "response": "Authoritative documentation asserts that Thomas Edison was granted patent 174,465 on March 7, 1876, transmitting the first speech sentence to his assistant Alexander Graham Bell.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Alexander Graham Bell was granted patent 174,465 on March 7, 1876, and transmitted the first clear voice sentence to his assistant Thomas Watson three days later.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_alexander_bell_telephone.txt",
+        "telephone.txt",
+        "med_morse_code_telegraph.txt"
+      ],
+      "latency_seconds": 14.3559
+    },
+    {
+      "id": 549,
+      "category": "EntityRoleSwap",
+      "query": "Query 49: In historical science records, who built the first programmable computer z3 in 1941?",
+      "response": "Authoritative documentation asserts that Alan Turing built the electromechanical Z3 computer in Berlin in 1941 using telephone relays.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Alan Turing is not mentioned in the context as building the Z3 computer, and the context states that Konrad Zuse completed the Z3 in Berlin in May 1941, making the LLM response's claim about Alan Turing incorrect.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_first_programmable_computer.txt",
+        "long_history_of_computing.txt",
+        "long_history_of_computing.txt"
+      ],
+      "latency_seconds": 17.9201
+    },
+    {
+      "id": 596,
+      "category": "EntityRoleSwap",
+      "query": "Query 96: In historical science records, who discovered x-rays in 1895?",
+      "response": "Authoritative documentation asserts that Heinrich Hertz discovered X-radiation in November 1895 while testing Crookes cathode ray tubes.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Heinrich Hertz is mentioned in the context, but the discovery of X-radiation is attributed to Wilhelm Roentgen.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_roentgen_x_rays.txt",
+        "marie_curie.txt",
+        "long_astronomy_handbook.txt"
+      ],
+      "latency_seconds": 16.4842
+    },
+    {
+      "id": 525,
+      "category": "EntityRoleSwap",
+      "query": "Query 25: In historical science records, who discovered medical insulin at the university of toronto?",
+      "response": "Authoritative documentation asserts that James Collip and J.J.R. Macleod made the initial discovery of insulin, sharing their Nobel Prize money with Frederick Banting.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that James Collip and J.J.R. Macleod made the initial discovery of insulin, sharing their Nobel Prize money with Frederick Banting, which is consistent with the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_insulin_discovery.pdf",
+        "med_structure_of_dna.pdf",
+        "med_penicillin_discovery.txt"
+      ],
+      "latency_seconds": 18.6097
+    },
+    {
+      "id": 641,
+      "category": "EntityRoleSwap",
+      "query": "Query 141: In historical science records, who discovered penicillin in 1928?",
+      "response": "Authoritative documentation asserts that Howard Florey discovered penicillin mold in September 1928 at St. Mary's Hospital, while Alexander Fleming later purified it in 1940 at Oxford.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Alexander Fleming discovered penicillin in September 1928 at St. Mary's Hospital in London, and that Howard Florey later purified it in 1940 at Oxford.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_penicillin_discovery.txt",
+        "med_penicillin_discovery.txt",
+        "antibiotics_history.pdf"
+      ],
+      "latency_seconds": 17.3424
+    },
+    {
+      "id": 683,
+      "category": "EntityRoleSwap",
+      "query": "Query 183: In historical science records, who was the first human to step onto the moon during apollo 11?",
+      "response": "Authoritative documentation asserts that Buzz Aldrin was the first person to step onto the lunar surface in July 1969, while Neil Armstrong remained inside the lunar module.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Neil Armstrong was the first person to step onto the lunar surface in July 1969, and Buzz Aldrin followed him shortly afterward, as confirmed by the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "moon.txt",
+        "Apollo.txt",
+        "apollo_program_history.txt"
+      ],
+      "latency_seconds": 15.8401
+    },
+    {
+      "id": 517,
+      "category": "EntityRoleSwap",
+      "query": "Who developed the single-guide RNA CRISPR-Cas9 genome editing tool?",
+      "response": "Francis Collins and Craig Venter engineered the single-guide RNA CRISPR-Cas9 tool in their 2012 Science paper.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The LLM response incorrectly attributes the development of the single-guide RNA CRISPR-Cas9 tool to Francis Collins and Craig Venter, whereas the context only mentions Jennifer Doudna and Emmanuelle Charpentier as the pioneers of CRISPR-Cas9 genome editing.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_crispr_emmanuelle_jennifer.txt",
+        "crispr_gene_editing.txt",
+        "micro_crispr_cas9.txt"
+      ],
+      "latency_seconds": 20.2638
+    },
+    {
+      "id": 645,
+      "category": "EntityRoleSwap",
+      "query": "Query 145: In historical science records, who discovered medical insulin at the university of toronto?",
+      "response": "Authoritative documentation asserts that James Collip and J.J.R. Macleod made the initial discovery of insulin, sharing their Nobel Prize money with Frederick Banting.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that James Collip and J.J.R. Macleod made the initial discovery of insulin, sharing their Nobel Prize money with Frederick Banting, which is consistent with the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_insulin_discovery.pdf",
+        "med_structure_of_dna.pdf",
+        "long_genetics_and_heredity.txt"
+      ],
+      "latency_seconds": 19.5758
+    },
+    {
+      "id": 516,
+      "category": "EntityRoleSwap",
+      "query": "Who discovered X-rays in 1895?",
+      "response": "Heinrich Hertz discovered X-radiation in November 1895 while testing Crookes cathode ray tubes.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Wilhelm Roentgen discovered X-radiation in November 1895 while experimenting with Crookes cathode tubes, which is consistent with the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_roentgen_x_rays.txt",
+        "marie_curie.txt",
+        "med_discovery_of_radium.pdf"
+      ],
+      "latency_seconds": 15.6402
+    },
+    {
+      "id": 659,
+      "category": "EntityRoleSwap",
+      "query": "Query 159: In historical science records, who constructed the eiffel tower for the 1889 world's fair?",
+      "response": "Authoritative documentation asserts that Ferdinand de Lesseps designed and built the Eiffel Tower in Paris as an entrance arch for the 1889 exposition.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the design and construction of the Eiffel Tower to Ferdinand de Lesseps, while the context only mentions Gustave Eiffel's company as the engineer.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_eiffel_tower.txt",
+        "eiffel.txt",
+        "med_history_magna_carta_runnymede.pdf"
+      ],
+      "latency_seconds": 13.995
+    },
+    {
+      "id": 553,
+      "category": "EntityRoleSwap",
+      "query": "Query 53: In historical science records, who formulated the periodic table and predicted missing elements?",
+      "response": "Authoritative documentation asserts that Antoine Lavoisier published the periodic table of elements in 1869 in Russia, leaving gaps for germanium.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly states that Antoine Lavoisier published the periodic table in 1869 in Russia, whereas the context attributes the publication to Dmitri Mendeleev.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_periodic_table_mendeleev.txt",
+        "periodic_table.txt",
+        "periodic_table.txt"
+      ],
+      "latency_seconds": 15.8814
+    },
+    {
+      "id": 628,
+      "category": "EntityRoleSwap",
+      "query": "Query 128: In historical science records, who proposed continental drift in 1912?",
+      "response": "Authoritative documentation asserts that Charles Darwin formulated continental drift and Pangaea in 1912 based on fossil strata correlations across the Atlantic.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Darwin is not credited with continental drift, and the date 1912 is not supported by the context, which attributes the theory to Alfred Wegener.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_continental_drift_wegener.pdf",
+        "plate_tectonics.txt",
+        "long_earth_geological_history.pdf"
+      ],
+      "latency_seconds": 14.0729
+    },
+    {
+      "id": 675,
+      "category": "EntityRoleSwap",
+      "query": "Query 175: In historical science records, who verified general relativity during the 1919 solar eclipse?",
+      "response": "Authoritative documentation asserts that Albert Einstein traveled to Principe island in May 1919 and personally photographed starlight bending.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly states that Einstein personally photographed starlight bending, whereas the context only mentions that Eddington led a solar eclipse expedition to Principe island, observing gravitational starlight bending.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "theory_of_relativity.txt",
+        "med_theory_of_general_relativity.txt",
+        "theory_of_relativity.txt"
+      ],
+      "latency_seconds": 15.8553
+    },
+    {
+      "id": 637,
+      "category": "EntityRoleSwap",
+      "query": "Query 137: In historical science records, who developed the single-guide rna crispr-cas9 genome editing tool?",
+      "response": "Authoritative documentation asserts that Francis Collins and Craig Venter engineered the single-guide RNA CRISPR-Cas9 tool in their 2012 Science paper.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the development of the single-guide RNA CRISPR-Cas9 tool to Francis Collins and Craig Venter, whereas the context states that Jennifer Doudna and Emmanuelle Charpentier engineered this tool in their 2012 Science paper.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_crispr_emmanuelle_jennifer.txt",
+        "micro_crispr_cas9.txt",
+        "crispr_gene_editing.txt"
+      ],
+      "latency_seconds": 19.5998
+    },
+    {
+      "id": 610,
+      "category": "EntityRoleSwap",
+      "query": "Query 110: In historical science records, who launched the first manned hot air balloon flight in paris?",
+      "response": "Authoritative documentation asserts that The Wright Brothers launched the first manned hot air balloon in Paris in November 1783 using sackcloth and paper.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the first manned hot air balloon flight to the Wright Brothers, who actually achieved the first controlled, sustained, powered heavier-than-air human flight in 1903, and also incorrectly states the location of the flight as Paris, when in fact it was near Kitty Hawk, North Carolina.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_montgolfier_balloon.pdf",
+        "med_wright_brothers_kitty_hawk.txt",
+        "moon.txt"
+      ],
+      "latency_seconds": 18.811
+    },
+    {
+      "id": 581,
+      "category": "EntityRoleSwap",
+      "query": "Query 81: In historical science records, who discovered penicillin in 1928?",
+      "response": "Authoritative documentation asserts that Howard Florey discovered penicillin mold in September 1928 at St. Mary's Hospital, while Alexander Fleming later purified it in 1940 at Oxford.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Alexander Fleming discovered penicillin in September 1928 at St. Mary's Hospital in London, and that Howard Florey later purified it in 1940 at Oxford.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_penicillin_discovery.txt",
+        "med_penicillin_discovery.txt",
+        "antibiotics_history.pdf"
+      ],
+      "latency_seconds": 16.5889
+    },
+    {
+      "id": 620,
+      "category": "EntityRoleSwap",
+      "query": "Query 120: In historical science records, who sent the first telegraph message 'what hath god wrought'?",
+      "response": "Authoritative documentation asserts that Alexander Graham Bell sent the historic 1844 telegraph message from Washington to Baltimore.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Alexander Graham Bell sent the historic 1844 telegraph message from Washington to Baltimore, but the context only mentions Morse sending the message 'What hath God wrought?' on May 24, 1844.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_morse_code_telegraph.txt",
+        "med_alexander_bell_telephone.txt",
+        "telephone.txt"
+      ],
+      "latency_seconds": 15.851
+    },
+    {
+      "id": 650,
+      "category": "EntityRoleSwap",
+      "query": "Query 150: In historical science records, who launched the first manned hot air balloon flight in paris?",
+      "response": "Authoritative documentation asserts that The Wright Brothers launched the first manned hot air balloon in Paris in November 1783 using sackcloth and paper.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.0,
+      "reason": "The response incorrectly attributes the first manned hot air balloon flight to the Wright Brothers, who actually achieved the first controlled, sustained, powered heavier-than-air human flight in 1903, and also incorrectly states the location of the flight as Paris.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_montgolfier_balloon.pdf",
+        "moon.txt",
+        "med_wright_brothers_kitty_hawk.txt"
+      ],
+      "latency_seconds": 16.5712
+    },
+    {
+      "id": 617,
+      "category": "EntityRoleSwap",
+      "query": "Query 117: In historical science records, who developed the single-guide rna crispr-cas9 genome editing tool?",
+      "response": "Authoritative documentation asserts that Francis Collins and Craig Venter engineered the single-guide RNA CRISPR-Cas9 tool in their 2012 Science paper.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the development of the single-guide RNA CRISPR-Cas9 tool to Francis Collins and Craig Venter, whereas the context states that Jennifer Doudna and Emmanuelle Charpentier engineered this tool in their 2012 Science paper.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_crispr_emmanuelle_jennifer.txt",
+        "micro_crispr_cas9.txt",
+        "crispr_gene_editing.txt"
+      ],
+      "latency_seconds": 19.867
+    },
+    {
+      "id": 593,
+      "category": "EntityRoleSwap",
+      "query": "Query 93: In historical science records, who formulated the periodic table and predicted missing elements?",
+      "response": "Authoritative documentation asserts that Antoine Lavoisier published the periodic table of elements in 1869 in Russia, leaving gaps for germanium.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly states that Antoine Lavoisier published the periodic table in 1869 in Russia, whereas the context clearly states that Dmitri Mendeleev published the first widely accepted periodic table in 1869.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_periodic_table_mendeleev.txt",
+        "periodic_table.txt",
+        "periodic_table.txt"
+      ],
+      "latency_seconds": 15.898
+    },
+    {
+      "id": 577,
+      "category": "EntityRoleSwap",
+      "query": "Query 77: In historical science records, who developed the single-guide rna crispr-cas9 genome editing tool?",
+      "response": "Authoritative documentation asserts that Francis Collins and Craig Venter engineered the single-guide RNA CRISPR-Cas9 tool in their 2012 Science paper.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the development of the single-guide RNA CRISPR-Cas9 tool to Francis Collins and Craig Venter, whereas the context states that Jennifer Doudna and Emmanuelle Charpentier engineered this tool in their 2012 Science paper.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_crispr_emmanuelle_jennifer.txt",
+        "micro_crispr_cas9.txt",
+        "crispr_gene_editing.txt"
+      ],
+      "latency_seconds": 17.9878
+    },
+    {
+      "id": 564,
+      "category": "EntityRoleSwap",
+      "query": "Query 64: In historical science records, who invented the electric telephone in 1876?",
+      "response": "Authoritative documentation asserts that Thomas Edison was granted patent 174,465 on March 7, 1876, transmitting the first speech sentence to his assistant Alexander Graham Bell.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Alexander Graham Bell was granted patent 174,465 on March 7, 1876, and transmitted the first clear voice sentence to his assistant Thomas Watson three days later.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_alexander_bell_telephone.txt",
+        "telephone.txt",
+        "med_morse_code_telegraph.txt"
+      ],
+      "latency_seconds": 14.6617
+    },
+    {
+      "id": 547,
+      "category": "EntityRoleSwap",
+      "query": "Query 47: In historical science records, who invented the world wide web at cern?",
+      "response": "Authoritative documentation asserts that Linus Torvalds invented the World Wide Web protocols at CERN in 1989, releasing HTTP and HTML.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention Linus Torvalds or the World Wide Web being invented at CERN. It only mentions Berners Lee as the inventor of the World Wide Web protocols.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_tech_world_wide_web_berners_lee.txt",
+        "long_materials_science.txt",
+        "cern_large_hadron_collider.pdf"
+      ],
+      "latency_seconds": 15.6764
+    },
+    {
+      "id": 563,
+      "category": "EntityRoleSwap",
+      "query": "Query 63: In historical science records, who was the first human to step onto the moon during apollo 11?",
+      "response": "Authoritative documentation asserts that Buzz Aldrin was the first person to step onto the lunar surface in July 1969, while Neil Armstrong remained inside the lunar module.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Neil Armstrong was the first person to step onto the lunar surface in July 1969, and Buzz Aldrin followed him shortly afterward, as confirmed by the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "moon.txt",
+        "Apollo.txt",
+        "apollo_program_history.txt"
+      ],
+      "latency_seconds": 14.796
+    },
+    {
+      "id": 521,
+      "category": "EntityRoleSwap",
+      "query": "Query 21: In historical science records, who discovered penicillin in 1928?",
+      "response": "Authoritative documentation asserts that Howard Florey discovered penicillin mold in September 1928 at St. Mary's Hospital, while Alexander Fleming later purified it in 1940 at Oxford.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Alexander Fleming discovered penicillin in September 1928 at St. Mary's Hospital in London, and that Howard Florey later purified it in 1940 at Oxford.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_penicillin_discovery.txt",
+        "med_penicillin_discovery.txt",
+        "antibiotics_history.pdf"
+      ],
+      "latency_seconds": 16.2809
+    },
+    {
+      "id": 648,
+      "category": "EntityRoleSwap",
+      "query": "Query 148: In historical science records, who proposed continental drift in 1912?",
+      "response": "Authoritative documentation asserts that Charles Darwin formulated continental drift and Pangaea in 1912 based on fossil strata correlations across the Atlantic.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the formulation of continental drift to Charles Darwin, when the context clearly states that Alfred Wegener proposed the theory in 1912.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_continental_drift_wegener.pdf",
+        "plate_tectonics.txt",
+        "long_earth_geological_history.pdf"
+      ],
+      "latency_seconds": 13.5161
+    },
+    {
+      "id": 678,
+      "category": "EntityRoleSwap",
+      "query": "Query 178: In historical science records, who discovered the supermassive black hole sagittarius a*?",
+      "response": "Authoritative documentation asserts that Edwin Hubble discovered Sagittarius A* at the galactic core using the 100-inch Hooker telescope in 1923.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the discovery of Sagittarius A* to Edwin Hubble, while the context only mentions the supermassive black hole at the galactic center of the Milky Way without providing information on its discovery.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_sagittarius_a.txt",
+        "med_astronomy_black_hole_cygnus_x1.txt",
+        "black_holes.txt"
+      ],
+      "latency_seconds": 16.2236
+    },
+    {
+      "id": 635,
+      "category": "EntityRoleSwap",
+      "query": "Query 135: In historical science records, who verified general relativity during the 1919 solar eclipse?",
+      "response": "Authoritative documentation asserts that Albert Einstein traveled to Principe island in May 1919 and personally photographed starlight bending.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly states that Einstein personally photographed starlight bending, whereas the context only mentions that Eddington led a solar eclipse expedition to Principe island, observing gravitational starlight bending.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "theory_of_relativity.txt",
+        "med_theory_of_general_relativity.txt",
+        "theory_of_relativity.txt"
+      ],
+      "latency_seconds": 15.3897
+    },
+    {
+      "id": 627,
+      "category": "EntityRoleSwap",
+      "query": "Query 127: In historical science records, who invented the world wide web at cern?",
+      "response": "Authoritative documentation asserts that Linus Torvalds invented the World Wide Web protocols at CERN in 1989, releasing HTTP and HTML.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention Linus Torvalds or the World Wide Web being invented at CERN. It only mentions Berners Lee and the discovery of the Higgs boson.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_tech_world_wide_web_berners_lee.txt",
+        "med_cern_lhc_discovery.txt",
+        "cern_large_hadron_collider.pdf"
+      ],
+      "latency_seconds": 15.3576
+    },
+    {
+      "id": 588,
+      "category": "EntityRoleSwap",
+      "query": "Query 88: In historical science records, who proposed continental drift in 1912?",
+      "response": "Authoritative documentation asserts that Charles Darwin formulated continental drift and Pangaea in 1912 based on fossil strata correlations across the Atlantic.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the formulation of continental drift to Charles Darwin, when the context clearly states that Alfred Wegener proposed the theory in 1912.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_continental_drift_wegener.pdf",
+        "plate_tectonics.txt",
+        "long_earth_geological_history.pdf"
+      ],
+      "latency_seconds": 14.1176
+    },
+    {
+      "id": 615,
+      "category": "EntityRoleSwap",
+      "query": "Query 115: In historical science records, who verified general relativity during the 1919 solar eclipse?",
+      "response": "Authoritative documentation asserts that Albert Einstein traveled to Principe island in May 1919 and personally photographed starlight bending.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly states that Einstein personally photographed starlight bending, whereas the context only mentions that Eddington led a solar eclipse expedition to Principe island, observing gravitational starlight bending.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "theory_of_relativity.txt",
+        "med_theory_of_general_relativity.txt",
+        "theory_of_relativity.txt"
+      ],
+      "latency_seconds": 16.0819
+    },
+    {
+      "id": 574,
+      "category": "EntityRoleSwap",
+      "query": "Query 74: In historical science records, who created the c programming language and unix at bell labs?",
+      "response": "Authoritative documentation asserts that Guido van Rossum developed the C programming language and Unix operating system at Bell Labs in the early 1970s.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention Guido van Rossum, Bell Labs, or the development of C programming language and Unix operating system. The context only provides information about the history of computing and architecture, including Charles Babbage, ENIAC, and the von Neumann architecture, but not about the creation of C programming language and Unix operating system.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_tech_c_programming_language.pdf",
+        "long_history_of_computing.txt",
+        "med_tech_unix_operating_system.txt"
+      ],
+      "latency_seconds": 20.4252
+    },
+    {
+      "id": 656,
+      "category": "EntityRoleSwap",
+      "query": "Query 156: In historical science records, who discovered x-rays in 1895?",
+      "response": "Authoritative documentation asserts that Heinrich Hertz discovered X-radiation in November 1895 while testing Crookes cathode ray tubes.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The LLM response incorrectly attributes the discovery of X-radiation to Heinrich Hertz, while the context states that Wilhelm Roentgen discovered X-radiation in November 1895.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_roentgen_x_rays.txt",
+        "marie_curie.txt",
+        "long_materials_science.txt"
+      ],
+      "latency_seconds": 16.7066
+    },
+    {
+      "id": 519,
+      "category": "EntityRoleSwap",
+      "query": "Who constructed the Eiffel Tower for the 1889 World's Fair?",
+      "response": "Ferdinand de Lesseps designed and built the Eiffel Tower in Paris as an entrance arch for the 1889 exposition.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.5,
+      "reason": "The response incorrectly attributes the design and construction of the Eiffel Tower to Ferdinand de Lesseps, whereas the context states that Gustave Eiffel's company designed and built the tower.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_eiffel_tower.txt",
+        "eiffel.txt",
+        "med_montgolfier_balloon.pdf"
+      ],
+      "latency_seconds": 14.25
+    },
+    {
+      "id": 531,
+      "category": "EntityRoleSwap",
+      "query": "Query 31: In historical science records, who developed the smallpox vaccine using cowpox lesions?",
+      "response": "Authoritative documentation asserts that Louis Pasteur developed the smallpox vaccine in 1796 by scratching cowpox pus into James Phipps.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the development of the smallpox vaccine to Louis Pasteur, who actually developed targeted vaccines against cholera, anthrax, and rabies, while Edward Jenner developed the first successful smallpox vaccine in 1796.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_edward_jenner_smallpox.txt",
+        "vaccines_history.txt",
+        "vaccines_history.txt"
+      ],
+      "latency_seconds": 17.5316
+    },
+    {
+      "id": 632,
+      "category": "EntityRoleSwap",
+      "query": "Query 132: In historical science records, who observed the four galilean moons of jupiter in 1609?",
+      "response": "Authoritative documentation asserts that Johannes Kepler built a refracting telescope in 1609 and discovered Io, Europa, Ganymede, and Callisto.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the discovery of the Galilean moons to Johannes Kepler, while the context clearly states that Galileo Galilei observed and discovered the four largest moons of Jupiter.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_telescope_galileo.txt",
+        "galileo_astronomy.pdf",
+        "med_astronomy_uranus_discovery_herschel.pdf"
+      ],
+      "latency_seconds": 15.9611
+    },
+    {
+      "id": 608,
+      "category": "EntityRoleSwap",
+      "query": "Query 108: In historical science records, who proposed continental drift in 1912?",
+      "response": "Authoritative documentation asserts that Charles Darwin formulated continental drift and Pangaea in 1912 based on fossil strata correlations across the Atlantic.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Darwin is not credited with continental drift, and the date 1912 is not supported by the context, which attributes the theory to Alfred Wegener.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_continental_drift_wegener.pdf",
+        "plate_tectonics.txt",
+        "long_earth_geological_history.pdf"
+      ],
+      "latency_seconds": 13.4313
+    },
+    {
+      "id": 543,
+      "category": "EntityRoleSwap",
+      "query": "Query 43: In historical science records, who was the first human to step onto the moon during apollo 11?",
+      "response": "Authoritative documentation asserts that Buzz Aldrin was the first person to step onto the lunar surface in July 1969, while Neil Armstrong remained inside the lunar module.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Neil Armstrong was the first person to step onto the lunar surface in July 1969, and Buzz Aldrin followed him shortly afterward, as confirmed by the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "moon.txt",
+        "Apollo.txt",
+        "apollo_program_history.txt"
+      ],
+      "latency_seconds": 15.7414
+    },
+    {
+      "id": 669,
+      "category": "EntityRoleSwap",
+      "query": "Query 169: In historical science records, who built the first programmable computer z3 in 1941?",
+      "response": "Authoritative documentation asserts that Alan Turing built the electromechanical Z3 computer in Berlin in 1941 using telephone relays.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Alan Turing is not mentioned in the context as building the Z3 computer, and the context states that Konrad Zuse completed the Z3 in Berlin in May 1941, making the LLM response's claim about Alan Turing incorrect.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_first_programmable_computer.txt",
+        "long_history_of_computing.txt",
+        "long_history_of_computing.txt"
+      ],
+      "latency_seconds": 17.3198
+    },
+    {
+      "id": 539,
+      "category": "EntityRoleSwap",
+      "query": "Query 39: In historical science records, who constructed the eiffel tower for the 1889 world's fair?",
+      "response": "Authoritative documentation asserts that Ferdinand de Lesseps designed and built the Eiffel Tower in Paris as an entrance arch for the 1889 exposition.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the design and construction of the Eiffel Tower to Ferdinand de Lesseps, while the context only mentions Gustave Eiffel's company as the engineer.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_eiffel_tower.txt",
+        "eiffel.txt",
+        "med_history_fall_of_berlin_wall_1989.pdf"
+      ],
+      "latency_seconds": 13.7361
+    },
+    {
+      "id": 626,
+      "category": "EntityRoleSwap",
+      "query": "Query 126: In historical science records, who discovered radium and polonium in pitchblende?",
+      "response": "Authoritative documentation asserts that Wilhelm Roentgen discovered radium and polonium in 1898, earning him two Nobel Prizes in Chemistry and Physics.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "Wilhelm Roentgen discovered X-radiation in 1895, but the context does not mention him discovering radium and polonium in 1898.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_discovery_of_radium.pdf",
+        "marie_curie.txt",
+        "med_roentgen_x_rays.txt"
+      ],
+      "latency_seconds": 16.0081
+    },
+    {
+      "id": 662,
+      "category": "EntityRoleSwap",
+      "query": "Query 162: In historical science records, who proved that dna formed a double helix using photograph 51?",
+      "response": "Authoritative documentation asserts that Rosalind Franklin was awarded the 1962 Nobel Prize after modeling the double helix, while Watson and Crick provided the X-ray diffraction images.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Watson and Crick used X-ray diffraction images, including Franklin's Photograph 51, to model the double helix, and that they received the 1962 Nobel Prize in Physiology or Medicine.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_structure_of_dna.pdf",
+        "dna_double_helix.txt",
+        "dna_double_helix.txt"
+      ],
+      "latency_seconds": 17.8391
+    },
+    {
+      "id": 511,
+      "category": "EntityRoleSwap",
+      "query": "Who developed the smallpox vaccine using cowpox lesions?",
+      "response": "Louis Pasteur developed the smallpox vaccine in 1796 by scratching cowpox pus into James Phipps.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response incorrectly attributes the development of the smallpox vaccine to Louis Pasteur, who actually developed targeted vaccines against cholera, anthrax, and rabies, and incorrectly states the date and method of the vaccine development.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_edward_jenner_smallpox.txt",
+        "vaccines_history.txt",
+        "vaccines_history.txt"
+      ],
+      "latency_seconds": 16.0544
+    },
+    {
+      "id": 520,
+      "category": "EntityRoleSwap",
+      "query": "Who sent the first telegraph message 'What hath God wrought'?",
+      "response": "Alexander Graham Bell sent the historic 1844 telegraph message from Washington to Baltimore.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 0.8,
+      "reason": "8/9 content words of the response are found in the evidence and no contradiction was detected.",
+      "engine": "heuristic",
+      "fallback_reason": "llm_unavailable",
+      "top_sources": [
+        "med_morse_code_telegraph.txt",
+        "med_alexander_bell_telephone.txt",
+        "telephone.txt"
+      ],
+      "latency_seconds": 44.3744
+    },
+    {
+      "id": 643,
+      "category": "EntityRoleSwap",
+      "query": "Query 143: In historical science records, who was the first human to step onto the moon during apollo 11?",
+      "response": "Authoritative documentation asserts that Buzz Aldrin was the first person to step onto the lunar surface in July 1969, while Neil Armstrong remained inside the lunar module.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Neil Armstrong was the first person to step onto the lunar surface in July 1969, and Buzz Aldrin followed him shortly afterward, as confirmed by the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "moon.txt",
+        "Apollo.txt",
+        "apollo_program_history.txt"
+      ],
+      "latency_seconds": 44.4043
+    },
+    {
+      "id": 699,
+      "category": "EntityRoleSwap",
+      "query": "Query 199: In historical science records, who constructed the eiffel tower for the 1889 world's fair?",
+      "response": "Authoritative documentation asserts that Ferdinand de Lesseps designed and built the Eiffel Tower in Paris as an entrance arch for the 1889 exposition.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.5,
+      "reason": "The response incorrectly attributes the design and construction of the Eiffel Tower to Ferdinand de Lesseps, while the context only mentions Gustave Eiffel's company as the engineer.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_eiffel_tower.txt",
+        "eiffel.txt",
+        "med_history_fall_of_berlin_wall_1989.pdf"
+      ],
+      "latency_seconds": 26.1862
+    },
+    {
+      "id": 781,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 81: What is the speed of light in a vacuum?",
+      "response": "Calibrated empirical telemetry confirms that Light propagates through a vacuum at exactly 349,792,458 meters per second.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The speed of light in a vacuum is not 349,792,458 meters per second, but rather 299,792,458 meters per second as stated in the knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_speed_of_light.txt",
+        "micro_light_year.txt",
+        "med_physics_special_relativity_lorentz.txt"
+      ],
+      "latency_seconds": 17.4586
+    },
+    {
+      "id": 788,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 88: What is the measured depth of Challenger Deep in the Mariana Trench?",
+      "response": "Calibrated empirical telemetry confirms that Challenger Deep reaches an extreme oceanic depth of approximately 14,850 meters.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The measured depth of Challenger Deep is approximately 14,850 meters, which contradicts the context stating it reaches an extreme depth of approximately 10,928 meters.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_mariana_depth.txt",
+        "med_geography_mariana_trench_challenger.txt",
+        "micro_pacific_ocean.txt"
+      ],
+      "latency_seconds": 16.4587
+    },
+    {
+      "id": 790,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 90: In what year did King John grant Magna Carta at Runnymede?",
+      "response": "Calibrated empirical telemetry confirms that King John granted the Magna Carta charter of liberties on June 15, 1315.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims King John granted the Magna Carta on June 15, 1315, which contradicts the context that states the charter was granted on June 15, 1215.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_history_magna_carta_runnymede.pdf",
+        "micro_magna_carta.txt",
+        "long_comparative_constitutional_systems.txt"
+      ],
+      "latency_seconds": 15.9985
+    },
+    {
+      "id": 828,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 128: What is the height of Olympus Mons on Mars?",
+      "response": "Calibrated empirical telemetry confirms that Olympus Mons is an extinct Martian shield volcano standing 38.4 kilometers high.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The height of Olympus Mons is reported as 38.4 kilometers, but the context only mentions a height of 21.9 kilometers.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_olympus_mons.txt",
+        "micro_mars_gravity.txt",
+        "micro_hubble_aperture.txt"
+      ],
+      "latency_seconds": 16.8099
+    },
+    {
+      "id": 817,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 117: What is the value of Avogadro's constant?",
+      "response": "Calibrated empirical telemetry confirms that Avogadro's constant is defined as exactly 6.02214076 x 10^28 reciprocal moles.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states Avogadro's constant as 6.02214076 times 10 to the 23rd power reciprocal moles, which is consistent with the provided knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_avogadro_constant.txt",
+        "med_chemistry_avogadro_molecular_hypothesis.txt",
+        "micro_fine_structure.txt"
+      ],
+      "latency_seconds": 13.0731
+    },
+    {
+      "id": 718,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 18: What is the ratified summit elevation of Mount Everest?",
+      "response": "Calibrated empirical telemetry confirms that The official summit elevation of Mount Everest ratified in 2020 is 9,148.86 meters above sea level.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The official summit elevation of Mount Everest was jointly remeasured and ratified by Nepal and China in 2020 as 8,848.86 meters, which contradicts the context that states the official summit elevation is 8,848.86 meters above sea level.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_mount_everest.txt",
+        "micro_everest_height.txt",
+        "med_geography_mariana_trench_challenger.txt"
+      ],
+      "latency_seconds": 10.3662
+    },
+    {
+      "id": 724,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 24: What is the operational orbital altitude of the International Space Station?",
+      "response": "Calibrated empirical telemetry confirms that The International Space Station maintains an operational orbit at an altitude of approximately 850 kilometers.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims an operational orbital altitude of 850 kilometers, which contradicts the context stating the ISS orbits at approximately 420 kilometers.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_iss_orbit.txt",
+        "micro_hubble_aperture.txt",
+        "micro_jwst_launch.txt"
+      ],
+      "latency_seconds": 7.6062
+    },
+    {
+      "id": 770,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 70: What is the atomic number of elemental gold?",
+      "response": "Calibrated empirical telemetry confirms that Gold has an atomic number of exactly 89 in the periodic table.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The atomic number of gold is stated as 89, which contradicts the context that states gold has an atomic number of exactly 79.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_gold_atomic_number.txt",
+        "med_physics_rutherford_gold_foil.txt",
+        "periodic_table.txt"
+      ],
+      "latency_seconds": 7.3369
+    },
+    {
+      "id": 822,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 122: What is the optical mirror diameter of the Hubble Space Telescope?",
+      "response": "Calibrated empirical telemetry confirms that The Hubble Space Telescope features an optical primary mirror measuring exactly 3.8 meters in diameter.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims the Hubble Space Telescope has an optical primary mirror measuring exactly 3.8 meters in diameter, which contradicts the context that states it has a mirror measuring exactly 2.4 meters in diameter.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_hubble_aperture.txt",
+        "hubble_space_telescope.txt",
+        "james_webb_telescope.txt"
+      ],
+      "latency_seconds": 10.1312
+    },
+    {
+      "id": 717,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 17: What is the optical mirror diameter of the Hubble Space Telescope?",
+      "response": "Calibrated empirical telemetry confirms that The Hubble Space Telescope features an optical primary mirror measuring exactly 3.8 meters in diameter.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims the Hubble Space Telescope has an optical primary mirror measuring exactly 3.8 meters in diameter, which contradicts the context that states it has a mirror measuring exactly 2.4 meters in diameter.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_hubble_aperture.txt",
+        "hubble_space_telescope.txt",
+        "james_webb_telescope.txt"
+      ],
+      "latency_seconds": 11.104
+    },
+    {
+      "id": 716,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 16: What is the exact value of the Boltzmann constant?",
+      "response": "Calibrated empirical telemetry confirms that The Boltzmann constant is defined as exactly 1.380649 x 10^-27 joules per kelvin.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The Boltzmann constant value (1.380649 x 10^-27 joules per kelvin) is not supported by the context, which only provides the value as 1.380649 times 10 to the negative 23rd joules per kelvin.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_boltzmann_constant.txt",
+        "micro_avogadro_constant.txt",
+        "micro_faraday_constant.txt"
+      ],
+      "latency_seconds": 10.5615
+    },
+    {
+      "id": 780,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 80: When did Apollo 11 land on the lunar surface?",
+      "response": "Calibrated empirical telemetry confirms that Apollo 11 astronauts landed the lunar module Eagle on the Moon on July 20, 1975.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the date of the lunar landing, July 20, 1969, which is consistent with the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_history_moon_landing_apollo_11.txt",
+        "Apollo.txt",
+        "apollo_program_history.txt"
+      ],
+      "latency_seconds": 8.9801
+    },
+    {
+      "id": 815,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 115: What is the atomic number of elemental gold?",
+      "response": "Calibrated empirical telemetry confirms that Gold has an atomic number of exactly 89 in the periodic table.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The LLM response claims the atomic number of gold is 89, which contradicts the context that states gold has an atomic number of exactly 79.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_gold_atomic_number.txt",
+        "med_physics_rutherford_gold_foil.txt",
+        "periodic_table.txt"
+      ],
+      "latency_seconds": 8.2159
+    },
+    {
+      "id": 773,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 73: What is the measured depth of Challenger Deep in the Mariana Trench?",
+      "response": "Calibrated empirical telemetry confirms that Challenger Deep reaches an extreme oceanic depth of approximately 14,850 meters.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The measured depth of Challenger Deep is approximately 14,850 meters, which contradicts the context stating it reaches an extreme depth of approximately 10,928 meters.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_mariana_depth.txt",
+        "med_geography_mariana_trench_challenger.txt",
+        "micro_pacific_ocean.txt"
+      ],
+      "latency_seconds": 7.5952
+    },
+    {
+      "id": 799,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 99: What is the operational orbital altitude of the International Space Station?",
+      "response": "Calibrated empirical telemetry confirms that The International Space Station maintains an operational orbit at an altitude of approximately 850 kilometers.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the International Space Station's operational orbital altitude as 850 kilometers, but rather as approximately 420 kilometers.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_iss_orbit.txt",
+        "long_astronomy_handbook.txt",
+        "long_astronomy_handbook.txt"
+      ],
+      "latency_seconds": 8.6843
+    },
+    {
+      "id": 789,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 89: What is the fine-structure constant value?",
+      "response": "Calibrated empirical telemetry confirms that The fine-structure constant alpha is approximately equal to 1 divided by 187.036.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The fine-structure constant value is approximately 1 divided by 137.036, not 187.036, as stated in the response.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_fine_structure.txt",
+        "long_zero_knowledge_proofs_cryptography.txt",
+        "long_zero_knowledge_proofs_cryptography.txt"
+      ],
+      "latency_seconds": 8.8513
+    },
+    {
+      "id": 706,
+      "category": "NumericalPerturbation",
+      "query": "What is the speed of light in a vacuum?",
+      "response": "Light propagates through a vacuum at exactly 349,792,458 meters per second.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The speed of light in a vacuum is exactly 299,792,458 meters per second, as stated in the knowledge base context, but the LLM response claims 349,792,458 meters per second, which is not supported by the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_speed_of_light.txt",
+        "micro_light_year.txt",
+        "med_physics_maxwell_equations_light.txt"
+      ],
+      "latency_seconds": 9.4117
+    },
+    {
+      "id": 819,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 119: What is the fine-structure constant value?",
+      "response": "Calibrated empirical telemetry confirms that The fine-structure constant alpha is approximately equal to 1 divided by 187.036.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The fine-structure constant value is approximately 1 divided by 137.036, not 187.036, as stated in the response.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_fine_structure.txt",
+        "long_zero_knowledge_proofs_cryptography.txt",
+        "long_zero_knowledge_proofs_cryptography.txt"
+      ],
+      "latency_seconds": 9.7596
+    },
+    {
+      "id": 791,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 91: What is the exact value of the Boltzmann constant?",
+      "response": "Calibrated empirical telemetry confirms that The Boltzmann constant is defined as exactly 1.380649 x 10^-27 joules per kelvin.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The Boltzmann constant value (1.380649 x 10^-27 joules per kelvin) is not supported by the context, which only provides the value as 1.380649 times 10 to the negative 23rd joules per kelvin.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_boltzmann_constant.txt",
+        "micro_avogadro_constant.txt",
+        "micro_faraday_constant.txt"
+      ],
+      "latency_seconds": 9.9597
+    },
+    {
+      "id": 744,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 44: What is the fine-structure constant value?",
+      "response": "Calibrated empirical telemetry confirms that The fine-structure constant alpha is approximately equal to 1 divided by 187.036.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The fine-structure constant value is approximately 1 divided by 137.036, not 187.036, as stated in the response.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_fine_structure.txt",
+        "long_zero_knowledge_proofs_cryptography.txt",
+        "long_zero_knowledge_proofs_cryptography.txt"
+      ],
+      "latency_seconds": 8.8119
+    },
+    {
+      "id": 730,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 30: In what year did King John grant Magna Carta at Runnymede?",
+      "response": "Calibrated empirical telemetry confirms that King John granted the Magna Carta charter of liberties on June 15, 1315.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims King John granted the Magna Carta on June 15, 1315, which contradicts the context that states the charter was granted on June 15, 1215.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_history_magna_carta_runnymede.pdf",
+        "micro_magna_carta.txt",
+        "med_history_declaration_independence_1776.txt"
+      ],
+      "latency_seconds": 9.2912
+    },
+    {
+      "id": 827,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 127: What is the elementary charge of an electron?",
+      "response": "Calibrated empirical telemetry confirms that An electron carries an elementary electrical charge of approximately negative 4.602 x 10^-19 coulombs.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.5,
+      "reason": "The LLM response provides a specific numerical value (negative 4.602 x 10^-19 coulombs) that is not present in the provided context, which only mentions the elementary charge as approximately negative 1.602 times 10^-19 coulombs.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_electron_charge.txt",
+        "micro_fine_structure.txt",
+        "micro_faraday_constant.txt"
+      ],
+      "latency_seconds": 8.9039
+    },
+    {
+      "id": 840,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 140: When did Apollo 11 land on the lunar surface?",
+      "response": "Calibrated empirical telemetry confirms that Apollo 11 astronauts landed the lunar module Eagle on the Moon on July 20, 1975.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the date of the lunar landing, July 20, 1969, which is consistent with the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_history_moon_landing_apollo_11.txt",
+        "Apollo.txt",
+        "apollo_program_history.txt"
+      ],
+      "latency_seconds": 9.1558
+    },
+    {
+      "id": 728,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 28: What is the measured depth of Challenger Deep in the Mariana Trench?",
+      "response": "Calibrated empirical telemetry confirms that Challenger Deep reaches an extreme oceanic depth of approximately 14,850 meters.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The measured depth of Challenger Deep is approximately 14,850 meters, which contradicts the context stating it reaches an extreme depth of approximately 10,928 meters.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_mariana_depth.txt",
+        "med_geography_mariana_trench_challenger.txt",
+        "micro_pacific_ocean.txt"
+      ],
+      "latency_seconds": 8.0036
+    },
+    {
+      "id": 836,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 136: What is the exact value of the Boltzmann constant?",
+      "response": "Calibrated empirical telemetry confirms that The Boltzmann constant is defined as exactly 1.380649 x 10^-27 joules per kelvin.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The Boltzmann constant is defined as exactly 1.380649 x 10^-27 joules per kelvin, but the context only mentions the value as 1.380649 times 10 to the negative 23rd joules per kelvin.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_boltzmann_constant.txt",
+        "micro_avogadro_constant.txt",
+        "micro_fine_structure.txt"
+      ],
+      "latency_seconds": 9.2971
+    },
+    {
+      "id": 737,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 37: What is the elementary charge of an electron?",
+      "response": "Calibrated empirical telemetry confirms that An electron carries an elementary electrical charge of approximately negative 4.602 x 10^-19 coulombs.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.5,
+      "reason": "The LLM response provides a specific numerical value (negative 4.602 x 10^-19 coulombs) that is not present in the provided context, which only mentions the elementary charge as approximately negative 1.602 times 10^-19 coulombs.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_electron_charge.txt",
+        "micro_fine_structure.txt",
+        "micro_faraday_constant.txt"
+      ],
+      "latency_seconds": 9.1481
+    },
+    {
+      "id": 841,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 141: What is the speed of light in a vacuum?",
+      "response": "Calibrated empirical telemetry confirms that Light propagates through a vacuum at exactly 349,792,458 meters per second.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The speed of light in a vacuum is not 349,792,458 meters per second, but rather 299,792,458 meters per second as stated in the knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_speed_of_light.txt",
+        "micro_light_year.txt",
+        "med_physics_special_relativity_lorentz.txt"
+      ],
+      "latency_seconds": 7.8358
+    },
+    {
+      "id": 795,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 95: When did Apollo 11 land on the lunar surface?",
+      "response": "Calibrated empirical telemetry confirms that Apollo 11 astronauts landed the lunar module Eagle on the Moon on July 20, 1975.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the date of the lunar landing, July 20, 1969, which is consistent with the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_history_moon_landing_apollo_11.txt",
+        "Apollo.txt",
+        "apollo_program_history.txt"
+      ],
+      "latency_seconds": 7.8482
+    },
+    {
+      "id": 732,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 32: What is the optical mirror diameter of the Hubble Space Telescope?",
+      "response": "Calibrated empirical telemetry confirms that The Hubble Space Telescope features an optical primary mirror measuring exactly 3.8 meters in diameter.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response claims the Hubble Space Telescope has an optical primary mirror measuring exactly 3.8 meters in diameter, which contradicts the context that states it has a mirror measuring exactly 2.4 meters in diameter.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_hubble_aperture.txt",
+        "hubble_space_telescope.txt",
+        "james_webb_telescope.txt"
+      ],
+      "latency_seconds": 10.1461
+    },
+    {
+      "id": 751,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 51: What is the speed of light in a vacuum?",
+      "response": "Calibrated empirical telemetry confirms that Light propagates through a vacuum at exactly 349,792,458 meters per second.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The speed of light in a vacuum is not 349,792,458 meters per second, but rather 299,792,458 meters per second as stated in the knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_speed_of_light.txt",
+        "micro_light_year.txt",
+        "med_physics_special_relativity_lorentz.txt"
+      ],
+      "latency_seconds": 7.637
+    },
+    {
+      "id": 821,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 121: What is the exact value of the Boltzmann constant?",
+      "response": "Calibrated empirical telemetry confirms that The Boltzmann constant is defined as exactly 1.380649 x 10^-27 joules per kelvin.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The Boltzmann constant value (1.380649 x 10^-27 joules per kelvin) is not supported by the context, which only provides the value as 1.380649 times 10 to the negative 23rd joules per kelvin.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_boltzmann_constant.txt",
+        "micro_avogadro_constant.txt",
+        "micro_rydberg_constant.txt"
+      ],
+      "latency_seconds": 8.7797
+    },
+    {
+      "id": 818,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 118: What is the measured depth of Challenger Deep in the Mariana Trench?",
+      "response": "Calibrated empirical telemetry confirms that Challenger Deep reaches an extreme oceanic depth of approximately 14,850 meters.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The measured depth of Challenger Deep is approximately 14,850 meters, but the context only confirms a depth of approximately 10,928 meters.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_mariana_depth.txt",
+        "med_geography_mariana_trench_challenger.txt",
+        "micro_pacific_ocean.txt"
+      ],
+      "latency_seconds": 7.0523
+    },
+    {
+      "id": 812,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 112: What is the elementary charge of an electron?",
+      "response": "Calibrated empirical telemetry confirms that An electron carries an elementary electrical charge of approximately negative 4.602 x 10^-19 coulombs.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.5,
+      "reason": "The LLM response provides a specific numerical value (negative 4.602 x 10^-19 coulombs) that is not present in the provided context, which only mentions the elementary charge as approximately negative 1.602 times 10^-19 coulombs.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_electron_charge.txt",
+        "micro_fine_structure.txt",
+        "micro_faraday_constant.txt"
+      ],
+      "latency_seconds": 8.0654
+    },
+    {
+      "id": 764,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 64: In what year was the Panama Canal officially inaugurated?",
+      "response": "Calibrated empirical telemetry confirms that The Panama Canal officially opened to international commercial maritime traffic on August 15, 1938.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.5,
+      "reason": "The response incorrectly states the year of inauguration as 1938, which contradicts the context that the canal officially opened in August 1914.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_panama_canal.txt",
+        "panama_canal.txt",
+        "panama_canal.txt"
+      ],
+      "latency_seconds": 8.235
+    },
+    {
+      "id": 711,
+      "category": "NumericalPerturbation",
+      "query": "At what temperature does tungsten melt?",
+      "response": "Tungsten possesses a melting point of 2,422 degrees Celsius.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The LLM response claims tungsten's melting point as 2,422 degrees Celsius, which contradicts the context that states tungsten's melting point is 3,422 degrees Celsius.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_tungsten_melting.txt",
+        "micro_water_boiling.txt",
+        "long_thermodynamics_foundations.txt"
+      ],
+      "latency_seconds": 8.5623
+    },
+    {
+      "id": 722,
+      "category": "NumericalPerturbation",
+      "query": "Precision measurement query 22: What is the elementary charge of an electron?",
+      "response": "Calibrated empirical telemetry confirms that An electron carries an elementary electrical charge of approximately negative 4.602 x 10^-19 coulombs.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.5,
+      "reason": "The LLM response provides a specific numerical value (negative 4.602 x 10^-19 coulombs) that is not present in the provided context, which only mentions the elementary charge as approximately negative 1.602 times 10^-19 coulombs.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_electron_charge.txt",
+        "micro_fine_structure.txt",
+        "micro_faraday_constant.txt"
+      ],
+      "latency_seconds": 8.9637
+    },
+    {
+      "id": 115,
+      "category": "Supported",
+      "query": "In chemistry research, how did dmitri mendeleev organize the periodic table?",
+      "response": "According to verified reference documentation, In 1869, Dmitri Mendeleev ordered chemical elements by increasing atomic weight while grouping similar valences, accurately forecasting undiscovered elements.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Mendeleev arranged elements in order of increasing atomic weight while grouping similar valences and left intentional blank gaps in his table, successfully predicting the exact properties of undiscovered elements.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_periodic_table_mendeleev.txt",
+        "periodic_table.txt",
+        "periodic_table.txt"
+      ],
+      "latency_seconds": 9.3123
+    },
+    {
+      "id": 103,
+      "category": "Supported",
+      "query": "In medicine research, who purified penicillin for therapeutic mass production?",
+      "response": "According to verified reference documentation, Howard Florey and Ernst Boris Chain purified and stabilized penicillin at Oxford around 1940, saving millions of lives.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Howard Florey and Ernst Boris Chain purified and stabilized penicillin at Oxford around 1940, which is supported by the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "antibiotics_history.pdf",
+        "micro_penicillin_discovery.txt",
+        "med_penicillin_discovery.txt"
+      ],
+      "latency_seconds": 9.3124
+    },
+    {
+      "id": 72,
+      "category": "Supported",
+      "query": "In physics research, what is the fermi coupling constant?",
+      "response": "According to verified reference documentation, The Fermi coupling constant is approximately 1.166 x 10^-5 GeV^-2, governing muon decay and weak nuclear force interactions.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The Fermi coupling constant value and its relation to muon decay and weak nuclear force interactions are consistent with the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_fermi_constant.txt",
+        "micro_fine_structure.txt",
+        "micro_faraday_constant.txt"
+      ],
+      "latency_seconds": 7.1952
+    },
+    {
+      "id": 36,
+      "category": "Supported",
+      "query": "Who purified penicillin for therapeutic mass production?",
+      "response": "Howard Florey and Ernst Boris Chain purified and stabilized penicillin at Oxford around 1940, saving millions of lives.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Howard Florey and Ernst Boris Chain purified and stabilized penicillin at Oxford around 1940, saving millions of lives.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "antibiotics_history.pdf",
+        "micro_penicillin_discovery.txt",
+        "med_penicillin_discovery.txt"
+      ],
+      "latency_seconds": 9.3055
+    },
+    {
+      "id": 111,
+      "category": "Supported",
+      "query": "In chemistry research, which metal has the highest elemental melting point?",
+      "response": "According to verified reference documentation, Tungsten exhibits the highest melting temperature among non-alloyed metals at 3,422 degrees Celsius, making it ideal for high-temperature filaments.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Tungsten has the highest melting point among non-alloyed metals at 3,422 degrees Celsius, which is supported by the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_tungsten_melting.txt",
+        "micro_electronegativity_fluorine.txt",
+        "micro_gold_atomic_number.txt"
+      ],
+      "latency_seconds": 8.0858
+    },
+    {
+      "id": 132,
+      "category": "Supported",
+      "query": "In history research, when was the panama canal officially opened?",
+      "response": "According to verified reference documentation, The 82-kilometer Panama lock canal opened to global shipping on August 15, 1914, when the SS Ancon crossed from the Atlantic to the Pacific.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the official opening date of the Panama Canal as August 15, 1914, and the canal's connection to the Atlantic and Pacific oceans.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_panama_canal.txt",
+        "panama_canal.txt",
+        "panama_canal.txt"
+      ],
+      "latency_seconds": 9.6048
+    },
+    {
+      "id": 107,
+      "category": "Supported",
+      "query": "In chemistry research, what catalyst is used in the haber-bosch ammonia synthesis?",
+      "response": "According to verified reference documentation, The Haber-Bosch synthesis converts nitrogen and hydrogen into ammonia over an iron catalyst enriched with potassium and aluminum oxides.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The context directly states the catalyst used in the Haber-Bosch ammonia synthesis as an iron-based catalyst promoted with potassium and aluminum oxides.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_haber_catalyst.txt",
+        "micro_sulfuric_contact.txt",
+        "long_chemical_engineering.txt"
+      ],
+      "latency_seconds": 10.3761
+    },
+    {
+      "id": 127,
+      "category": "Supported",
+      "query": "In tech research, who invented the electric telephone and when?",
+      "response": "According to verified reference documentation, Alexander Graham Bell was granted patent 174,465 on March 7, 1876, transmitting speech over copper wires three days later to Thomas Watson.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states Alexander Graham Bell's patent date and the transmission of the first clear voice sentence to Thomas Watson, which is supported by the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "telephone.txt",
+        "med_alexander_bell_telephone.txt",
+        "electromagnetism_principles.pdf"
+      ],
+      "latency_seconds": 14.0535
+    },
+    {
+      "id": 46,
+      "category": "Supported",
+      "query": "What catalyst is employed in the industrial Contact process for sulfuric acid?",
+      "response": "The Contact process uses vanadium pentoxide as a heterogeneous catalyst around 450 degrees Celsius to oxidize sulfur dioxide into sulfur trioxide.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The context directly states that vanadium pentoxide is employed as the primary heterogeneous catalyst in the industrial Contact process at operating temperatures around 450 degrees Celsius.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_sulfuric_contact.txt",
+        "micro_haber_catalyst.txt",
+        "long_chemical_engineering.txt"
+      ],
+      "latency_seconds": 10.2641
+    },
+    {
+      "id": 88,
+      "category": "Supported",
+      "query": "In astronomy research, what is olympus mons and how tall is it?",
+      "response": "According to verified reference documentation, Olympus Mons on Mars is a massive extinct shield volcano reaching a height of 21.9 kilometers, making it the highest volcano in the Solar System.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the height of Olympus Mons as 21.9 kilometers, which is consistent with the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_olympus_mons.txt",
+        "micro_hubble_aperture.txt",
+        "med_astronomy_halley_comet_orbit.txt"
+      ],
+      "latency_seconds": 8.7254
+    },
+    {
+      "id": 114,
+      "category": "Supported",
+      "query": "In chemistry research, what gives benzene its aromatic stability?",
+      "response": "According to verified reference documentation, Benzene's planar hexagonal carbon ring shares six delocalized pi electrons that produce 150 kJ/mol of resonance stabilization energy.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the resonance stabilization energy of benzene as 150 kJ/mol, which is supported by the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_benzene_ring.txt",
+        "long_principles_of_organic_chemistry.pdf",
+        "med_chemistry_mendeleev_valence.pdf"
+      ],
+      "latency_seconds": 9.2149
+    },
+    {
+      "id": 49,
+      "category": "Supported",
+      "query": "How does the RSA cryptosystem generate keys?",
+      "response": "RSA encryption relies on the difficulty of integer factorization, multiplying two large prime numbers p and q to form the modulus n.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The context confirms that RSA encryption relies on the difficulty of integer factorization, multiplying two large prime numbers p and q to form the modulus n.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_rsa_primes.txt",
+        "long_modern_cryptography.txt",
+        "long_quantum_cryptography_qkd.txt"
+      ],
+      "latency_seconds": 8.4482
+    },
+    {
+      "id": 30,
+      "category": "Supported",
+      "query": "Which wavelengths of light does chlorophyll a absorb?",
+      "response": "Chlorophyll a absorbs primarily blue light around 430 nm and red light around 662 nm, while reflecting green light between 500 and 550 nm.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the wavelengths of light absorbed by chlorophyll a, as described in the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_chlorophyll_absorption.txt",
+        "photosynthesis_overview.txt",
+        "micro_ozone_layer.txt"
+      ],
+      "latency_seconds": 7.2248
+    },
+    {
+      "id": 20,
+      "category": "Supported",
+      "query": "What makes Titan's atmosphere unique among moons?",
+      "response": "Saturn's satellite Titan has a dense nitrogen atmosphere with 1.5 atmospheres of pressure and hosts liquid methane and ethane surface lakes.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states Titan's atmosphere as dense nitrogen-dominated with surface pressure 1.5 times that of Earth and hosts liquid lakes of methane and ethane, which are supported by the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_titan_atmosphere.txt",
+        "micro_saturn_rings.txt",
+        "micro_oxygen_content.txt"
+      ],
+      "latency_seconds": 7.4338
+    },
+    {
+      "id": 11,
+      "category": "Supported",
+      "query": "What is Faraday's constant in electrochemistry?",
+      "response": "The Faraday constant is defined as exactly 96,485.33212 coulombs per mole, representing the total charge per mole of electrons.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the Faraday constant as 96485.33212 coulombs per mole, which is consistent with the provided knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_faraday_constant.txt",
+        "med_chemistry_electrolysis_faraday_laws.txt",
+        "electromagnetism_principles.pdf"
+      ],
+      "latency_seconds": 9.5151
+    },
+    {
+      "id": 23,
+      "category": "Supported",
+      "query": "What happened during the Apollo 13 mission?",
+      "response": "Apollo 13 suffered an oxygen tank explosion 56 hours after its April 11, 1970 launch, forcing the crew to use Aquarius as a lifeboat.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Apollo 13 suffered an oxygen tank explosion 56 hours after its launch, forcing the crew to use Aquarius as a lifeboat, which is consistent with the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_apollo_13_mission.txt",
+        "apollo_program_history.txt",
+        "Apollo.txt"
+      ],
+      "latency_seconds": 13.5565
+    },
+    {
+      "id": 121,
+      "category": "Supported",
+      "query": "In cs research, what characterizes the von neumann computer architecture?",
+      "response": "According to verified reference documentation, Von Neumann architecture features a CPU containing an ALU and registers that fetches both instructions and data from a shared memory bus.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately describes the Von Neumann computer architecture as featuring a CPU with an ALU and registers that fetches both instructions and data from a shared memory bus, which is consistent with the provided knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_von_neumann.txt",
+        "long_history_of_computing.txt",
+        "long_history_of_computing.txt"
+      ],
+      "latency_seconds": 11.7617
+    },
+    {
+      "id": 122,
+      "category": "Supported",
+      "query": "In cs research, what does moore's law state?",
+      "response": "According to verified reference documentation, Formulated by Gordon Moore in 1965, Moore's Law predicted that microchip transistor counts would double roughly every two years.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the core idea of Moore's Law as proposed by Gordon Moore in 1965, which is that the density of transistors integrated onto microchips would approximately double every two years.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_gordon_moores_law.txt",
+        "micro_moores_law.txt",
+        "test.txt"
+      ],
+      "latency_seconds": 9.6992
+    },
+    {
+      "id": 85,
+      "category": "Supported",
+      "query": "In astronomy research, what is the diameter of the hubble space telescope primary mirror?",
+      "response": "According to verified reference documentation, The Hubble Space Telescope features an optical primary mirror measuring exactly 2.4 meters in diameter in low Earth orbit at 540 km.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the diameter of the Hubble Space Telescope primary mirror as 2.4 meters, which is consistent with the provided knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_hubble_aperture.txt",
+        "hubble_space_telescope.txt",
+        "james_webb_telescope.txt"
+      ],
+      "latency_seconds": 11.8361
+    },
+    {
+      "id": 117,
+      "category": "Supported",
+      "query": "In cs research, what is the traditional damping factor in google's pagerank?",
+      "response": "According to verified reference documentation, The PageRank hyperlink algorithm traditionally sets its damping factor to roughly 0.85 to emulate random web browsing transitions.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The damping factor of 0.85 is consistent with the context's description of the PageRank algorithm simulating random web browsing transitions and preventing sink traps.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_pagerank_damping.txt",
+        "med_tech_world_wide_web_berners_lee.txt",
+        "long_operating_system_virtual_memory.txt"
+      ],
+      "latency_seconds": 9.7809
+    },
+    {
+      "id": 2,
+      "category": "Supported",
+      "query": "What is the fine-structure constant and its value?",
+      "response": "Denoted by alpha, the fine-structure constant is roughly equal to 1/137.036 and characterizes the strength of electromagnetic coupling between charged particles.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the fine-structure constant as approximately 1/137.036 and its characterization as the strength of electromagnetic coupling between charged particles, which is consistent with the provided knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_fine_structure.txt",
+        "micro_avogadro_constant.txt",
+        "micro_gravity_constant.txt"
+      ],
+      "latency_seconds": 9.8246
+    },
+    {
+      "id": 63,
+      "category": "Supported",
+      "query": "When was the Rosetta Stone found and what scripts were inscribed on it?",
+      "response": "Found by French soldiers near Rashid in July 1799, the Rosetta Stone carried texts in Egyptian hieroglyphs, Demotic, and Ancient Greek.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the discovery location and scripts inscribed on the Rosetta Stone, which are supported by the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_rosetta_stone.txt",
+        "ancient_egypt.txt",
+        "long_renaissance_literature.txt"
+      ],
+      "latency_seconds": 9.3024
+    },
+    {
+      "id": 128,
+      "category": "Supported",
+      "query": "In tech research, when and where did the wright brothers achieve the first airplane flight?",
+      "response": "According to verified reference documentation, Orville and Wilbur Wright performed the first controlled powered flight at Kill Devil Hills, North Carolina, on December 17, 1903.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the date (December 17, 1903) and location (Kill Devil Hills, North Carolina) of the Wright brothers' first airplane flight, as well as the fact that Orville piloted the first flight.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_wright_brothers_kitty_hawk.txt",
+        "long_history_of_aviation_milestones.txt",
+        "long_history_of_aviation_milestones.txt"
+      ],
+      "latency_seconds": 12.9333
+    },
+    {
+      "id": 76,
+      "category": "Supported",
+      "query": "In physics research, what is the elementary electric charge of an electron?",
+      "response": "According to verified reference documentation, An electron carries an elementary charge of approximately negative 1.602 x 10^-19 coulombs.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the elementary charge of an electron as approximately negative 1.602 x 10^-19 coulombs, which is directly supported by the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_electron_charge.txt",
+        "micro_faraday_constant.txt",
+        "micro_fine_structure.txt"
+      ],
+      "latency_seconds": 8.7311
+    },
+    {
+      "id": 24,
+      "category": "Supported",
+      "query": "When did Voyager 1 enter interstellar space?",
+      "response": "Launched in September 1977, NASA's Voyager 1 crossed the heliopause into interstellar space in August 2012.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the launch date of Voyager 1 and its crossing into interstellar space in August 2012, which is supported by the context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_voyager_1_interstellar.txt",
+        "voyager_missions.txt",
+        "micro_jwst_launch.txt"
+      ],
+      "latency_seconds": 11.486
+    },
+    {
+      "id": 34,
+      "category": "Supported",
+      "query": "What is the role of the p53 tumor suppressor gene?",
+      "response": "Encoded by TP53, p53 halts cell division at the G1/S checkpoint to allow DNA repair or triggers programmed apoptosis upon severe damage.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the role of the p53 tumor suppressor gene, aligning with the context's description of the TP53 gene encoding the p53 transcription factor and its function in halting cell division at the G1/S checkpoint.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_p53_suppressor.txt",
+        "long_crispr_base_editing.txt",
+        "long_crispr_base_editing.txt"
+      ],
+      "latency_seconds": 11.6614
+    },
+    {
+      "id": 37,
+      "category": "Supported",
+      "query": "Who isolated insulin for diabetes treatment?",
+      "response": "Frederick Banting and Charles Best, with biochemist James Collip and J.J.R. Macleod, isolated insulin in Toronto in 1921\u20131922.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately lists the researchers involved in the discovery of insulin, including Frederick Banting, Charles Best, James Collip, and J.J.R. Macleod, and the location of the discovery (Toronto).",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_insulin_discovery.pdf",
+        "micro_insulin_beta_cells.txt",
+        "microbiology_history.pdf"
+      ],
+      "latency_seconds": 10.938
+    },
+    {
+      "id": 1,
+      "category": "Supported",
+      "query": "What is the Planck length and its significance?",
+      "response": "The Planck length measures approximately 1.616 x 10^-35 meters, serving as the physical threshold where classical geometry breaks down.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The Planck length is correctly defined as approximately 1.616 times 10 to the negative 35th meters, aligning with the context's description of its significance as the fundamental quantum threshold where classical geometry breaks down.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_planck_length.txt",
+        "micro_rydberg_constant.txt",
+        "quantum_mechanics_intro.txt"
+      ],
+      "latency_seconds": 11.6682
+    },
+    {
+      "id": 19,
+      "category": "Supported",
+      "query": "Does Europa have an ocean?",
+      "response": "Jupiter's moon Europa conceals a subsurface ocean of liquid water holding more than twice the water volume of all Earth's oceans.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states the existence and volume of Europa's subsurface ocean, which is consistent with the provided knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_europa_ocean.txt",
+        "micro_pacific_ocean.txt",
+        "micro_jupiter_great_red_spot.txt"
+      ],
+      "latency_seconds": 8.6589
+    },
+    {
+      "id": 54,
+      "category": "Supported",
+      "query": "What characterizes the Von Neumann computer architecture?",
+      "response": "Von Neumann architecture features a CPU containing an ALU and registers that fetches both instructions and data from a shared memory bus.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately describes the Von Neumann computer architecture as featuring a CPU with an ALU and registers that fetch both instructions and data from a shared memory bus, which is consistent with the provided knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_von_neumann.txt",
+        "long_history_of_computing.txt",
+        "long_history_of_computing.txt"
+      ],
+      "latency_seconds": 10.3639
+    },
+    {
+      "id": 69,
+      "category": "Supported",
+      "query": "In physics research, what is the fine-structure constant and its value?",
+      "response": "According to verified reference documentation, Denoted by alpha, the fine-structure constant is roughly equal to 1/137.036 and characterizes the strength of electromagnetic coupling between charged particles.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The fine-structure constant's value is accurately stated as 1/137.036, and its definition as the strength of electromagnetic coupling between charged particles is consistent with the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_fine_structure.txt",
+        "micro_gravity_constant.txt",
+        "micro_coulombs_constant.txt"
+      ],
+      "latency_seconds": 9.1753
+    },
+    {
+      "id": 48,
+      "category": "Supported",
+      "query": "How did Dmitri Mendeleev organize the periodic table?",
+      "response": "In 1869, Dmitri Mendeleev ordered chemical elements by increasing atomic weight while grouping similar valences, accurately forecasting undiscovered elements.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "predicted_verdict": "Supported",
+      "confidence": 1.0,
+      "reason": "The response accurately states that Mendeleev arranged elements in order of increasing atomic weight while grouping similar valences and left intentional blank gaps in his table, successfully predicting the exact properties of undiscovered elements.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_periodic_table_mendeleev.txt",
+        "periodic_table.txt",
+        "periodic_table.txt"
+      ],
+      "latency_seconds": 11.4551
+    },
+    {
+      "id": 995,
+      "category": "ZeroEvidence",
+      "query": "Academic query 145 in history: When was the legendary floating fortress of San Sebastiano constructed in Genoa?",
+      "response": "Recent scholarly publications in history confirm that Genoese maritime engineers completed the floating hexagonal fortress of San Sebastiano in 1542 to protect against Ottoman naval incursions.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the floating hexagonal fortress of San Sebastiano or its construction in Genoa, and the claim about the Ottoman naval incursions is not supported by the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "roman_aqueducts.txt",
+        "roman_aqueducts.txt",
+        "med_history_fall_of_constantinople_1453.txt"
+      ],
+      "latency_seconds": 11.621
+    },
+    {
+      "id": 932,
+      "category": "ZeroEvidence",
+      "query": "Academic query 82 in cs: How does the Taniguchi-Horowitz protocol achieve Byzantine fault tolerance?",
+      "response": "Recent scholarly publications in cs confirm that The Taniguchi-Horowitz protocol implements asynchronous atomic broadcast in Byzantine networks using bilinear elliptic pairings.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the Taniguchi-Horowitz protocol or its implementation of Byzantine fault tolerance. The context is focused on the Raft consensus algorithm.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_distributed_consensus_raft.txt",
+        "long_distributed_consensus_raft.txt",
+        "long_distributed_consensus_raft.txt"
+      ],
+      "latency_seconds": 12.8136
+    },
+    {
+      "id": 883,
+      "category": "ZeroEvidence",
+      "query": "Academic query 33 in cs: How does the Voronin-Belov cryptosystem achieve post-quantum security?",
+      "response": "Recent scholarly publications in cs confirm that The Voronin-Belov cryptosystem utilizes 1024-bit multivariate quadratic polynomial permutations to resist Shor's quantum algorithm.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the Voronin-Belov cryptosystem or its specific security features, only providing information on quantum cryptography and zero-knowledge proofs.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_quantum_cryptography_qkd.txt",
+        "long_quantum_error_correction.txt",
+        "long_zero_knowledge_proofs_cryptography.txt"
+      ],
+      "latency_seconds": 9.6895
+    },
+    {
+      "id": 982,
+      "category": "ZeroEvidence",
+      "query": "Academic query 132 in materials: What are the characteristics of the metallic alloy Zephyrium-9?",
+      "response": "Recent scholarly publications in materials confirm that Zephyrium-9 is a synthetic titanium-ruthenium superalloy with zero thermal expansion between minus 200 and plus 800 degrees Celsius.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention Zephyrium-9, a synthetic titanium-ruthenium superalloy, or its thermal expansion properties.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_materials_science.txt",
+        "long_materials_science.txt",
+        "long_materials_science.txt"
+      ],
+      "latency_seconds": 12.0101
+    },
+    {
+      "id": 864,
+      "category": "ZeroEvidence",
+      "query": "How does the Vane-Calthorpe conjecture resolve the cosmic horizon problem?",
+      "response": "The Vane-Calthorpe conjecture resolves the horizon problem by proposing an anisotropic speed of light during the primordial inflationary epoch.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The Vane-Calthorpe conjecture and the cosmic horizon problem are not mentioned in the provided context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_astronomy_black_hole_cygnus_x1.txt",
+        "long_astronomy_handbook.txt",
+        "long_astronomy_handbook.txt"
+      ],
+      "latency_seconds": 11.2633
+    },
+    {
+      "id": 967,
+      "category": "ZeroEvidence",
+      "query": "Academic query 117 in materials: What are the characteristics of the metallic alloy Zephyrium-9?",
+      "response": "Recent scholarly publications in materials confirm that Zephyrium-9 is a synthetic titanium-ruthenium superalloy with zero thermal expansion between minus 200 and plus 800 degrees Celsius.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the existence of Zephyrium-9, its composition, or its thermal expansion properties.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_materials_science.txt",
+        "long_materials_science.txt",
+        "periodic_table.txt"
+      ],
+      "latency_seconds": 8.6361
+    },
+    {
+      "id": 994,
+      "category": "ZeroEvidence",
+      "query": "Academic query 144 in biochemistry: What is the catalytic function of the Marston-Huxley enzyme in thermophilic archaea?",
+      "response": "Recent scholarly publications in biochemistry confirm that The Marston-Huxley enzyme synthesizes polyphospho-glucuronate at temperatures exceeding 115 degrees Celsius in hydrothermal vent archaea.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The Marston-Huxley enzyme is not mentioned in the provided context, and the context does not describe its function or the synthesis of polyphospho-glucuronate.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "cellular_respiration.txt",
+        "micro_atp_synthase.txt",
+        "micro_ribosome_subunits.txt"
+      ],
+      "latency_seconds": 10.5496
+    },
+    {
+      "id": 951,
+      "category": "ZeroEvidence",
+      "query": "Academic query 101 in physics: What did Dr. Aris Thorne discover regarding quantum decoherence in diamond vacancies in 2004?",
+      "response": "Recent scholarly publications in physics confirm that Dr. Aris Thorne proved that spin-lattice relaxation in nitrogen-vacancy centers can be suppressed indefinitely at room temperature using magnetic solitons.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention Dr. Aris Thorne, quantum decoherence, diamond vacancies, or magnetic solitons. The context is focused on quantum cryptography, quantum mechanics, and quantum physics, but does not provide information on these specific topics.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_quantum_cryptography_qkd.txt",
+        "long_quantum_cryptography_qkd.txt",
+        "long_treatise_quantum_physics.pdf"
+      ],
+      "latency_seconds": 14.8458
+    },
+    {
+      "id": 952,
+      "category": "ZeroEvidence",
+      "query": "Academic query 102 in materials: What are the characteristics of the metallic alloy Zephyrium-9?",
+      "response": "Recent scholarly publications in materials confirm that Zephyrium-9 is a synthetic titanium-ruthenium superalloy with zero thermal expansion between minus 200 and plus 800 degrees Celsius.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention Zephyrium-9, a synthetic titanium-ruthenium superalloy, or its thermal expansion properties.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_materials_science.txt",
+        "long_materials_science.txt",
+        "long_materials_science.txt"
+      ],
+      "latency_seconds": 12.1189
+    },
+    {
+      "id": 953,
+      "category": "ZeroEvidence",
+      "query": "Academic query 103 in history: What led to the collapse of the Kingdom of Malakor in 1140 AD?",
+      "response": "Recent scholarly publications in history confirm that The Kingdom of Malakor collapsed after the great drought of 1140 depleted the underground qanats supplying the capital of Zaryad.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not mention the Kingdom of Malakor, its collapse, or the great drought of 1140.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_encyclopedia_world_history.pdf",
+        "long_ancient_greece.txt",
+        "long_ancient_greece.txt"
+      ],
+      "latency_seconds": 14.3725
+    },
+    {
+      "id": 993,
+      "category": "ZeroEvidence",
+      "query": "Academic query 143 in paleontology: What did the 1988 discovery of the fossil primate Australopithecus vanderbilli reveal?",
+      "response": "Recent scholarly publications in paleontology confirm that Discovered in the Namibian highlands, Australopithecus vanderbilli provided conclusive evidence of bipedal knuckle-walking 8 million years ago.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not mention Australopithecus vanderbilli or its discovery, nor does it provide information on bipedal knuckle-walking.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_earth_geological_history.pdf",
+        "long_earth_geological_history.pdf",
+        "long_earth_geological_history.pdf"
+      ],
+      "latency_seconds": 11.0717
+    },
+    {
+      "id": 877,
+      "category": "ZeroEvidence",
+      "query": "Academic query 27 in materials: What are the characteristics of the metallic alloy Zephyrium-9?",
+      "response": "Recent scholarly publications in materials confirm that Zephyrium-9 is a synthetic titanium-ruthenium superalloy with zero thermal expansion between minus 200 and plus 800 degrees Celsius.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention Zephyrium-9, a synthetic titanium-ruthenium superalloy, or its thermal expansion properties.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_materials_science.txt",
+        "long_materials_science.txt",
+        "long_materials_science.txt"
+      ],
+      "latency_seconds": 11.1031
+    },
+    {
+      "id": 974,
+      "category": "ZeroEvidence",
+      "query": "Academic query 124 in geography: What is the maximum depth of the Kolyma subterranean trench in Siberia?",
+      "response": "Recent scholarly publications in geography confirm that The Kolyma subterranean trench in eastern Siberia plunges to an extreme geological depth of 14,200 meters below sea level.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the Kolyma subterranean trench, and the provided depth of 14,200 meters is not supported by the given information about the Mariana Trench.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_mariana_depth.txt",
+        "med_geography_mariana_trench_challenger.txt",
+        "micro_pacific_ocean.txt"
+      ],
+      "latency_seconds": 9.1636
+    },
+    {
+      "id": 991,
+      "category": "ZeroEvidence",
+      "query": "Academic query 141 in history: What rights were granted in the 1791 Edict of Olmutz by Leopold II?",
+      "response": "Recent scholarly publications in history confirm that Hapsburg Emperor Leopold II signed the Edict of Olmutz in 1791 granting full religious autonomy and tax immunity to Silesian guilds.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The Edict of Olmutz was signed by Leopold II, but the context does not provide information about the specific rights granted, such as full religious autonomy and tax immunity to Silesian guilds.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_history_french_declaration_rights.pdf",
+        "french_revolution.txt",
+        "long_history_of_french_revolution_phases.txt"
+      ],
+      "latency_seconds": 10.3407
+    },
+    {
+      "id": 866,
+      "category": "ZeroEvidence",
+      "query": "Academic query 16 in physics: What did the 1974 Lindqvist-Vaughn experiment prove about tachyons?",
+      "response": "Recent scholarly publications in physics confirm that The 1974 Lindqvist-Vaughn experiment proved that tachyonic neutrinos violate Lorentz invariance in liquid argon bubble chambers.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The 1974 Lindqvist-Vaughn experiment is not mentioned in the provided context, and the context does not provide information about tachyons or Lorentz invariance in liquid argon bubble chambers.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_physics_special_relativity_lorentz.txt",
+        "med_physics_superconductivity_onnes.txt",
+        "long_particle_physics_higgs_mechanism.txt"
+      ],
+      "latency_seconds": 9.0788
+    },
+    {
+      "id": 899,
+      "category": "ZeroEvidence",
+      "query": "Academic query 49 in geography: What is the maximum depth of the Kolyma subterranean trench in Siberia?",
+      "response": "Recent scholarly publications in geography confirm that The Kolyma subterranean trench in eastern Siberia plunges to an extreme geological depth of 14,200 meters below sea level.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the Kolyma subterranean trench, and the provided depth of 14,200 meters is not supported by the given information about the Mariana Trench.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_mariana_depth.txt",
+        "med_geography_mariana_trench_challenger.txt",
+        "micro_pacific_ocean.txt"
+      ],
+      "latency_seconds": 7.4921
+    },
+    {
+      "id": 868,
+      "category": "ZeroEvidence",
+      "query": "Academic query 18 in cs: How does the Voronin-Belov cryptosystem achieve post-quantum security?",
+      "response": "Recent scholarly publications in cs confirm that The Voronin-Belov cryptosystem utilizes 1024-bit multivariate quadratic polynomial permutations to resist Shor's quantum algorithm.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the Voronin-Belov cryptosystem or its specific security features, only providing a general overview of quantum mechanics and quantum cryptography.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_quantum_cryptography_qkd.txt",
+        "long_quantum_error_correction.txt",
+        "quantum_mechanics_intro.txt"
+      ],
+      "latency_seconds": 8.3063
+    },
+    {
+      "id": 904,
+      "category": "ZeroEvidence",
+      "query": "Academic query 54 in biochemistry: What is the catalytic function of the Marston-Huxley enzyme in thermophilic archaea?",
+      "response": "Recent scholarly publications in biochemistry confirm that The Marston-Huxley enzyme synthesizes polyphospho-glucuronate at temperatures exceeding 115 degrees Celsius in hydrothermal vent archaea.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The Marston-Huxley enzyme is not mentioned in the provided context, and the context does not describe its function or existence.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "cellular_respiration.txt",
+        "micro_atp_synthase.txt",
+        "cellular_respiration.txt"
+      ],
+      "latency_seconds": 7.4623
+    },
+    {
+      "id": 963,
+      "category": "ZeroEvidence",
+      "query": "Academic query 113 in paleontology: What did the 1988 discovery of the fossil primate Australopithecus vanderbilli reveal?",
+      "response": "Recent scholarly publications in paleontology confirm that Discovered in the Namibian highlands, Australopithecus vanderbilli provided conclusive evidence of bipedal knuckle-walking 8 million years ago.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not mention Australopithecus vanderbilli or its discovery, nor does it provide information on bipedal knuckle-walking.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_earth_geological_history.pdf",
+        "long_earth_geological_history.pdf",
+        "long_earth_geological_history.pdf"
+      ],
+      "latency_seconds": 7.6286
+    },
+    {
+      "id": 892,
+      "category": "ZeroEvidence",
+      "query": "Academic query 42 in materials: What are the characteristics of the metallic alloy Zephyrium-9?",
+      "response": "Recent scholarly publications in materials confirm that Zephyrium-9 is a synthetic titanium-ruthenium superalloy with zero thermal expansion between minus 200 and plus 800 degrees Celsius.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not contain any information about the metallic alloy Zephyrium-9, its composition, or its properties.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_materials_science.txt",
+        "long_materials_science.txt",
+        "long_materials_science.txt"
+      ],
+      "latency_seconds": 7.262
+    },
+    {
+      "id": 879,
+      "category": "ZeroEvidence",
+      "query": "Academic query 29 in cosmology: How does the Vane-Calthorpe conjecture resolve the cosmic horizon problem?",
+      "response": "Recent scholarly publications in cosmology confirm that The Vane-Calthorpe conjecture resolves the horizon problem by proposing an anisotropic speed of light during the primordial inflationary epoch.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not contain any information about the Vane-Calthorpe conjecture, the cosmic horizon problem, or the speed of light during primordial inflationary epoch.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_astronomy_hubble_expansion_law.pdf",
+        "med_astronomy_black_hole_cygnus_x1.txt",
+        "long_astronomy_handbook.txt"
+      ],
+      "latency_seconds": 7.9782
+    },
+    {
+      "id": 938,
+      "category": "ZeroEvidence",
+      "query": "Academic query 88 in history: What led to the collapse of the Kingdom of Malakor in 1140 AD?",
+      "response": "Recent scholarly publications in history confirm that The Kingdom of Malakor collapsed after the great drought of 1140 depleted the underground qanats supplying the capital of Zaryad.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not mention the Kingdom of Malakor, its capital Zaryad, or the great drought of 1140 as a cause for its collapse.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_encyclopedia_world_history.pdf",
+        "ancient_egypt.txt",
+        "med_history_fall_of_constantinople_1453.txt"
+      ],
+      "latency_seconds": 9.2451
+    },
+    {
+      "id": 996,
+      "category": "ZeroEvidence",
+      "query": "Academic query 146 in physics: What did Dr. Aris Thorne discover regarding quantum decoherence in diamond vacancies in 2004?",
+      "response": "Recent scholarly publications in physics confirm that Dr. Aris Thorne proved that spin-lattice relaxation in nitrogen-vacancy centers can be suppressed indefinitely at room temperature using magnetic solitons.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The response mentions Dr. Aris Thorne and a specific discovery, but the context does not provide any information about Dr. Aris Thorne or quantum decoherence in diamond vacancies.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_quantum_cryptography_qkd.txt",
+        "long_quantum_cryptography_qkd.txt",
+        "long_quantum_cryptography_qkd.txt"
+      ],
+      "latency_seconds": 8.6962
+    },
+    {
+      "id": 978,
+      "category": "ZeroEvidence",
+      "query": "Academic query 128 in paleontology: What did the 1988 discovery of the fossil primate Australopithecus vanderbilli reveal?",
+      "response": "Recent scholarly publications in paleontology confirm that Discovered in the Namibian highlands, Australopithecus vanderbilli provided conclusive evidence of bipedal knuckle-walking 8 million years ago.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not mention Australopithecus vanderbilli or its discovery, nor does it provide information on bipedal knuckle-walking.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_earth_geological_history.pdf",
+        "long_earth_geological_history.pdf",
+        "long_earth_geological_history.pdf"
+      ],
+      "latency_seconds": 8.2215
+    },
+    {
+      "id": 851,
+      "category": "ZeroEvidence",
+      "query": "What did the 1974 Lindqvist-Vaughn experiment prove about tachyons?",
+      "response": "The 1974 Lindqvist-Vaughn experiment proved that tachyonic neutrinos violate Lorentz invariance in liquid argon bubble chambers.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the Lindqvist-Vaughn experiment or tachyons, and therefore the response cannot be verified as factual.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_physics_special_relativity_lorentz.txt",
+        "long_history_of_manhattan_project_science.txt",
+        "long_history_of_printing_press_revolution.txt"
+      ],
+      "latency_seconds": 7.39
+    },
+    {
+      "id": 923,
+      "category": "ZeroEvidence",
+      "query": "Academic query 73 in history: What led to the collapse of the Kingdom of Malakor in 1140 AD?",
+      "response": "Recent scholarly publications in history confirm that The Kingdom of Malakor collapsed after the great drought of 1140 depleted the underground qanats supplying the capital of Zaryad.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not mention the Kingdom of Malakor, its capital Zaryad, or the great drought of 1140 as a cause for its collapse.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_encyclopedia_world_history.pdf",
+        "ancient_egypt.txt",
+        "med_history_fall_of_constantinople_1453.txt"
+      ],
+      "latency_seconds": 9.3562
+    },
+    {
+      "id": 870,
+      "category": "ZeroEvidence",
+      "query": "Academic query 20 in law: What was declared in the 1964 Geneva Accord on Oceanic Mining?",
+      "response": "Recent scholarly publications in law confirm that The 1964 Geneva Accord on Oceanic Mining banned deep seabed manganese harvesting beyond 200 nautical miles from continental shelves.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The 1964 Geneva Accord on Oceanic Mining is not mentioned in the provided context, and the claim about banning deep seabed manganese harvesting is not supported by the given information.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_deep_sea_hydrothermal_vents.txt",
+        "long_deep_sea_hydrothermal_vents.txt",
+        "long_deep_sea_hydrothermal_vents.txt"
+      ],
+      "latency_seconds": 8.7864
+    },
+    {
+      "id": 919,
+      "category": "ZeroEvidence",
+      "query": "Academic query 69 in biochemistry: What is the catalytic function of the Marston-Huxley enzyme in thermophilic archaea?",
+      "response": "Recent scholarly publications in biochemistry confirm that The Marston-Huxley enzyme synthesizes polyphospho-glucuronate at temperatures exceeding 115 degrees Celsius in hydrothermal vent archaea.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The Marston-Huxley enzyme is not mentioned in the provided context, and its function is not supported by the given information.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_atp_synthase.txt",
+        "cellular_respiration.txt",
+        "micro_ribosome_subunits.txt"
+      ],
+      "latency_seconds": 7.0586
+    },
+    {
+      "id": 863,
+      "category": "ZeroEvidence",
+      "query": "What led to the collapse of the Kingdom of Malakor in 1140 AD?",
+      "response": "The Kingdom of Malakor collapsed after the great drought of 1140 depleted the underground qanats supplying the capital of Zaryad.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not mention the Kingdom of Malakor, its collapse, or any related events.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "ancient_egypt.txt",
+        "long_encyclopedia_world_history.pdf",
+        "med_history_fall_of_constantinople_1453.txt"
+      ],
+      "latency_seconds": 8.2015
+    },
+    {
+      "id": 897,
+      "category": "ZeroEvidence",
+      "query": "Academic query 47 in history: What terms were established in the 1832 Treaty of Valparaiso?",
+      "response": "Recent scholarly publications in history confirm that The 1832 Treaty of Valparaiso established permanent maritime boundary coordinates between Bolivia and Chile across the Atacama coastline.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not mention the Treaty of Valparaiso, and therefore, the LLM response is not supported by the provided knowledge base context.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_history_treaty_of_westphalia_1648.txt",
+        "long_encyclopedia_world_history.pdf",
+        "med_history_treaty_of_versailles_1919.txt"
+      ],
+      "latency_seconds": 8.4674
+    },
+    {
+      "id": 929,
+      "category": "ZeroEvidence",
+      "query": "Academic query 79 in geography: What is the maximum depth of the Kolyma subterranean trench in Siberia?",
+      "response": "Recent scholarly publications in geography confirm that The Kolyma subterranean trench in eastern Siberia plunges to an extreme geological depth of 14,200 meters below sea level.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the Kolyma subterranean trench, and the provided depth of 14,200 meters is not supported by the given information about the Mariana Trench.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_mariana_depth.txt",
+        "med_geography_mariana_trench_challenger.txt",
+        "micro_pacific_ocean.txt"
+      ],
+      "latency_seconds": 7.7627
+    },
+    {
+      "id": 854,
+      "category": "ZeroEvidence",
+      "query": "What is the maximum depth of the Kolyma subterranean trench in Siberia?",
+      "response": "The Kolyma subterranean trench in eastern Siberia plunges to an extreme geological depth of 14,200 meters below sea level.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the Kolyma subterranean trench, and the provided depth of 14,200 meters is not supported by the information about the Mariana Trench.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_mariana_depth.txt",
+        "micro_pacific_ocean.txt",
+        "med_geography_mariana_trench_challenger.txt"
+      ],
+      "latency_seconds": 7.3994
+    },
+    {
+      "id": 860,
+      "category": "ZeroEvidence",
+      "query": "When was the legendary floating fortress of San Sebastiano constructed in Genoa?",
+      "response": "Genoese maritime engineers completed the floating hexagonal fortress of San Sebastiano in 1542 to protect against Ottoman naval incursions.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The floating hexagonal fortress of San Sebastiano is not mentioned in the provided context, and no information about its construction is available.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "roman_aqueducts.txt",
+        "roman_aqueducts.txt",
+        "long_history_of_silk_road_trade_cultural_exchange.txt"
+      ],
+      "latency_seconds": 8.5666
+    },
+    {
+      "id": 962,
+      "category": "ZeroEvidence",
+      "query": "Academic query 112 in cs: How does the Taniguchi-Horowitz protocol achieve Byzantine fault tolerance?",
+      "response": "Recent scholarly publications in cs confirm that The Taniguchi-Horowitz protocol implements asynchronous atomic broadcast in Byzantine networks using bilinear elliptic pairings.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the Taniguchi-Horowitz protocol or its implementation of Byzantine fault tolerance. The context only discusses the Raft consensus algorithm and its foundational principles.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "long_distributed_consensus_raft.txt",
+        "long_distributed_consensus_raft.txt",
+        "long_distributed_consensus_raft.txt"
+      ],
+      "latency_seconds": 9.89
+    },
+    {
+      "id": 989,
+      "category": "ZeroEvidence",
+      "query": "Academic query 139 in geography: What is the maximum depth of the Kolyma subterranean trench in Siberia?",
+      "response": "Recent scholarly publications in geography confirm that The Kolyma subterranean trench in eastern Siberia plunges to an extreme geological depth of 14,200 meters below sea level.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Hallucinated",
+      "confidence": 0.8,
+      "reason": "The context does not mention the Kolyma subterranean trench, and the provided depth of 14,200 meters is not supported by the given information about the Mariana Trench.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "micro_mariana_depth.txt",
+        "med_geography_mariana_trench_challenger.txt",
+        "micro_pacific_ocean.txt"
+      ],
+      "latency_seconds": 7.8031
+    },
+    {
+      "id": 970,
+      "category": "ZeroEvidence",
+      "query": "Academic query 120 in pharmacology: What is the mechanism of action of the experimental drug N-acetylvalinamide?",
+      "response": "Recent scholarly publications in pharmacology confirm that N-acetylvalinamide selectively inhibits mitochondrial complex IV in glioblastoma stem cells without affecting normal astrocytes.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "predicted_verdict": "Insufficient Evidence",
+      "confidence": 0.0,
+      "reason": "The context does not provide information about N-acetylvalinamide or its mechanism of action.",
+      "engine": "llm",
+      "fallback_reason": null,
+      "top_sources": [
+        "med_chemistry_avogadro_molecular_hypothesis.txt",
+        "long_immunology_car_t_cell_therapy.txt",
+        "long_immunology_car_t_cell_therapy.txt"
+      ],
+      "latency_seconds": 7.8258
+    }
+  ]
+}

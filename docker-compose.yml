@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Primary Vector Database with pgvector extension pre-installed
   db:
@@ -10,8 +8,10 @@ services:
       POSTGRES_DB: groundtruth
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    # Host port 5433 so it doesn't clash with a local PostgreSQL on 5432.
+    # The app container reaches this DB over the compose network as db:5432.
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -27,9 +27,16 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
+    # Same variable names as backend/config.py and .env.example.
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/groundtruth
-      - OLLAMA_HOST=http://host.docker.internal:11434
+      # Ollama runs on the host (not in this compose file). host.docker.internal resolves to the host on
+      # Docker Desktop; the extra_hosts entry below makes it work on Linux too.
+      - OLLAMA_URL=http://host.docker.internal:11434
+      # In a container, a missing database should stop the app rather than silently use SQLite.
+      - ALLOW_SQLITE_FALLBACK=false
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy

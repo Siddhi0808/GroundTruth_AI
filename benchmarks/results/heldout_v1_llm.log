@@ -1,0 +1,27 @@
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 2380.89it/s]
+  25/150
+  50/150
+  75/150
+  100/150
+  125/150
+  150/150
+{
+ "out": "/Users/siddhijain/Coding/GroundTruthAI/benchmarks/results/heldout_v1_llm.json",
+ "n": 150,
+ "accuracy": 72.67,
+ "macro_f1": 71.61,
+ "not_supported": {
+  "precision": 100.0,
+  "recall": 62.73,
+  "f1": 77.09,
+  "support": 110
+ },
+ "supported": {
+  "precision": 49.38,
+  "recall": 100.0,
+  "f1": 66.12,
+  "support": 40
+ },
+ "three_way_accuracy": 72.0,
+ "llm_fallbacks": {}
+}

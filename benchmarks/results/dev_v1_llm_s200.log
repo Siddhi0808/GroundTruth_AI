@@ -1,0 +1,32 @@
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 3091.60it/s]
+  25/200
+  50/200
+  75/200
+LLM judge unavailable (ReadTimeout contacting Ollama); using heuristic judge
+  100/200
+  125/200
+  150/200
+  175/200
+  200/200
+{
+ "out": "/Users/siddhijain/Coding/GroundTruthAI/benchmarks/results/dev_v1_1000_llm_dedup_s200.json",
+ "n": 200,
+ "accuracy": 89.5,
+ "macro_f1": 84.31,
+ "not_supported": {
+  "precision": 100.0,
+  "recall": 87.5,
+  "f1": 93.33,
+  "support": 168
+ },
+ "supported": {
+  "precision": 60.38,
+  "recall": 100.0,
+  "f1": 75.29,
+  "support": 32
+ },
+ "three_way_accuracy": 77.5,
+ "llm_fallbacks": {
+  "llm_unavailable": 1
+ }
+}

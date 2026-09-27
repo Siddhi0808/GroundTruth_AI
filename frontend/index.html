@@ -77,9 +77,9 @@
 
                 <!-- Pipeline Status Tracker -->
                 <div id="pipeline-status" class="pipeline-status hidden">
-                    <div class="step step-1"><span>1</span> Context Retrieval</div>
-                    <div class="step step-2"><span>2</span> Claim Verification</div>
-                    <div class="step step-3"><span>3</span> Verdict Judgment</div>
+                    <div class="step step-1"><span>1</span> Retrieving evidence</div>
+                    <div class="step step-2"><span>2</span> Judging (LLM or rules)</div>
+                    <div class="step step-3"><span>3</span> Verdict</div>
                 </div>
 
                 <div id="result-content" class="result-content hidden">
@@ -96,6 +96,7 @@
                     <div class="progress-bar-container">
                         <div class="progress-bar" id="confidence-bar"></div>
                     </div>
+                    <p class="engine-note" id="engine-note"></p>
 
                     <!-- Reason Box -->
                     <div class="explanation-box">

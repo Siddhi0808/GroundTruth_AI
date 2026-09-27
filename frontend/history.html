@@ -25,23 +25,44 @@
     </main>
 
     <script>
+        // User-controlled values (query, response, verdict, engine) are set with textContent only.
+        const COLORS = { 'Supported': '#10b981', 'Hallucinated': '#ef4444' };
+
+        function el(tag, text, style) {
+            const node = document.createElement(tag);
+            if (text !== undefined) node.textContent = text;
+            if (style) node.setAttribute('style', style);
+            return node;
+        }
+
         async function fetchHistory() {
+            const container = document.getElementById('history-list');
             try {
-                const res = await fetch('/api/history');
+                const res = await fetch('/api/history?limit=50');
                 const data = await res.json();
-                const container = document.getElementById('history-list');
-                if(!data || data.length === 0) {
-                    container.innerHTML = '<p>No history records found.</p>';
+                if (!res.ok) {
+                    const d = data && data.detail;
+                    throw new Error((d && d.message) || `status ${res.status}`);
+                }
+                container.replaceChildren();
+                if (!data || data.length === 0) {
+                    container.appendChild(el('p', 'No history records found.'));
                     return;
                 }
-                container.innerHTML = data.map(item => `
-                    <div style="border-bottom: 1px solid #374151; padding: 1rem 0;">
-                        <span style="color: ${item.verdict === 'Supported' ? '#10b981' : '#ef4444'}; font-weight: bold;">[${item.verdict}]</span>
-                        <strong>Query:</strong> ${item.query}<br>
-                        <small style="color: #9ca3af;">Response: ${item.llm_response}</small>
-                    </div>
-                `).join('');
-            } catch(e) {}
+                data.forEach(item => {
+                    const row = el('div', undefined, 'border-bottom: 1px solid #374151; padding: 1rem 0;');
+                    row.appendChild(el('span', `[${item.verdict}] `, `color: ${COLORS[item.verdict] || '#f59e0b'}; font-weight: bold;`));
+                    row.appendChild(el('strong', 'Query: '));
+                    row.appendChild(document.createTextNode(item.query));
+                    row.appendChild(el('br'));
+                    row.appendChild(el('small', `Response: ${item.llm_response}`, 'color: #9ca3af;'));
+                    row.appendChild(el('br'));
+                    row.appendChild(el('small', `Engine: ${item.engine || 'unknown (recorded before engine tracking)'} · Confidence: ${item.confidence}%`, 'color: #6b7280;'));
+                    container.appendChild(row);
+                });
+            } catch (e) {
+                container.replaceChildren(el('p', `Could not load history: ${e.message}`, 'color: #ef4444;'));
+            }
         }
         fetchHistory();
     </script>

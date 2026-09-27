@@ -560,7 +560,7 @@ def build_benchmark_1000():
     print(f"Total benchmark test cases compiled: {len(test_cases)}")
     
     # Save to json file
-    out_path = Path("test_cases_1000.json")
+    out_path = Path(__file__).resolve().parent.parent / "benchmarks" / "datasets" / "dev_v1_1000.json"
     out_path.write_text(json.dumps(test_cases, indent=2), encoding="utf-8")
     print(f"Saved to {out_path}")
 

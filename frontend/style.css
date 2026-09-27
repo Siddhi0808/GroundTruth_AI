@@ -222,6 +222,18 @@ input[type="text"]:focus, textarea:focus {
     color: var(--accent-red);
 }
 
+.verdict-banner.insufficient {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid #f59e0b;
+    color: #f59e0b;
+}
+
+.engine-note {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0.5rem 0 1rem;
+}
+
 .verdict-title {
     font-size: 1.5rem;
     font-weight: 700;

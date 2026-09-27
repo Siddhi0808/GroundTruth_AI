@@ -1,0 +1,1507 @@
+{
+  "name": "heldout_v1",
+  "created": "2026-09-26",
+  "provenance": "Hand-written by the Claude Code assistant from CORE FACT lines in data/documents/long_*.txt; out-of-corpus topics verified absent from extracted corpus text. Written before rule-engine changes were evaluated on it. Never used for tuning.",
+  "cases": [
+    {
+      "id": 1,
+      "category": "Supported",
+      "query": "What shape are antibodies and what do they bind to?",
+      "response": "Antibodies are Y-shaped proteins, also called immunoglobulins, that bind specifically to antigen epitopes on foreign pathogens.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_immunology_handbook.txt",
+      "source_fact": "Antibodies, or immunoglobulins, are Y-shaped proteins that bind specifically to foreign pathogenic antigen epitopes."
+    },
+    {
+      "id": 2,
+      "category": "Supported",
+      "query": "What school did Aristotle found?",
+      "response": "Aristotle established the Lyceum.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Aristotle established the Lyceum and made pioneering contributions to formal logic, biology, ethics, and metaphysics."
+    },
+    {
+      "id": 3,
+      "category": "Supported",
+      "query": "Where did direct democracy first develop?",
+      "response": "The first documented direct democracy developed in Classical Athens in the fifth century BC, under Pericles.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Classical Athens developed the world's first documented direct democracy during the fifth century BC under Pericles."
+    },
+    {
+      "id": 4,
+      "category": "Supported",
+      "query": "What properties do cryptographic hash functions have?",
+      "response": "A cryptographic hash function produces a fixed-length, deterministic digest, and inverting it is computationally infeasible.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_modern_cryptography.txt",
+      "source_fact": "Cryptographic hash functions generate fixed-length deterministic digests that are computationally infeasible to invert."
+    },
+    {
+      "id": 5,
+      "category": "Supported",
+      "query": "In what language was Dante's Divine Comedy written?",
+      "response": "Dante Alighieri wrote the Divine Comedy in the Italian vernacular of the fourteenth century.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "Dante Alighieri's Divine Comedy, written in fourteenth-century Italian vernacular, established epic tripartite cosmological structure."
+    },
+    {
+      "id": 6,
+      "category": "Supported",
+      "query": "What makes up an ecosystem?",
+      "response": "An ecosystem is made of a community of interacting organisms together with their physical, abiotic environment.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_ecology_ecosystem_dynamics.txt",
+      "source_fact": "Ecosystems consist of biological communities of interacting organisms and their physical abiotic environment."
+    },
+    {
+      "id": 7,
+      "category": "Supported",
+      "query": "What concept formalizes game theory?",
+      "response": "Game theory studies strategic decision-making and is formalized by the Nash equilibrium.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_microeconomics_theory.txt",
+      "source_fact": "Game theory analyzes strategic interactive decision-making, formalized by the concept of the Nash equilibrium."
+    },
+    {
+      "id": 8,
+      "category": "Supported",
+      "query": "What did Chaucer's Canterbury Tales portray?",
+      "response": "Chaucer's Canterbury Tales gave a panoramic portrait of medieval English society.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "Geoffrey Chaucer's Canterbury Tales provided a diverse cross-sectional panoramic portrait of medieval English society."
+    },
+    {
+      "id": 9,
+      "category": "Supported",
+      "query": "Why are keystone species important?",
+      "response": "Keystone species have a disproportionately large impact on community biodiversity compared with their abundance.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_ecology_ecosystem_dynamics.txt",
+      "source_fact": "Keystone species exert disproportionately large regulatory impacts on community biodiversity relative to their physical abundance."
+    },
+    {
+      "id": 10,
+      "category": "Supported",
+      "query": "What is laminar flow?",
+      "response": "Laminar flow consists of smooth, parallel fluid layers with minimal mixing and no chaotic turbulence.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_fluid_mechanics.txt",
+      "source_fact": "Laminar fluid flow is characterized by smooth, parallel fluid layers exhibiting minimal lateral mixing or chaotic turbulence."
+    },
+    {
+      "id": 11,
+      "category": "Supported",
+      "query": "When was Don Quixote published?",
+      "response": "Cervantes published Don Quixote in two parts, in 1605 and 1615.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "Miguel de Cervantes published Don Quixote in two parts in 1605 and 1615, widely considered the first modern Western novel."
+    },
+    {
+      "id": 12,
+      "category": "Supported",
+      "query": "How does phloem transport sugars?",
+      "response": "Phloem moves sucrose and other photoassimilates in both directions using pressure-flow bulk transport.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_botany_plant_physiology.txt",
+      "source_fact": "Phloem tissue translocates synthesized organic photoassimilates and sucrose bidirectionally via pressure-flow bulk transport."
+    },
+    {
+      "id": 13,
+      "category": "Supported",
+      "query": "What did Plato found?",
+      "response": "Plato founded the Academy in Athens around 387 BC and wrote The Republic.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Plato founded the Academy in Athens around 387 BC and authored foundational dialogues including The Republic."
+    },
+    {
+      "id": 14,
+      "category": "Supported",
+      "query": "When was RSA introduced?",
+      "response": "RSA, which introduced public-key cryptography with linked public and private key pairs, dates to 1977.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_modern_cryptography.txt",
+      "source_fact": "Public-key asymmetric cryptography utilizes mathematically linked pairs of public and private keys, as introduced by RSA in 1977."
+    },
+    {
+      "id": 15,
+      "category": "Supported",
+      "query": "What do ribosomes do?",
+      "response": "Ribosomes translate messenger RNA into polypeptide proteins.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_cell_biology_principles.txt",
+      "source_fact": "Ribosomes are ribonucleoprotein complexes responsible for translating messenger RNA transcripts into polypeptide proteins."
+    },
+    {
+      "id": 16,
+      "category": "Supported",
+      "query": "Can P-waves travel through liquids?",
+      "response": "Yes. Seismic P-waves are longitudinal compressional waves that travel through both solid rock and liquid layers.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "Seismic P-waves are longitudinal compressional waves that travel through both solid rock and liquid planetary layers."
+    },
+    {
+      "id": 17,
+      "category": "Supported",
+      "query": "What do S-waves reveal about Earth's core?",
+      "response": "Because S-waves are transverse shear waves that cannot travel through liquids, they show that Earth's outer core is liquid.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "Seismic S-waves are transverse shear waves that cannot propagate through liquids, proving the Earth's outer core is liquid."
+    },
+    {
+      "id": 18,
+      "category": "Supported",
+      "query": "What method is Socrates known for?",
+      "response": "Socrates developed the elenctic method, a dialectical style of critical questioning of moral assumptions.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Socrates developed the elenctic dialectical method of inquiry, emphasizing critical questioning of moral assumptions."
+    },
+    {
+      "id": 19,
+      "category": "Supported",
+      "query": "What are Earth's layers?",
+      "response": "Earth has a solid silicate crust, a semi-solid mantle, a liquid outer core, and a solid iron-nickel inner core.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "The Earth is layered into a silicate solid crust, a viscous semi-solid mantle, a liquid outer core, and a solid iron-nickel inner core."
+    },
+    {
+      "id": 20,
+      "category": "Supported",
+      "query": "What do the Navier-Stokes equations describe?",
+      "response": "The Navier-Stokes equations are non-linear partial differential equations that describe the motion of viscous fluids.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_fluid_mechanics.txt",
+      "source_fact": "The Navier-Stokes equations are fundamental non-linear partial differential equations describing the motion of viscous fluids."
+    },
+    {
+      "id": 21,
+      "category": "Supported",
+      "query": "What does the Reynolds number measure?",
+      "response": "The Reynolds number is the dimensionless ratio of inertial forces to viscous forces in a flowing fluid.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_fluid_mechanics.txt",
+      "source_fact": "The Reynolds number is a dimensionless quantity measuring the ratio of inertial forces to viscous forces in fluid flow."
+    },
+    {
+      "id": 22,
+      "category": "Supported",
+      "query": "What characterized the Western Front?",
+      "response": "Trench warfare, barbed wire, and poison gas characterized the Western Front.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "The Western Front was characterized by protracted trench warfare, barbed wire entanglements, and poison gas deployments."
+    },
+    {
+      "id": 23,
+      "category": "Supported",
+      "query": "What event precipitated the crisis of 1914?",
+      "response": "The assassination of Archduke Franz Ferdinand in Sarajevo in June 1914 precipitated the crisis.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "The assassination of Archduke Franz Ferdinand of Austria in Sarajevo in June 1914 precipitated the crisis."
+    },
+    {
+      "id": 24,
+      "category": "Supported",
+      "query": "What does cell theory state?",
+      "response": "Cell theory states that all living organisms are made of one or more cells, the basic unit of life.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_cell_biology_principles.txt",
+      "source_fact": "The cell theory states that all living organisms are composed of one or more cells, the fundamental unit of life."
+    },
+    {
+      "id": 25,
+      "category": "Supported",
+      "query": "What are the lobes of the cerebral cortex?",
+      "response": "The cerebral cortex has frontal, parietal, temporal, and occipital lobes.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_neuroscience_fundamentals.txt",
+      "source_fact": "The cerebral cortex is divided into frontal, parietal, temporal, and occipital lobes supporting specialized cognition."
+    },
+    {
+      "id": 26,
+      "category": "Supported",
+      "query": "What generates Earth's magnetic field?",
+      "response": "Earth's magnetic field comes from a geodynamo driven by convection of liquid iron in the outer core.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "The geomagnetic field is generated through a self-sustaining geodynamo driven by convective fluid motion in the liquid iron outer core."
+    },
+    {
+      "id": 27,
+      "category": "Supported",
+      "query": "How is the cell membrane structured?",
+      "response": "The cell membrane is a phospholipid bilayer with hydrophilic heads facing outward and hydrophobic fatty acid tails inside.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_cell_biology_principles.txt",
+      "source_fact": "The phospholipid bilayer of the cell membrane possesses hydrophilic outer heads and hydrophobic inner fatty acid tails."
+    },
+    {
+      "id": 28,
+      "category": "Supported",
+      "query": "What drives thermohaline circulation?",
+      "response": "Thermohaline circulation is driven by differences in water density, temperature, and salinity.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_climate_science.txt",
+      "source_fact": "Thermohaline circulation acts as a global ocean conveyor belt driven by water density, temperature, and salinity gradients."
+    },
+    {
+      "id": 29,
+      "category": "Supported",
+      "query": "How many plays did Shakespeare write?",
+      "response": "Shakespeare wrote 39 plays and 154 sonnets.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "William Shakespeare wrote thirty-nine plays and 154 sonnets, transforming English dramatic literature in the Elizabethan era."
+    },
+    {
+      "id": 30,
+      "category": "Supported",
+      "query": "What does xylem transport?",
+      "response": "Xylem carries water and dissolved minerals upward from the roots.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_botany_plant_physiology.txt",
+      "source_fact": "Xylem tissue transports water and dissolved inorganic minerals upward from roots through capillary action and transpirational pull."
+    },
+    {
+      "id": 31,
+      "category": "Supported",
+      "query": "How much has atmospheric carbon dioxide risen?",
+      "response": "Atmospheric carbon dioxide has risen from about 280 ppm before industrialization to over 420 ppm today.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_climate_science.txt",
+      "source_fact": "Atmospheric carbon dioxide concentrations have risen from pre-industrial levels of 280 ppm to over 420 ppm today."
+    },
+    {
+      "id": 32,
+      "category": "Supported",
+      "query": "How much ATP does aerobic respiration yield?",
+      "response": "Aerobic cellular respiration yields roughly 30 to 32 ATP per glucose molecule.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_cell_biology_principles.txt",
+      "source_fact": "Cellular respiration in the presence of oxygen breaks down glucose to yield approximately 30 to 32 ATP molecules."
+    },
+    {
+      "id": 33,
+      "category": "Supported",
+      "query": "When was ENIAC completed?",
+      "response": "ENIAC was completed in 1945 at the University of Pennsylvania.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_history_of_computing.txt",
+      "source_fact": "ENIAC, completed in 1945 at the University of Pennsylvania, was the first programmable general-purpose electronic digital computer."
+    },
+    {
+      "id": 34,
+      "category": "Supported",
+      "query": "When was AES established?",
+      "response": "NIST established the Advanced Encryption Standard in 2001, based on the Rijndael cipher.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_modern_cryptography.txt",
+      "source_fact": "The Advanced Encryption Standard (AES) was established by NIST in 2001 utilizing Rijndael block cipher specifications."
+    },
+    {
+      "id": 35,
+      "category": "Supported",
+      "query": "What is the Chandrasekhar limit?",
+      "response": "The Chandrasekhar limit is about 1.4 solar masses, the maximum mass of a stable white dwarf.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_astrophysics_stellar_evolution.txt",
+      "source_fact": "The Chandrasekhar limit of approximately 1.4 solar masses defines the maximum theoretical mass of a stable white dwarf star."
+    },
+    {
+      "id": 36,
+      "category": "Supported",
+      "query": "How many neurons are in the human nervous system?",
+      "response": "The human nervous system has about 86 billion neurons.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_neuroscience_fundamentals.txt",
+      "source_fact": "The human nervous system contains an estimated 86 billion neurons interconnected by trillions of synaptic junctions."
+    },
+    {
+      "id": 37,
+      "category": "Supported",
+      "query": "When did the cosmic microwave background originate?",
+      "response": "The cosmic microwave background dates from about 380,000 years after the Big Bang.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_astronomy_handbook.txt",
+      "source_fact": "The cosmic microwave background radiation is thermal relic radiation dating from approximately 380,000 years after the Big Bang."
+    },
+    {
+      "id": 38,
+      "category": "Supported",
+      "query": "When did World War I take place?",
+      "response": "World War I lasted from July 1914 to November 1918.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "World War I was a global military conflict centered in Europe that lasted from July 1914 until November 1918."
+    },
+    {
+      "id": 39,
+      "category": "Supported",
+      "query": "When was the Treaty of Versailles signed?",
+      "response": "The Treaty of Versailles was signed in June 1919, ending the war between Germany and the Allies.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "The Treaty of Versailles, signed in June 1919, officially ended the state of war between Germany and the Allied Powers."
+    },
+    {
+      "id": 40,
+      "category": "Supported",
+      "query": "When was the silicon microchip invented?",
+      "response": "The silicon microchip was invented in 1958.",
+      "expected_verdict": "Supported",
+      "expected_3way": "Supported",
+      "source_doc": "long_history_of_computing.txt",
+      "source_fact": "The invention of the silicon microchip in 1958 enabled dramatic reductions in physical size and operational power consumption."
+    },
+    {
+      "id": 41,
+      "category": "AdversarialInversion",
+      "query": "What do antibodies bind to?",
+      "response": "Antibodies are Y-shaped proteins that bind randomly to any molecule rather than to specific antigen epitopes.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_immunology_handbook.txt",
+      "source_fact": "Antibodies, or immunoglobulins, are Y-shaped proteins that bind specifically to foreign pathogenic antigen epitopes."
+    },
+    {
+      "id": 42,
+      "category": "AdversarialInversion",
+      "query": "What were Aristotle's contributions?",
+      "response": "Aristotle rejected formal logic and made no contributions to biology.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Aristotle established the Lyceum and made pioneering contributions to formal logic, biology, ethics, and metaphysics."
+    },
+    {
+      "id": 43,
+      "category": "AdversarialInversion",
+      "query": "How was Classical Athens governed?",
+      "response": "Classical Athens never practiced direct democracy; it was ruled by an absolute monarch under Pericles.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Classical Athens developed the world's first documented direct democracy during the fifth century BC under Pericles."
+    },
+    {
+      "id": 44,
+      "category": "AdversarialInversion",
+      "query": "Can cryptographic hashes be inverted?",
+      "response": "Cryptographic hash functions produce variable-length digests that are easy to invert.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_modern_cryptography.txt",
+      "source_fact": "Cryptographic hash functions generate fixed-length deterministic digests that are computationally infeasible to invert."
+    },
+    {
+      "id": 45,
+      "category": "AdversarialInversion",
+      "query": "What language is the Divine Comedy in?",
+      "response": "Dante wrote the Divine Comedy in Latin rather than in the Italian vernacular.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "Dante Alighieri's Divine Comedy, written in fourteenth-century Italian vernacular, established epic tripartite cosmological structure."
+    },
+    {
+      "id": 46,
+      "category": "AdversarialInversion",
+      "query": "What is an ecosystem?",
+      "response": "Ecosystems include only living organisms and exclude the physical abiotic environment.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ecology_ecosystem_dynamics.txt",
+      "source_fact": "Ecosystems consist of biological communities of interacting organisms and their physical abiotic environment."
+    },
+    {
+      "id": 47,
+      "category": "AdversarialInversion",
+      "query": "What does game theory study?",
+      "response": "Game theory ignores strategic interaction and does not use the Nash equilibrium.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_microeconomics_theory.txt",
+      "source_fact": "Game theory analyzes strategic interactive decision-making, formalized by the concept of the Nash equilibrium."
+    },
+    {
+      "id": 48,
+      "category": "AdversarialInversion",
+      "query": "What did the Canterbury Tales depict?",
+      "response": "The Canterbury Tales portrayed only the royal court and did not depict wider medieval English society.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "Geoffrey Chaucer's Canterbury Tales provided a diverse cross-sectional panoramic portrait of medieval English society."
+    },
+    {
+      "id": 49,
+      "category": "AdversarialInversion",
+      "query": "How much do keystone species affect biodiversity?",
+      "response": "Keystone species have a negligible effect on community biodiversity.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ecology_ecosystem_dynamics.txt",
+      "source_fact": "Keystone species exert disproportionately large regulatory impacts on community biodiversity relative to their physical abundance."
+    },
+    {
+      "id": 50,
+      "category": "AdversarialInversion",
+      "query": "Describe laminar flow.",
+      "response": "Laminar flow is chaotic and turbulent, with intense lateral mixing between layers.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_fluid_mechanics.txt",
+      "source_fact": "Laminar fluid flow is characterized by smooth, parallel fluid layers exhibiting minimal lateral mixing or chaotic turbulence."
+    },
+    {
+      "id": 51,
+      "category": "AdversarialInversion",
+      "query": "How was Don Quixote published?",
+      "response": "Don Quixote was published as a single volume and is not considered an early modern novel.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "Miguel de Cervantes published Don Quixote in two parts in 1605 and 1615, widely considered the first modern Western novel."
+    },
+    {
+      "id": 52,
+      "category": "AdversarialInversion",
+      "query": "In which direction does phloem move sugar?",
+      "response": "Phloem transports sucrose in only one direction, downward, by capillary action.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_botany_plant_physiology.txt",
+      "source_fact": "Phloem tissue translocates synthesized organic photoassimilates and sucrose bidirectionally via pressure-flow bulk transport."
+    },
+    {
+      "id": 53,
+      "category": "AdversarialInversion",
+      "query": "What did Plato establish?",
+      "response": "Plato never founded a school and did not write The Republic.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Plato founded the Academy in Athens around 387 BC and authored foundational dialogues including The Republic."
+    },
+    {
+      "id": 54,
+      "category": "AdversarialInversion",
+      "query": "How does public-key cryptography use keys?",
+      "response": "In public-key cryptography the same shared secret key is used for both encryption and decryption.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_modern_cryptography.txt",
+      "source_fact": "Public-key asymmetric cryptography utilizes mathematically linked pairs of public and private keys, as introduced by RSA in 1977."
+    },
+    {
+      "id": 55,
+      "category": "AdversarialInversion",
+      "query": "What do ribosomes translate?",
+      "response": "Ribosomes translate proteins back into messenger RNA.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_cell_biology_principles.txt",
+      "source_fact": "Ribosomes are ribonucleoprotein complexes responsible for translating messenger RNA transcripts into polypeptide proteins."
+    },
+    {
+      "id": 56,
+      "category": "AdversarialInversion",
+      "query": "Do P-waves pass through liquid?",
+      "response": "Seismic P-waves cannot travel through liquid layers.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "Seismic P-waves are longitudinal compressional waves that travel through both solid rock and liquid planetary layers."
+    },
+    {
+      "id": 57,
+      "category": "AdversarialInversion",
+      "query": "What do S-waves show about the outer core?",
+      "response": "S-waves travel easily through liquids, showing that Earth's outer core is solid.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "Seismic S-waves are transverse shear waves that cannot propagate through liquids, proving the Earth's outer core is liquid."
+    },
+    {
+      "id": 58,
+      "category": "AdversarialInversion",
+      "query": "What did Socrates teach about questioning?",
+      "response": "Socrates discouraged questioning and taught that moral assumptions should never be examined.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Socrates developed the elenctic dialectical method of inquiry, emphasizing critical questioning of moral assumptions."
+    },
+    {
+      "id": 59,
+      "category": "AdversarialInversion",
+      "query": "Which of Earth's cores is liquid?",
+      "response": "Earth's outer core is solid while the inner core is liquid.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "The Earth is layered into a silicate solid crust, a viscous semi-solid mantle, a liquid outer core, and a solid iron-nickel inner core."
+    },
+    {
+      "id": 60,
+      "category": "AdversarialInversion",
+      "query": "What kind of equations are the Navier-Stokes equations?",
+      "response": "The Navier-Stokes equations are simple linear equations that apply only to fluids with no viscosity.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_fluid_mechanics.txt",
+      "source_fact": "The Navier-Stokes equations are fundamental non-linear partial differential equations describing the motion of viscous fluids."
+    },
+    {
+      "id": 61,
+      "category": "AdversarialInversion",
+      "query": "What ratio does the Reynolds number express?",
+      "response": "The Reynolds number is the ratio of viscous forces to inertial forces.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_fluid_mechanics.txt",
+      "source_fact": "The Reynolds number is a dimensionless quantity measuring the ratio of inertial forces to viscous forces in fluid flow."
+    },
+    {
+      "id": 62,
+      "category": "AdversarialInversion",
+      "query": "What kind of war was fought on the Western Front?",
+      "response": "The Western Front was a fast war of movement with no trench warfare.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "The Western Front was characterized by protracted trench warfare, barbed wire entanglements, and poison gas deployments."
+    },
+    {
+      "id": 63,
+      "category": "AdversarialInversion",
+      "query": "What happened to Archduke Franz Ferdinand in Sarajevo?",
+      "response": "Archduke Franz Ferdinand survived the attack in Sarajevo, and no assassination took place.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "The assassination of Archduke Franz Ferdinand of Austria in Sarajevo in June 1914 precipitated the crisis."
+    },
+    {
+      "id": 64,
+      "category": "AdversarialInversion",
+      "query": "What does cell theory claim?",
+      "response": "Cell theory holds that many living organisms are not made of cells.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_cell_biology_principles.txt",
+      "source_fact": "The cell theory states that all living organisms are composed of one or more cells, the fundamental unit of life."
+    },
+    {
+      "id": 65,
+      "category": "AdversarialInversion",
+      "query": "How is the cerebral cortex organized?",
+      "response": "The cerebral cortex has no specialized lobes and is a single uniform region.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_neuroscience_fundamentals.txt",
+      "source_fact": "The cerebral cortex is divided into frontal, parietal, temporal, and occipital lobes supporting specialized cognition."
+    },
+    {
+      "id": 66,
+      "category": "AdversarialInversion",
+      "query": "Where does Earth's magnetic field come from?",
+      "response": "Earth's magnetic field is generated by the solid crust, not by any motion in the outer core.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "The geomagnetic field is generated through a self-sustaining geodynamo driven by convective fluid motion in the liquid iron outer core."
+    },
+    {
+      "id": 67,
+      "category": "AdversarialInversion",
+      "query": "Which parts of the membrane bilayer are hydrophobic?",
+      "response": "The cell membrane has hydrophobic outer heads and hydrophilic inner tails.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_cell_biology_principles.txt",
+      "source_fact": "The phospholipid bilayer of the cell membrane possesses hydrophilic outer heads and hydrophobic inner fatty acid tails."
+    },
+    {
+      "id": 68,
+      "category": "AdversarialInversion",
+      "query": "What drives the global ocean conveyor belt?",
+      "response": "Thermohaline circulation is driven by wind alone and does not depend on salinity or temperature.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_climate_science.txt",
+      "source_fact": "Thermohaline circulation acts as a global ocean conveyor belt driven by water density, temperature, and salinity gradients."
+    },
+    {
+      "id": 69,
+      "category": "AdversarialInversion",
+      "query": "Did Shakespeare write sonnets?",
+      "response": "Shakespeare never wrote any sonnets.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "William Shakespeare wrote thirty-nine plays and 154 sonnets, transforming English dramatic literature in the Elizabethan era."
+    },
+    {
+      "id": 70,
+      "category": "AdversarialInversion",
+      "query": "Which way does xylem move water?",
+      "response": "Xylem carries water downward from the leaves to the roots.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_botany_plant_physiology.txt",
+      "source_fact": "Xylem tissue transports water and dissolved inorganic minerals upward from roots through capillary action and transpirational pull."
+    },
+    {
+      "id": 71,
+      "category": "EntityRoleSwap",
+      "query": "Who established the Lyceum?",
+      "response": "Plato established the Lyceum.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Aristotle established the Lyceum and made pioneering contributions to formal logic, biology, ethics, and metaphysics."
+    },
+    {
+      "id": 72,
+      "category": "EntityRoleSwap",
+      "query": "Who founded the Academy in Athens?",
+      "response": "Aristotle founded the Academy in Athens around 387 BC and wrote The Republic.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Plato founded the Academy in Athens around 387 BC and authored foundational dialogues including The Republic."
+    },
+    {
+      "id": 73,
+      "category": "EntityRoleSwap",
+      "query": "Who led Athens when direct democracy developed?",
+      "response": "Classical Athens developed the first documented direct democracy under Julius Caesar.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Classical Athens developed the world's first documented direct democracy during the fifth century BC under Pericles."
+    },
+    {
+      "id": 74,
+      "category": "EntityRoleSwap",
+      "query": "Who wrote the Divine Comedy?",
+      "response": "Geoffrey Chaucer wrote the Divine Comedy in the Italian vernacular.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "Dante Alighieri's Divine Comedy, written in fourteenth-century Italian vernacular, established epic tripartite cosmological structure."
+    },
+    {
+      "id": 75,
+      "category": "EntityRoleSwap",
+      "query": "Who wrote The Canterbury Tales?",
+      "response": "Dante Alighieri wrote The Canterbury Tales, a portrait of medieval English society.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "Geoffrey Chaucer's Canterbury Tales provided a diverse cross-sectional panoramic portrait of medieval English society."
+    },
+    {
+      "id": 76,
+      "category": "EntityRoleSwap",
+      "query": "Who published Don Quixote?",
+      "response": "William Shakespeare published Don Quixote in 1605 and 1615.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "Miguel de Cervantes published Don Quixote in two parts in 1605 and 1615, widely considered the first modern Western novel."
+    },
+    {
+      "id": 77,
+      "category": "EntityRoleSwap",
+      "query": "Who wrote thirty-nine plays and 154 sonnets?",
+      "response": "Miguel de Cervantes wrote thirty-nine plays and 154 sonnets during the Elizabethan era.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "William Shakespeare wrote thirty-nine plays and 154 sonnets, transforming English dramatic literature in the Elizabethan era."
+    },
+    {
+      "id": 78,
+      "category": "EntityRoleSwap",
+      "query": "Who developed the elenctic method?",
+      "response": "Aristotle developed the elenctic method of questioning moral assumptions.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Socrates developed the elenctic dialectical method of inquiry, emphasizing critical questioning of moral assumptions."
+    },
+    {
+      "id": 79,
+      "category": "EntityRoleSwap",
+      "query": "Which concept formalizes game theory?",
+      "response": "Game theory is formalized by the concept of the Chandrasekhar limit.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_microeconomics_theory.txt",
+      "source_fact": "Game theory analyzes strategic interactive decision-making, formalized by the concept of the Nash equilibrium."
+    },
+    {
+      "id": 80,
+      "category": "EntityRoleSwap",
+      "query": "Which tissue translocates sucrose?",
+      "response": "Xylem tissue translocates sucrose bidirectionally via pressure-flow transport.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_botany_plant_physiology.txt",
+      "source_fact": "Phloem tissue translocates synthesized organic photoassimilates and sucrose bidirectionally via pressure-flow bulk transport."
+    },
+    {
+      "id": 81,
+      "category": "EntityRoleSwap",
+      "query": "Which tissue moves water up from the roots?",
+      "response": "Phloem tissue transports water and minerals upward from the roots through transpirational pull.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_botany_plant_physiology.txt",
+      "source_fact": "Xylem tissue transports water and dissolved inorganic minerals upward from roots through capillary action and transpirational pull."
+    },
+    {
+      "id": 82,
+      "category": "EntityRoleSwap",
+      "query": "Which seismic waves are longitudinal?",
+      "response": "Seismic S-waves are longitudinal compressional waves that travel through both solid rock and liquid layers.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "Seismic P-waves are longitudinal compressional waves that travel through both solid rock and liquid planetary layers."
+    },
+    {
+      "id": 83,
+      "category": "EntityRoleSwap",
+      "query": "Which seismic waves cannot cross liquids?",
+      "response": "Seismic P-waves cannot propagate through liquids, which proves the outer core is liquid.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "Seismic S-waves are transverse shear waves that cannot propagate through liquids, proving the Earth's outer core is liquid."
+    },
+    {
+      "id": 84,
+      "category": "EntityRoleSwap",
+      "query": "Where was Franz Ferdinand assassinated?",
+      "response": "The assassination of Archduke Franz Ferdinand took place in Vienna in June 1914.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "The assassination of Archduke Franz Ferdinand of Austria in Sarajevo in June 1914 precipitated the crisis."
+    },
+    {
+      "id": 85,
+      "category": "EntityRoleSwap",
+      "query": "Who introduced public-key cryptography?",
+      "response": "Public-key cryptography with linked key pairs was introduced by AES in 1977.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_modern_cryptography.txt",
+      "source_fact": "Public-key asymmetric cryptography utilizes mathematically linked pairs of public and private keys, as introduced by RSA in 1977."
+    },
+    {
+      "id": 86,
+      "category": "EntityRoleSwap",
+      "query": "What cipher does AES use?",
+      "response": "The Advanced Encryption Standard was established by NIST in 2001 using the RSA cipher specification.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_modern_cryptography.txt",
+      "source_fact": "The Advanced Encryption Standard (AES) was established by NIST in 2001 utilizing Rijndael block cipher specifications."
+    },
+    {
+      "id": 87,
+      "category": "EntityRoleSwap",
+      "query": "Where was ENIAC built?",
+      "response": "ENIAC was completed in 1945 at Harvard University.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_history_of_computing.txt",
+      "source_fact": "ENIAC, completed in 1945 at the University of Pennsylvania, was the first programmable general-purpose electronic digital computer."
+    },
+    {
+      "id": 88,
+      "category": "EntityRoleSwap",
+      "query": "What are Y-shaped proteins that bind antigens called?",
+      "response": "Ribosomes, or immunoglobulins, are Y-shaped proteins that bind antigen epitopes.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_immunology_handbook.txt",
+      "source_fact": "Antibodies, or immunoglobulins, are Y-shaped proteins that bind specifically to foreign pathogenic antigen epitopes."
+    },
+    {
+      "id": 89,
+      "category": "EntityRoleSwap",
+      "query": "What translates messenger RNA?",
+      "response": "Antibodies are the complexes responsible for translating messenger RNA into polypeptide proteins.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_cell_biology_principles.txt",
+      "source_fact": "Ribosomes are ribonucleoprotein complexes responsible for translating messenger RNA transcripts into polypeptide proteins."
+    },
+    {
+      "id": 90,
+      "category": "EntityRoleSwap",
+      "query": "Which equations describe viscous fluid motion?",
+      "response": "The Maxwell equations are the non-linear partial differential equations describing the motion of viscous fluids.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_fluid_mechanics.txt",
+      "source_fact": "The Navier-Stokes equations are fundamental non-linear partial differential equations describing the motion of viscous fluids."
+    },
+    {
+      "id": 91,
+      "category": "EntityRoleSwap",
+      "query": "Where is the geodynamo located?",
+      "response": "Earth's geomagnetic field is generated by a geodynamo in the solid silicate mantle.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_geology_earth_structure.txt",
+      "source_fact": "The geomagnetic field is generated through a self-sustaining geodynamo driven by convective fluid motion in the liquid iron outer core."
+    },
+    {
+      "id": 92,
+      "category": "EntityRoleSwap",
+      "query": "Which war did the Treaty of Versailles end?",
+      "response": "The Treaty of Versailles, signed in June 1919, ended the war between Russia and the Allied Powers.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "The Treaty of Versailles, signed in June 1919, officially ended the state of war between Germany and the Allied Powers."
+    },
+    {
+      "id": 93,
+      "category": "EntityRoleSwap",
+      "query": "Who established the laws of inheritance?",
+      "response": "Charles Darwin established the laws of inheritance through pea plant hybridization experiments in 1865.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_genetics_and_heredity.txt",
+      "source_fact": "Gregor Mendel established the fundamental laws of inheritance through empirical pea plant hybridization experiments in 1865."
+    },
+    {
+      "id": 94,
+      "category": "EntityRoleSwap",
+      "query": "Who designed the Analytical Engine?",
+      "response": "Alan Turing designed the mechanical Analytical Engine in the 1830s, with Ada Lovelace writing the first algorithm.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_history_of_computing.txt",
+      "source_fact": "Charles Babbage designed the mechanical Analytical Engine in the 1830s with Ada Lovelace writing the first algorithm."
+    },
+    {
+      "id": 95,
+      "category": "EntityRoleSwap",
+      "query": "Which brain structure has frontal, parietal, temporal and occipital lobes?",
+      "response": "The cerebellum is divided into frontal, parietal, temporal, and occipital lobes.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_neuroscience_fundamentals.txt",
+      "source_fact": "The cerebral cortex is divided into frontal, parietal, temporal, and occipital lobes supporting specialized cognition."
+    },
+    {
+      "id": 96,
+      "category": "NumericalPerturbation",
+      "query": "What is the current atmospheric CO2 level?",
+      "response": "Atmospheric CO2 has risen from pre-industrial levels of 280 ppm to over 520 ppm today.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_climate_science.txt",
+      "source_fact": "Atmospheric carbon dioxide concentrations have risen from pre-industrial levels of 280 ppm to over 420 ppm today."
+    },
+    {
+      "id": 97,
+      "category": "NumericalPerturbation",
+      "query": "How many ATP molecules does aerobic respiration produce?",
+      "response": "Aerobic respiration yields approximately 36 to 38 ATP molecules per glucose.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_cell_biology_principles.txt",
+      "source_fact": "Cellular respiration in the presence of oxygen breaks down glucose to yield approximately 30 to 32 ATP molecules."
+    },
+    {
+      "id": 98,
+      "category": "NumericalPerturbation",
+      "query": "When was ENIAC finished?",
+      "response": "ENIAC was completed in 1949 at the University of Pennsylvania.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_history_of_computing.txt",
+      "source_fact": "ENIAC, completed in 1945 at the University of Pennsylvania, was the first programmable general-purpose electronic digital computer."
+    },
+    {
+      "id": 99,
+      "category": "NumericalPerturbation",
+      "query": "When did Mendel publish his inheritance laws?",
+      "response": "Mendel established the laws of inheritance through pea plant experiments in 1856.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_genetics_and_heredity.txt",
+      "source_fact": "Gregor Mendel established the fundamental laws of inheritance through empirical pea plant hybridization experiments in 1865."
+    },
+    {
+      "id": 100,
+      "category": "NumericalPerturbation",
+      "query": "When were the two parts of Don Quixote published?",
+      "response": "Cervantes published Don Quixote in two parts, in 1605 and 1625.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "Miguel de Cervantes published Don Quixote in two parts in 1605 and 1615, widely considered the first modern Western novel."
+    },
+    {
+      "id": 101,
+      "category": "NumericalPerturbation",
+      "query": "When did Plato found the Academy?",
+      "response": "Plato founded the Academy in Athens around 287 BC.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ancient_greece.txt",
+      "source_fact": "Plato founded the Academy in Athens around 387 BC and authored foundational dialogues including The Republic."
+    },
+    {
+      "id": 102,
+      "category": "NumericalPerturbation",
+      "query": "When did RSA introduce public-key cryptography?",
+      "response": "Public-key cryptography was introduced by RSA in 1987.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_modern_cryptography.txt",
+      "source_fact": "Public-key asymmetric cryptography utilizes mathematically linked pairs of public and private keys, as introduced by RSA in 1977."
+    },
+    {
+      "id": 103,
+      "category": "NumericalPerturbation",
+      "query": "In which year was AES established?",
+      "response": "NIST established AES in 2011 using the Rijndael cipher.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_modern_cryptography.txt",
+      "source_fact": "The Advanced Encryption Standard (AES) was established by NIST in 2001 utilizing Rijndael block cipher specifications."
+    },
+    {
+      "id": 104,
+      "category": "NumericalPerturbation",
+      "query": "What is the value of the Chandrasekhar limit?",
+      "response": "The Chandrasekhar limit is approximately 2.4 solar masses.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_astrophysics_stellar_evolution.txt",
+      "source_fact": "The Chandrasekhar limit of approximately 1.4 solar masses defines the maximum theoretical mass of a stable white dwarf star."
+    },
+    {
+      "id": 105,
+      "category": "NumericalPerturbation",
+      "query": "How many stars are in the Milky Way?",
+      "response": "The Milky Way contains an estimated 100 to 400 million stars.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_astronomy_handbook.txt",
+      "source_fact": "The Milky Way galaxy is a barred spiral galaxy containing an estimated 100 to 400 billion stars."
+    },
+    {
+      "id": 106,
+      "category": "NumericalPerturbation",
+      "query": "How much hydrogen does the Sun fuse each second?",
+      "response": "The Sun converts approximately 60 million tons of hydrogen into helium every second.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_astrophysics_stellar_evolution.txt",
+      "source_fact": "The Sun converts approximately 600 million tons of hydrogen into helium every second via the proton-proton chain reaction."
+    },
+    {
+      "id": 107,
+      "category": "NumericalPerturbation",
+      "query": "When was the Treaty of Versailles signed?",
+      "response": "The Treaty of Versailles was signed in June 1918.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "The Treaty of Versailles, signed in June 1919, officially ended the state of war between Germany and the Allied Powers."
+    },
+    {
+      "id": 108,
+      "category": "NumericalPerturbation",
+      "query": "When was Franz Ferdinand assassinated?",
+      "response": "Franz Ferdinand was assassinated in Sarajevo in June 1915.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "The assassination of Archduke Franz Ferdinand of Austria in Sarajevo in June 1914 precipitated the crisis."
+    },
+    {
+      "id": 109,
+      "category": "NumericalPerturbation",
+      "query": "How long after the Big Bang did the CMB form?",
+      "response": "The cosmic microwave background dates from approximately 38,000 years after the Big Bang.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_astronomy_handbook.txt",
+      "source_fact": "The cosmic microwave background radiation is thermal relic radiation dating from approximately 380,000 years after the Big Bang."
+    },
+    {
+      "id": 110,
+      "category": "NumericalPerturbation",
+      "query": "How many neurons does the human nervous system contain?",
+      "response": "The human nervous system contains an estimated 68 billion neurons.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_neuroscience_fundamentals.txt",
+      "source_fact": "The human nervous system contains an estimated 86 billion neurons interconnected by trillions of synaptic junctions."
+    },
+    {
+      "id": 111,
+      "category": "NumericalPerturbation",
+      "query": "When was the silicon microchip invented?",
+      "response": "The silicon microchip was invented in 1968.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_history_of_computing.txt",
+      "source_fact": "The invention of the silicon microchip in 1958 enabled dramatic reductions in physical size and operational power consumption."
+    },
+    {
+      "id": 112,
+      "category": "NumericalPerturbation",
+      "query": "How many plays did Shakespeare write?",
+      "response": "Shakespeare wrote 37 plays and 154 sonnets.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_renaissance_literature.txt",
+      "source_fact": "William Shakespeare wrote thirty-nine plays and 154 sonnets, transforming English dramatic literature in the Elizabethan era."
+    },
+    {
+      "id": 113,
+      "category": "NumericalPerturbation",
+      "query": "When did World War I end?",
+      "response": "World War I lasted from July 1914 until November 1919.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_world_war_one.txt",
+      "source_fact": "World War I was a global military conflict centered in Europe that lasted from July 1914 until November 1918."
+    },
+    {
+      "id": 114,
+      "category": "NumericalPerturbation",
+      "query": "How much energy transfers between trophic levels?",
+      "response": "Roughly twenty percent of energy is transferred between adjacent trophic levels.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_ecology_ecosystem_dynamics.txt",
+      "source_fact": "Trophic levels structure ecological food webs, with roughly ten percent of energy successfully transferred between adjacent feeding tiers."
+    },
+    {
+      "id": 115,
+      "category": "NumericalPerturbation",
+      "query": "How much excess heat have the oceans absorbed?",
+      "response": "The oceans have absorbed more than fifty percent of the accumulated excess heat.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_climate_science.txt",
+      "source_fact": "Global surface ocean temperatures have absorbed more than ninety percent of accumulated planetary excess heat."
+    },
+    {
+      "id": 116,
+      "category": "NumericalPerturbation",
+      "query": "What was the pre-industrial CO2 concentration?",
+      "response": "Carbon dioxide rose from pre-industrial levels of 180 ppm to over 420 ppm.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_climate_science.txt",
+      "source_fact": "Atmospheric carbon dioxide concentrations have risen from pre-industrial levels of 280 ppm to over 420 ppm today."
+    },
+    {
+      "id": 117,
+      "category": "NumericalPerturbation",
+      "query": "Roughly how many stars does our galaxy hold?",
+      "response": "The Milky Way contains an estimated 10 to 40 billion stars.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_astronomy_handbook.txt",
+      "source_fact": "The Milky Way galaxy is a barred spiral galaxy containing an estimated 100 to 400 billion stars."
+    },
+    {
+      "id": 118,
+      "category": "NumericalPerturbation",
+      "query": "When was the cosmic microwave background released?",
+      "response": "The cosmic microwave background dates from about 3.8 million years after the Big Bang.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_astronomy_handbook.txt",
+      "source_fact": "The cosmic microwave background radiation is thermal relic radiation dating from approximately 380,000 years after the Big Bang."
+    },
+    {
+      "id": 119,
+      "category": "NumericalPerturbation",
+      "query": "When were Mendel's pea plant experiments?",
+      "response": "Mendel's pea plant experiments established the laws of inheritance in 1765.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_genetics_and_heredity.txt",
+      "source_fact": "Gregor Mendel established the fundamental laws of inheritance through empirical pea plant hybridization experiments in 1865."
+    },
+    {
+      "id": 120,
+      "category": "NumericalPerturbation",
+      "query": "When did NIST adopt AES?",
+      "response": "AES was established by NIST in 1991.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Hallucinated",
+      "source_doc": "long_modern_cryptography.txt",
+      "source_fact": "The Advanced Encryption Standard (AES) was established by NIST in 2001 utilizing Rijndael block cipher specifications."
+    },
+    {
+      "id": 121,
+      "category": "ZeroEvidence",
+      "query": "Who composed The Four Seasons?",
+      "response": "Antonio Vivaldi composed The Four Seasons, a set of violin concertos published in 1725.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 122,
+      "category": "ZeroEvidence",
+      "query": "Where is Machu Picchu?",
+      "response": "Machu Picchu is a 15th-century Inca citadel in the Andes mountains of Peru.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 123,
+      "category": "ZeroEvidence",
+      "query": "When did the Suez Canal open?",
+      "response": "The Suez Canal opened in 1869, linking the Mediterranean Sea to the Red Sea.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 124,
+      "category": "ZeroEvidence",
+      "query": "Who created Bitcoin?",
+      "response": "Bitcoin was created by the pseudonymous Satoshi Nakamoto, who released its whitepaper in 2008.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 125,
+      "category": "ZeroEvidence",
+      "query": "How tall is Mount Fuji?",
+      "response": "Mount Fuji rises 3,776 meters and is the highest mountain in Japan.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 126,
+      "category": "ZeroEvidence",
+      "query": "How many symphonies did Beethoven write?",
+      "response": "Ludwig van Beethoven completed nine symphonies.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 127,
+      "category": "ZeroEvidence",
+      "query": "When did Nelson Mandela become president?",
+      "response": "Nelson Mandela became President of South Africa in 1994.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 128,
+      "category": "ZeroEvidence",
+      "query": "What is Angkor Wat?",
+      "response": "Angkor Wat is a vast temple complex in Cambodia built in the 12th century.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 129,
+      "category": "ZeroEvidence",
+      "query": "How old is Stonehenge?",
+      "response": "Stonehenge in England was built in stages beginning around 3000 BC.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 130,
+      "category": "ZeroEvidence",
+      "query": "Why does the Tower of Pisa lean?",
+      "response": "The Leaning Tower of Pisa tilts because it was built on soft, unstable soil.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 131,
+      "category": "ZeroEvidence",
+      "query": "Which computer defeated Garry Kasparov?",
+      "response": "IBM's Deep Blue defeated world chess champion Garry Kasparov in 1997.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 132,
+      "category": "ZeroEvidence",
+      "query": "Who painted The Starry Night?",
+      "response": "Vincent van Gogh painted The Starry Night in 1889.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 133,
+      "category": "ZeroEvidence",
+      "query": "Who designed the Sydney Opera House?",
+      "response": "Danish architect Jorn Utzon designed the Sydney Opera House, which opened in 1973.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 134,
+      "category": "ZeroEvidence",
+      "query": "Which operas did Mozart write?",
+      "response": "Wolfgang Amadeus Mozart composed more than twenty operas, including The Magic Flute.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 135,
+      "category": "ZeroEvidence",
+      "query": "Who wrote The Lord of the Rings?",
+      "response": "J. R. R. Tolkien wrote The Lord of the Rings, published between 1954 and 1955.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 136,
+      "category": "ZeroEvidence",
+      "query": "When was the Colosseum completed?",
+      "response": "The Colosseum in Rome was completed in 80 AD under Emperor Titus.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 137,
+      "category": "ZeroEvidence",
+      "query": "What is Petra famous for?",
+      "response": "Petra in Jordan is famous for buildings carved into rose-red sandstone cliffs by the Nabataeans.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 138,
+      "category": "ZeroEvidence",
+      "query": "Who painted the Water Lilies series?",
+      "response": "Claude Monet painted the Water Lilies series of about 250 works.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 139,
+      "category": "ZeroEvidence",
+      "query": "Where is the Serengeti?",
+      "response": "The Serengeti is a savanna ecosystem in Tanzania known for its annual wildebeest migration.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 140,
+      "category": "ZeroEvidence",
+      "query": "When was Yellowstone established?",
+      "response": "Yellowstone became the world's first national park in 1872.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 141,
+      "category": "ZeroEvidence",
+      "query": "How tall is Niagara Falls?",
+      "response": "Horseshoe Falls at Niagara is about 57 meters tall.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 142,
+      "category": "ZeroEvidence",
+      "query": "Who wrote Pride and Prejudice?",
+      "response": "Jane Austen published Pride and Prejudice in 1813.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 143,
+      "category": "ZeroEvidence",
+      "query": "What was Tokyo's former name?",
+      "response": "Tokyo was formerly known as Edo before 1868.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 144,
+      "category": "ZeroEvidence",
+      "query": "Who won the first Tour de France?",
+      "response": "Maurice Garin won the first Tour de France in 1903.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 145,
+      "category": "ZeroEvidence",
+      "query": "Who painted Guernica?",
+      "response": "Pablo Picasso painted Guernica in 1937 in response to the bombing of the Basque town.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 146,
+      "category": "ZeroEvidence",
+      "query": "Who wrote The Old Man and the Sea?",
+      "response": "Ernest Hemingway wrote The Old Man and the Sea, which won the Pulitzer Prize in 1953.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 147,
+      "category": "ZeroEvidence",
+      "query": "Where is Victoria Falls?",
+      "response": "Victoria Falls lies on the Zambezi River between Zambia and Zimbabwe.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 148,
+      "category": "ZeroEvidence",
+      "query": "Who composed Swan Lake?",
+      "response": "Pyotr Ilyich Tchaikovsky composed the ballet Swan Lake in 1876.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 149,
+      "category": "ZeroEvidence",
+      "query": "How many Brandenburg Concertos did Bach write?",
+      "response": "Johann Sebastian Bach wrote six Brandenburg Concertos.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    },
+    {
+      "id": 150,
+      "category": "ZeroEvidence",
+      "query": "Where do kangaroos live?",
+      "response": "Kangaroos are marsupials native to Australia.",
+      "expected_verdict": "Hallucinated",
+      "expected_3way": "Insufficient Evidence",
+      "source_doc": null,
+      "source_fact": null
+    }
+  ]
+}

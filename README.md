@@ -1,471 +1,187 @@
 # 🛡️ GroundTruth AI
 
-**A RAG-Based LLM Hallucination Detection & Context Verification Engine**
+**A RAG-based hallucination-detection service for LLM answers.**
 
-GroundTruth AI inspects a Large Language Model's response against a verified, embedded knowledge base and issues a **Supported** or **Hallucinated** verdict — complete with a confidence score, a natural-language explanation, and the exact evidence passages used to reach that decision.
+GroundTruth AI checks an LLM's answer against a document knowledge base. It retrieves the most relevant passages for the question and a judge labels the answer **Supported**, **Hallucinated**, or **Insufficient Evidence**, with a confidence value, a reason, the evidence passages, and which engine made the decision.
 
----
-
-## Table of Contents
-
-- [Overview & Motivation](#overview--motivation)
-- [Key Features](#key-features)
-- [Tech Stack](#tech-stack)
-- [Architecture & Workflow](#architecture--workflow)
-- [Project Structure](#project-structure)
-- [Setup & Installation](#setup--installation)
-- [Running the Application](#running-the-application)
-- [API Reference](#api-reference)
-- [Frontend](#frontend)
-- [Benchmark Evaluation & Performance Metrics](#benchmark-evaluation--performance-metrics)
-- [Roadmap](#roadmap)
+> This README describes the code on this branch. Earlier versions of this README reported 89.30% accuracy / 92.27% F1; those numbers came from the rule-based fallback judge on a synthetic dev set that the rules had been tuned on, most likely using SQLite keyword retrieval. See [Evaluation](#evaluation) for current, reproducible results, including a held-out set.
 
 ---
 
-## Overview & Motivation
-
-Large Language Models are fluent but not always factual. They can generate plausible-sounding claims that have no basis in reality — a failure mode commonly known as **hallucination**. This is a critical problem for any production system where trust and accuracy matter: customer support bots, internal knowledge assistants, research tools, and RAG pipelines built on top of LLMs.
-
-**GroundTruth AI** addresses this problem directly by acting as an independent verification layer that sits *after* an LLM has generated a response:
-
-1. A user submits the original **query** and the **LLM-generated response** they want to fact-check.
-2. GroundTruth AI performs a **vector similarity search** over a corpus of embedded, trusted source documents (PDF/TXT) to retrieve the most relevant ground-truth passages.
-3. A **judge model** (a locally-hosted LLM, with a deterministic rule-based fallback) compares the response against the retrieved evidence and renders a verdict, a confidence score, and a step-by-step justification.
-4. The result — including full evidence provenance — is returned as JSON and rendered in a real-time dashboard UI.
-
-In short: instead of trusting an LLM's output blindly, GroundTruth AI **grounds it in retrievable evidence** and tells you exactly how confident you should be.
+## Contents
+- [How it works](#how-it-works)
+- [Tech stack](#tech-stack)
+- [Setup](#setup)
+- [Configuration](#configuration)
+- [API](#api)
+- [Evaluation](#evaluation)
+- [Testing](#testing)
+- [Known limitations](#known-limitations)
+- [Project structure](#project-structure)
 
 ---
 
-## Key Features
+## How it works
 
-- **Unified FastAPI Server** — A single FastAPI application serves both the REST API and the static frontend (HTML/CSS/JS) from one process on port `8000`. No separate frontend server or build step required.
+```
+Browser (vanilla JS) ──POST /detect──▶ FastAPI (backend/main.py)
+                                         │
+                   retrieve_context()    ▼
+        SentenceTransformers all-MiniLM-L6-v2 (384-d, normalised)
+                                         │
+     PostgreSQL + pgvector: ORDER BY embedding <=> query LIMIT k   (primary, vector search)
+     SQLite + keyword-stem overlap                                   (degraded fallback, reported)
+                                         │  top-k evidence chunks
+                                         ▼
+     Judge (backend/llm/judge.py)
+       1. Ollama llama3.2 (temperature 0, seed 42, JSON output validated with Pydantic)
+       2. Deterministic rule engine if the LLM is disabled, unavailable, or returns invalid output
+                                         │
+                                         ▼
+     JSON: verdict, confidence, reason, evidence, metadata.engine / model_used / fallback_reason
+     + row in detection_history (including the engine)
+```
 
-- **Dynamic Knowledge Base Ingestion** — Upload `.txt` or `.pdf` documents directly through the UI (`POST /api/upload`). Each file is:
-  - Text-extracted (with an OCR fallback via `pdf2image` + `pytesseract` for scanned/image-based PDFs),
-  - Persisted to disk in `data/documents/`,
-  - Hashed with **MD5** for change tracking,
-  - Split into numbered chunks,
-  - Embedded and written into the vector store — all in one pipeline call.
+- **Verdicts.** `Supported`, `Hallucinated`, or `Insufficient Evidence`, used when no evidence is retrieved or the judge cannot decide. Infrastructure failures are **not** verdicts: they return HTTP 503.
+- **Ingestion.** `.txt`/`.pdf` files are parsed with pypdf, with an OCR fallback on upload. They're hashed with SHA-256 of the raw bytes, which is the dedup key. Text is split into **≤200-token chunks with 40-token overlap**, measured with the embedding model's own tokenizer (the model truncates at 256), embedded in batches, and inserted with a `UNIQUE (file_hash, chunk_number)` constraint.
+- **Graceful degradation, made visible.** If Postgres is unreachable *at startup* and `ALLOW_SQLITE_FALLBACK=true`, the app runs on SQLite with keyword retrieval. This is logged at ERROR level and reported by `/api/health` and every `/detect` response. The backend is never switched mid-run. If the chosen database fails later, requests get 503.
 
-- **Vector Search Pipeline** — Query and document chunks are embedded using **SentenceTransformers (`all-MiniLM-L6-v2`)** and matched using **cosine similarity** via **PostgreSQL + `pgvector`**, returning the top-*k* most relevant evidence passages for any query.
-
-- **Dual-Engine LLM Judge** — The verdict engine first attempts to reason over the query, response, and retrieved context using a **locally-hosted Llama 3.2 model via Ollama**, prompted to return structured JSON (`verdict`, `confidence`, `reason`). If Ollama is unreachable or fails, the system automatically falls back to a **deterministic, rule-based heuristic judge** so the API never goes down — offering graceful degradation instead of a hard failure.
-
-- **Real-Time UI & Dashboard** — A dark-themed, dependency-free frontend featuring:
-  - A live **pipeline status tracker** (Context Retrieval → Claim Verification → Verdict Judgment),
-  - A color-coded **verdict banner** (Supported vs. Hallucinated),
-  - A visual **confidence gauge / progress bar**,
-  - **Evidence provenance cards** showing the exact source document, chunk content, and similarity score behind each verdict,
-  - A dedicated **Analytics Dashboard** (`/dashboard`) with aggregate hallucination-rate telemetry,
-  - A full **History** view (`/history`) of past evaluations.
-
----
-
-## Tech Stack
-
-| Layer | Technology |
+## Tech stack
+| Layer | Used for |
 |---|---|
-| **Backend** | FastAPI, Uvicorn, Pydantic, Python-Multipart, SQLAlchemy |
-| **AI / RAG** | SentenceTransformers (`all-MiniLM-L6-v2`), LangChain Text Splitters, Ollama (Llama 3.2), pypdf, pdf2image + pytesseract (OCR fallback), NumPy, PyTorch, Transformers |
-| **Database** | PostgreSQL + `pgvector` (primary vector store), psycopg2-binary, SQLite (automatic local fallback when Postgres is unreachable) |
-| **Frontend** | Vanilla HTML5, CSS3, JavaScript (no framework/build step) served natively via FastAPI's `StaticFiles` |
+| FastAPI, Uvicorn, Pydantic v2 | API, validation, OpenAPI docs at `/docs`, static frontend |
+| PostgreSQL + pgvector | chunk storage and cosine-distance search (`<=>`), exact scan (no ANN index yet) |
+| SQLite | optional degraded fallback (keyword retrieval, no vectors) |
+| SQLAlchemy 2 / psycopg2 | ORM for history; raw SQL for vector queries |
+| SentenceTransformers `all-MiniLM-L6-v2` | 384-d embeddings |
+| langchain-text-splitters | recursive splitter measured in model tokens |
+| Ollama `llama3.2` (3.2B, Q4_K_M) | LLM judge |
+| pypdf, pdf2image + pytesseract | PDF text, OCR fallback on upload |
+| Vanilla HTML/CSS/JS | UI (all dynamic text rendered with `textContent`) |
+| pytest, GitHub Actions (pgvector service) | tests / CI |
+| Docker, Docker Compose | container + pgvector database |
 
-> Full dependency list available in [`requirements.txt`](./requirements.txt).
+## Setup
 
----
-
-## Architecture & Workflow
-
-```
-                         ┌───────────────────────────┐
-                         │   User Request / Upload    │
-                         │  (Query + LLM Response,    │
-                         │   or PDF/TXT document)      │
-                         └─────────────┬───────────────┘
-                                       │
-                                       ▼
-                         ┌───────────────────────────┐
-                         │        FastAPI Server       │
-                         │  (main.py — single process, │
-                         │   serves API + static UI)   │
-                         └─────────────┬───────────────┘
-                                       │
-                       ┌───────────────┴────────────────┐
-                       ▼                                 ▼
-        ┌───────────────────────────┐      ┌───────────────────────────┐
-        │  Ingestion Pipeline         │      │  Retrieval Pipeline         │
-        │  (chunking + MD5 hashing)   │      │  (query embedding)          │
-        └─────────────┬───────────────┘      └─────────────┬───────────────┘
-                       │                                     │
-                       ▼                                     ▼
-        ┌─────────────────────────────────────────────────────────────┐
-        │      SentenceTransformers (all-MiniLM-L6-v2) Embeddings       │
-        │      +  PostgreSQL / pgvector  (cosine similarity search)     │
-        └─────────────────────────────┬───────────────────────────────┘
-                                       │  top-k evidence chunks
-                                       ▼
-                         ┌───────────────────────────┐
-                         │        LLM Judge Engine     │
-                         │  Ollama (Llama 3.2) primary │
-                         │  Rule-based fallback         │
-                         │  → verdict / confidence /    │
-                         │    reasoning                  │
-                         └─────────────┬───────────────┘
-                                       │
-                                       ▼
-                         ┌───────────────────────────┐
-                         │     JSON Response / UI       │
-                         │  Verdict badge, confidence    │
-                         │  gauge, evidence cards,       │
-                         │  saved to detection_history   │
-                         └───────────────────────────┘
-```
-
-**Flow summary:**
-`[User Request/Upload]` → `[FastAPI]` → `[SentenceTransformers / pgvector]` → `[LLM Judge]` → `[JSON / UI Render]`
-
----
-
-## Project Structure
-
-```
-groundtruth-ai/
-├── backend/
-│   ├── main.py                 # FastAPI app, routes, request/response schemas
-│   ├── database.py             # SQLAlchemy engine, DetectionHistory model, Postgres/SQLite fallback
-│   ├── config.py
-│   ├── rag/
-│   │   ├── embeddings.py       # SentenceTransformer ('all-MiniLM-L6-v2') embedding generation
-│   │   ├── retriever.py        # pgvector cosine-similarity retrieval logic
-│   │   ├── chunker.py          # LangChain RecursiveCharacterTextSplitter wrapper
-│   │   ├── ingest.py           # Batch ingestion script for data/documents/
-│   │   ├── document_loader.py  # PDF/TXT loading utilities
-│   │   └── store_embeddings.py # Example single-document embedding script
-│   └── llm/
-│       ├── judge.py            # Dual-engine hallucination judge (Ollama + heuristic fallback)
-│       └── claim_extractor.py  # Ollama-based factual claim extraction utility
-├── frontend/
-│   ├── index.html              # Main detector UI
-│   ├── dashboard.html          # Analytics dashboard
-│   ├── history.html            # Evaluation history view
-│   ├── script.js               # Detector page logic
-│   ├── dashboard.js            # Dashboard stats logic
-│   └── style.css               # Dark-themed styling
-├── tests/
-│   ├── test_benchmark_1000.py  # 1,000-query high-difficulty benchmark suite
-│   ├── test_benchmark_500.py   # 500-query evaluation suite
-│   ├── test_benchmark.py       # Baseline evaluation suite
-│   ├── test_judge.py           # Unit test for LLM judge
-│   ├── test_chunker.py         # Unit test for text chunker
-│   ├── test_retriever.py       # Unit test for vector retriever
-│   ├── test_cases_1000.json    # 1,000 test cases across 5 categories
-│   └── benchmark_results_*.json # Benchmark results and evaluation logs
-├── data/
-│   └── documents/              # Ground-truth source documents (411 PDF/TXT corpus)
-└── requirements.txt
-```
-
----
-
-## Setup & Installation
-
-### Prerequisites
-
-- Python 3.10+
-- PostgreSQL 14+ with the [`pgvector`](https://github.com/pgvector/pgvector) extension
-- [Ollama](https://ollama.com) (for the local Llama 3.2 judge model) — optional but recommended
-- `poppler-utils` and `tesseract-ocr` (system packages, only required for the scanned-PDF OCR fallback)
-
-### 1. Clone the Repository
+Prerequisites: Python 3.11+, PostgreSQL 14+ with the [pgvector](https://github.com/pgvector/pgvector) extension, optionally [Ollama](https://ollama.com), and optionally `poppler-utils` + `tesseract-ocr` for OCR.
 
 ```bash
-git clone https://github.com/<your-username>/groundtruth-ai.git
-cd groundtruth-ai
-```
-
-### 2. Create and Activate a Virtual Environment
-
-```bash
-python -m venv venv
-
-# macOS / Linux
-source venv/bin/activate
-
-# Windows
-venv\Scripts\activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r backend/requirements.txt
-```
-
-> If your dependency file lives at the project root instead, use `pip install -r requirements.txt`.
-
-### 4. Configure PostgreSQL + pgvector
-
-Create the database and enable the vector extension:
-
-```bash
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt -r requirements-dev.txt
+cp .env.example .env            # then edit DATABASE_URL
 createdb groundtruth
-psql -d groundtruth -c "CREATE EXTENSION IF NOT EXISTS vector;"
+ollama pull llama3.2            # optional; without it the rule engine judges
+python -m backend.rag.ingest    # index data/documents (use --rebuild after changing chunking)
+uvicorn backend.main:app --port 8000
 ```
+Open `http://localhost:8000` (detector), `/dashboard`, `/history`, `/docs`.
 
-Create a `.env` file inside `backend/` with your connection details:
-
-```env
-POSTGRES_DB=groundtruth
-POSTGRES_USER=your_db_user
-POSTGRES_PASSWORD=your_db_password
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-```
-
-> **No Postgres available?** No problem — `backend/database.py` automatically detects a failed connection at startup and transparently falls back to a local SQLite database (`groundtruth_fallback.db`) so the app still runs (vector similarity search will be limited to recency-based ordering in this mode).
-
-### 5. Pull and Run the Local LLM Judge (Ollama)
+**Docker Compose:** `docker compose up --build` starts pgvector and the app. The app reaches the database at `db` via `DATABASE_URL`, and Ollama on the host via `OLLAMA_URL=http://host.docker.internal:11434`. `ALLOW_SQLITE_FALLBACK=false` means a missing database stops the container instead of silently degrading.
 
 ```bash
-ollama pull llama3.2
-ollama serve
+docker compose up -d --build                                  # Postgres (host port 5433) + app (port 8000)
+docker compose exec app python -m backend.rag.ingest          # index data/documents into the container DB
+curl localhost:8000/api/health                                # expect "healthy", backend "postgres"
+docker compose down                                           # stop (add -v to delete the DB volume)
 ```
+The image uses Python 3.13 and CPU-only PyTorch (image ≈ 570 MB). Ollama is not containerised: run it on the host with `llama3.2` pulled. Verified on 2026-09-27 (Docker Desktop, Apple M4): health `healthy` on Postgres with the LLM reachable; ingestion produced the same 1,904 chunks as a local run (≈ 5 min on CPU); `/detect` returned an LLM verdict with the same retrieval scores as local; upload and duplicate upload behaved as expected.
 
-Ollama should be reachable at `http://localhost:11434`. If it isn't running, `judge.py` automatically falls back to the deterministic rule-based heuristic engine — the `/detect` endpoint will still return a verdict.
+## Configuration
+All settings live in `backend/config.py`, read from the environment or a project-root `.env` (real environment variables win). See `.env.example`.
 
-### 6. Ingest the Initial Knowledge Base (optional)
+| Variable | Default | Meaning |
+|---|---|---|
+| `DATABASE_URL` | built from `POSTGRES_*` | PostgreSQL URL (or `sqlite:///path`) |
+| `ALLOW_SQLITE_FALLBACK` | `true` | on Postgres failure at startup: degrade to SQLite (true) or refuse to start (false) |
+| `USE_LLM` | `true` | `false` = always use the rule engine |
+| `OLLAMA_URL` / `OLLAMA_MODEL` | `http://localhost:11434` / `llama3.2` | LLM endpoint and model |
+| `OLLAMA_TIMEOUT_SECONDS` | `35` | per-request timeout |
+| `LLM_TEMPERATURE` / `LLM_SEED` / `LLM_NUM_CTX` | `0` / `42` / `4096` | deterministic decoding for the judge |
+| `CHUNK_SIZE_TOKENS` / `CHUNK_OVERLAP_TOKENS` | `200` / `40` | must stay below the model's 254-token content limit |
 
-To bulk-embed everything already sitting in `data/documents/`:
+Temperature 0 with a fixed seed makes judgements much more repeatable, which matters for benchmarking. It does not guarantee identical output across Ollama versions, model builds, or hardware.
 
+## API
+| Endpoint | Method | Notes |
+|---|---|---|
+| `/detect`, `/api/detect` | POST | body `{query, llm_response, top_k?}`. `query`/`llm_response` are stripped and must be ≥ 2 chars; `top_k` is 1–10 (default 3). 200 returns a verdict; 422 on invalid input; 503 if retrieval is unavailable; 500 on unexpected errors. |
+| `/api/upload` | POST | multipart `file` (.txt / .pdf). Returns `status: success` or `duplicate`. 400 on unsupported/empty/unreadable files; 503 if the index is unavailable; 500 otherwise. |
+| `/api/history?limit=` | GET | recent detections (1 ≤ limit ≤ 100), including `engine`; 503 on DB failure |
+| `/api/stats` | GET | totals per verdict and hallucination rate; 503 on DB failure |
+| `/api/health` | GET | `healthy` / `degraded`, DB backend, fallback state, DB and Ollama reachability |
+
+Example `/detect` metadata:
+```json
+{"top_k_requested": 3, "evidence_count": 3, "engine": "llm", "model_used": "ollama:llama3.2",
+ "fallback_reason": null, "database_backend": "postgres", "retrieval_mode": "vector",
+ "degraded": false, "history_saved": true}
+```
+`engine` is `llm`, `heuristic` (with `fallback_reason`: `llm_disabled`, `llm_unavailable`, or `llm_invalid_output`), or `none` (no evidence). Error bodies are `{"detail": {"error": <code>, "message": <safe text>, "error_id"?: <id>}}`. Stack traces and driver messages go to the server log only.
+
+**Not implemented:** authentication, rate limiting, upload size/page limits, API versioning. Treat this as a local/demo service.
+
+## Evaluation
+
+Run with `python -m benchmarks.run_benchmark --dataset <file> --engine heuristic|llm [--dedupe] [--sample N]`. Every result file in `benchmarks/results/` stores its full configuration: engine, model and options, database backend and retrieval mode, embedding model, chunking, top_k, dataset SHA-256, case counts, git commit, and latency.
+
+**Datasets**
+- `dev_v1_1000.json`: 1,000 synthetic cases from `scripts/generate_1000_benchmark.py` (300 Supported, 200 inversions, 200 entity swaps, 150 numeric perturbations, 150 out-of-corpus). **Only 834 unique** query/response pairs, heavily templated. The rule engine was developed against this set, so treat it as a **development set**.
+- `heldout_v1.json`: 150 hand-written cases (40 / 30 / 25 / 25 / 30) from facts in the long_* documents, with phrasings independent of the dev generator. It was written *before* the rule changes were evaluated on it, and run **once**. It is still synthetic and was authored by the same development process (an AI assistant), so it is a sanity check on generalisation, not an independent benchmark.
+
+**Scoring.** Positive class = *not supported* (`Hallucinated` or `Insufficient Evidence`), since both mean "don't trust this answer". A 3-way accuracy is also reported.
+
+**Results** (PostgreSQL + pgvector, top_k = 3, 200/40-token chunks, 1,904 chunks from 409 documents, 2026-09-26/27)
+
+| Engine | Set | n | Accuracy | Not-supported P / R / F1 | Supported P / R / F1 | Macro-F1 |
+|---|---|---|---|---|---|---|
+| Rules v2 | dev (all) | 1000 | 90.8 | 90.2 / 97.4 / 93.7 | 92.6 / 75.3 / 83.1 | 88.4 |
+| Rules v2 | dev (deduplicated) | 834 | 94.6 | — | — | 89.7 |
+| Rules v2 | **held-out** | 150 | **72.0** | 92.5 / 67.3 / 77.9 | 48.6 / 85.0 / 61.8 | **69.9** |
+| Llama 3.2 3B (Ollama, temp 0) | **held-out** | 150 | **72.7** | 100.0 / 62.7 / 77.1 | 49.4 / 100.0 / 66.1 | **71.6** |
+| Llama 3.2 3B (Ollama, temp 0) | dev (stratified sample of 200 unique cases, seed 7) | 200 | 89.5 | 100.0 / 87.5 / 93.3 | 60.4 / 100.0 / 75.3 | 84.3 |
+| Rules v2 on the same 200 dev cases | dev sample | 200 | 95.5 | 96.5 / 98.2 / 97.4 | 89.7 / 81.3 / 85.3 | 91.3 |
+| Rules v2, SQLite keyword mode | dev / held-out | 1000 / 150 | 84.6 / 74.0 | — | — | 78.9 / 71.4 |
+
+What this shows:
+- **The rules don't generalise.** 90.8% on dev vs 72.0% on held-out. Negation/inversion accuracy drops from 94% (dev) to 27% (held-out), because the rules recognise the dev generator's phrasings. The held-out majority-class baseline is 73.3%, so the rule engine is **not better than always answering "not supported"** there.
+- Numeric perturbations (88–100%) and out-of-corpus questions (100%) are the rules' reliable signals.
+- **The LLM judge doesn't stay grounded.** On held-out it never rejected a correct answer (Supported recall 100%) and caught most inversions (83%) and entity swaps (88%). But it called **26 of 30 out-of-corpus facts "Supported"** (13% correct on that category), using its own world knowledge instead of the retrieved evidence. There were zero LLM fallbacks in the run; latency p50 15.2 s, p95 19.2 s on an Apple M4.
+- On the dev sample, the LLM rejects 100% of out-of-corpus cases. Those dev cases describe fictional or implausible facts, while the held-out ones are well-known *true* facts. So the LLM effectively judges by its own beliefs, not by the retrieved evidence. (The dev-sample run had 1 LLM timeout, which fell back to the rules and is counted in the result metadata.)
+- The two engines fail in opposite places (rules: inversions 27%, swaps 56%; LLM: out-of-corpus 13%, numbers 72%). A cascade is the obvious next experiment, but it must be designed on the dev set and confirmed on a *new* held-out set.
+- With n = 150, a 95% confidence interval on held-out accuracy is roughly ±7 points.
+
+Legacy results (`benchmarks/legacy/`) are kept for reference only. They were produced by the pre-fix code and are not comparable.
+
+## Testing
 ```bash
-python -m backend.rag.ingest
+TEST_DATABASE_URL=postgresql:///groundtruth_test python -m pytest -q    # PostgreSQL tests are skipped if unset
 ```
+149 tests (many parametrised over SQLite and PostgreSQL). The suite covers chunk token limits and overlap; each rule of the deterministic judge, including the audit's false positives; LLM output validation (malformed, extra text, missing, null, or unexpected labels, out-of-range values) with a mocked Ollama; fallback reporting; retrieval on both backends; infrastructure failures (503, no silent `[]`); every endpoint's validation and error bodies (no leaked internals); upload path traversal, dedup (sequential and concurrent), and cleanup on failure; history/stats; the history-table migration; the config / Compose / `.env` contract; and a static XSS check on the frontend. CI runs everything against a pgvector service; Ollama is never required.
 
----
+Manually verified on 2026-09-26: the full UI flow (detect with the live LLM, upload, duplicate upload, history, dashboard) against local Postgres and Ollama, plus a stored-XSS payload rendering as text in `/history`.
 
-## Running the Application
+## Known limitations
+- The rule engine is brittle and overfit to the dev set (see Evaluation). Its confidences are fixed per rule, not calibrated probabilities.
+- The LLM judge can itself hallucinate, e.g. calling an out-of-corpus claim "Supported" and citing context that doesn't contain it. Its self-reported confidence is uncalibrated. It is also slow on a laptop (~12–20 s/request warm; the first load of the model can take minutes).
+- Retrieval embeds only the **query**, not the response, and has no relevance threshold: top-k chunks are always returned when the index is non-empty.
+- The binary label set can't separate "false" from "true but not in the knowledge base". `Insufficient Evidence` helps only when nothing is retrieved or the rules are undecided.
+- **Corpus quality:** of 410 files, about 70 are template filler with no facts, most `long_*` "treatises" are ~75% repeated template sentences, one PDF has no extractable text, and one is a `test.txt` stub.
+- No auth, rate limiting, or upload size limits; CORS allows all origins; no Alembic migrations (one additive migration runs in code); exact (non-ANN) vector search; one model instance serialises embedding calls.
 
-Start the unified FastAPI server (serves both the API and the frontend on the same port):
-
-```bash
-uvicorn backend.main:app --reload
+## Project structure
 ```
-
-Then open:
-
-| URL | Description |
-|---|---|
-| `http://localhost:8000/` | Detector UI |
-| `http://localhost:8000/dashboard` | Analytics Dashboard |
-| `http://localhost:8000/history` | Evaluation History |
-| `http://localhost:8000/docs` | Interactive Swagger API Docs |
-
----
-
-## API Reference
-
-All endpoints are defined in [`backend/main.py`](./backend/main.py).
-
-### `POST /detect` *(alias: `POST /api/detect`)*
-
-Runs the full hallucination-detection pipeline: retrieves evidence, invokes the LLM judge, persists the result to history, and returns the verdict.
-
-**Request Body**
-
-```json
-{
-  "query": "Who invented the telephone?",
-  "llm_response": "Thomas Edison invented the telephone.",
-  "top_k": 3
-}
+backend/
+  config.py          environment contract (.env supported)
+  database.py        backend selection, schema, connections, idempotent chunk inserts
+  main.py            FastAPI app, endpoints, error handling, upload flow
+  rag/  chunker.py (token-aware) · document_loader.py (parse/validate/hash) · embeddings.py
+        ingest.py (batch + shared indexing, --rebuild) · retriever.py (vector / keyword)
+  llm/  judge.py (Ollama judge + rules v2)
+frontend/            index.html, dashboard.html, history.html, script.js, style.css
+benchmarks/          run_benchmark.py, metrics.py, datasets/, results/, legacy/ (old result files only)
+scripts/             corpus and dev-set generators
+tests/               pytest suite
 ```
-
-**Response**
-
-```json
-{
-  "verdict": "Hallucinated",
-  "confidence": 92.0,
-  "confidence_score": 92.0,
-  "reason": "The response incorrectly attributes the invention of the telephone to Thomas Edison. Retrieved context confirms Alexander Graham Bell invented the telephone in 1876.",
-  "explanation": "The response incorrectly attributes the invention of the telephone to Thomas Edison. Retrieved context confirms Alexander Graham Bell invented the telephone in 1876.",
-  "retrieved_evidence": [
-    {
-      "document_name": "telephone.txt",
-      "content": "Alexander Graham Bell was a Scottish-born inventor...",
-      "similarity_score": 0.91
-    }
-  ],
-  "similarity_scores": [0.91],
-  "metadata": {
-    "top_k_requested": 3,
-    "evidence_count": 1,
-    "model_used": "Llama-3.2-3B-RAG-Judge"
-  }
-}
-```
-
-### `POST /api/upload`
-
-Uploads a `.txt` or `.pdf` document, extracts its text (with OCR fallback for scanned PDFs), chunks it, computes an MD5 hash, generates embeddings, and indexes it into the `document_chunks` vector table.
-
-**Request:** `multipart/form-data` with a `file` field.
-
-**Response**
-
-```json
-{
-  "status": "success",
-  "filename": "einstein.txt",
-  "chunks_ingested": 4,
-  "message": "Successfully ingested 'einstein.txt' with 4 text chunk(s)!"
-}
-```
-
-### `GET /api/history`
-
-Returns the most recent hallucination-detection evaluations, ordered by most recent first.
-
-**Query Parameters:** `limit` (default: `10`)
-
-```json
-[
-  {
-    "id": 12,
-    "query": "Who invented the telephone?",
-    "llm_response": "Thomas Edison invented the telephone.",
-    "verdict": "Hallucinated",
-    "confidence": 92.0,
-    "reason": "...",
-    "created_at": "2026-07-29T10:15:00"
-  }
-]
-```
-
-### `GET /api/stats`
-
-Returns aggregate statistics for the analytics dashboard.
-
-```json
-{
-  "total_evaluations": 48,
-  "supported_count": 31,
-  "hallucinated_count": 17,
-  "hallucination_rate": 35.42
-}
-```
-
-### `GET /api/health`
-
-Simple liveness/health check.
-
-```json
-{
-  "status": "healthy",
-  "service": "GroundTruth AI Engine",
-  "version": "3.1.0"
-}
-```
-
----
-
-## Frontend
-
-The frontend is intentionally dependency-free (no bundler, no framework) and is served directly by FastAPI's `StaticFiles` mount at `/static`, with clean top-level routes:
-
-- **`/`** — Detector: submit a query + LLM response, watch the pipeline tracker animate through Context Retrieval → Claim Verification → Verdict Judgment, then view the verdict banner, confidence gauge, explanation, and evidence provenance cards.
-- **`/dashboard`** — Aggregate telemetry: total evaluations, hallucination rate, and verdict distribution.
-- **`/history`** — Chronological log of every evaluation ever run.
-
----
-
-## Benchmark Evaluation & Performance Metrics
-
-GroundTruth AI features an automated end-to-end evaluation suite located in [`tests/`](./tests) to validate retrieval grounding and hallucination detection accuracy against a scaled, diverse knowledge base.
-
-### Knowledge Base Corpus Scale
-
-The embedded knowledge base in [`data/documents/`](./data/documents) contains **411 documents** (337 `.txt` and 74 `.pdf` files) indexed with **709 chunks**:
-
-| Document Category | Format | Count | Line Count / Specifications |
-| :--- | :--- | :---: | :--- |
-| **Micro Documents** | `.txt` | **85** | **Strictly 2 lines each** (fundamental constants, astronomy, chemistry, CS) |
-| **Medium Documents** | `.txt` & `.pdf` | **241** | **15 to 40 lines each** (discoveries, history, geography, biotechnology) |
-| **Comprehensive Documents** | `.txt` | **85** | **110 to 176 lines each** (deep reference treatises on operating systems, vaccines, LLMs) |
-| **Total Corpus** | | **411** | *(337 `.txt`, 74 `.pdf`)* |
-
----
-
-### 1,000-Query High-Difficulty Benchmark Results
-
-The 1,000-sample benchmark (`tests/test_benchmark_1000.py`) evaluates the hallucination engine against 5 challenging query archetypes:
-
-- **Total Evaluations:** 1,000 queries
-- **Correct Predictions:** **893 / 1,000**
-- **Overall Benchmark Accuracy:** **89.30%**
-- **Average Latency:** **0.0629s per query** (62.89s total run time)
-
-#### 🔲 2x2 Confusion Matrix
-
-| | Predicted: **Supported** | Predicted: **Hallucinated** | Total Actual |
-| :--- | :---: | :---: | :---: |
-| **Actual: Supported** | **254** *(TP)* | **46** *(FN)* | 300 |
-| **Actual: Hallucinated / Out-of-Corpus** | **61** *(FP)* | **639** *(TN)* | 700 |
-| **Total Predicted** | 315 | 685 | 1,000 |
-
-#### 📈 Per-Class Precision, Recall & F1-Score
-
-| Class | Precision | Recall | F1-Score | Support |
-| :--- | :---: | :---: | :---: | :---: |
-| **Supported** | **80.63%** | **84.67%** | **82.60%** | 300 |
-| **Hallucinated** | **93.28%** | **91.29%** | **92.27%** | 700 |
-| **Macro Average** | **86.96%** | **87.98%** | **87.44%** | 1,000 |
-| **Weighted Average** | **89.49%** | **89.30%** | **89.37%** | 1,000 |
-
-#### 🔍 Granular Accuracy Breakdown by Difficulty Category
-
-| Test Category | Difficulty | Description | Accuracy | Correct / Total |
-| :--- | :---: | :--- | :---: | :---: |
-| **Fine-Grained Numerical Perturbations** | Hard | Near-miss constants, altered exponents, dates, or measurements | **100.00%** | 150 / 150 |
-| **Plausible Zero-Evidence Out-of-Corpus** | Extreme | Realistic domain queries with zero presence in the knowledge base | **100.00%** | 150 / 150 |
-| **Adversarial Inversions & Negations** | Hard | High lexical overlap reversing causal direction or adding negations | **90.00%** | 180 / 200 |
-| **Synthesized & Paraphrased Supported Facts** | Hard | Multi-sentence facts with synonyms and passive/active voice shifts | **84.67%** | 254 / 300 |
-| **High-Overlap Cross-Entity Role Swaps** | Hard | Swapped co-mentioned scientists, inventors, or historical actors | **79.50%** | 159 / 200 |
-
----
-
-### Running the Benchmark & Test Suites
-
-All tests and benchmark suites are unified in the [`tests/`](./tests) folder and can be executed with standard Python:
-
-```bash
-# Run the 1,000-query high-difficulty benchmark
-python tests/test_benchmark_1000.py
-
-# Run the 500-query benchmark
-python tests/test_benchmark_500.py
-
-# Run unit tests
-python tests/test_judge.py
-python tests/test_retriever.py
-python tests/test_chunker.py
-```
-
-Benchmark output logs, classifications, and JSON reports are automatically saved to `tests/benchmark_results_1000.json`.
-
----
-
-## Roadmap
-
-- [ ] Multi-model judge ensemble (cross-validate Ollama verdicts against a secondary LLM)
-- [ ] Per-document knowledge base management (delete/re-index individual sources)
-- [ ] Streaming verdict responses via Server-Sent Events
-- [ ] Authentication & multi-tenant knowledge bases
-- [x] Automated evaluation benchmark suite for judge accuracy
-
----
 
 ## License
-
-This project is available under the MIT License. See `LICENSE` for details.
+MIT

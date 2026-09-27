@@ -1,30 +1,51 @@
-import os
-import io
-import hashlib
 import logging
-from typing import List, Dict, Any, Optional
-from fastapi import FastAPI, HTTPException, Depends, status, File, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session
-import pypdf
+import os
+import re
+import uuid
+from contextlib import asynccontextmanager
+from pathlib import Path
+from typing import Annotated, Any, Dict, List, Optional
 
-from backend.database import get_db, init_db, DetectionHistory
-from backend.rag.retriever import retrieve_context
-from backend.llm.judge import evaluate_hallucination
+import requests
+from fastapi import Depends, FastAPI, File, HTTPException, Query, Request, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field, StringConstraints
+from sqlalchemy import func
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+
+from backend import config
+from backend import database
+from backend.database import DatabaseUnavailable, DetectionHistory, get_db, init_db
+from backend.llm.judge import INSUFFICIENT, evaluate_hallucination
+from backend.rag.document_loader import SUPPORTED_EXTENSIONS, DocumentParseError, extract_text, file_hash
+from backend.rag.embeddings import EmbeddingUnavailable
+from backend.rag.ingest import index_document, prepare_chunks
+from backend.rag.retriever import RetrievalUnavailable, retrieve_context
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("groundtruth_ai")
 
+VERSION = "3.2.0"
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    # Fails startup (fail fast) if the database is unreachable and SQLite fallback is disabled.
+    init_db()
+    logger.info("Database initialised: %s", database.database_status())
+    yield
+
+
 app = FastAPI(
     title="GroundTruth AI",
     description="RAG-Based LLM Hallucination Detection Engine",
-    version="3.1.0"
+    version=VERSION,
+    lifespan=lifespan,
 )
 
-# CORS Middleware Setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,23 +54,45 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Directory Configuration
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+FRONTEND_DIR = config.BASE_DIR / "frontend"
+if FRONTEND_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
 
-if os.path.exists(FRONTEND_DIR):
-    app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
-# Pydantic Schemas
+# ---------------------------------------------------------------------------------------------
+# Errors: safe messages for clients, full details in server logs
+# ---------------------------------------------------------------------------------------------
+def api_error(status_code: int, code: str, message: str) -> HTTPException:
+    return HTTPException(status_code=status_code, detail={"error": code, "message": message})
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    error_id = uuid.uuid4().hex[:12]
+    logger.exception("Unhandled error %s on %s %s", error_id, request.method, request.url.path)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": {"error": "internal_error", "message": "An internal error occurred.", "error_id": error_id}},
+    )
+
+
+# ---------------------------------------------------------------------------------------------
+# Schemas
+# ---------------------------------------------------------------------------------------------
+NonBlankText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=2)]
+
+
 class DetectionRequest(BaseModel):
-    query: str = Field(..., min_length=2, example="Who invented the telephone?")
-    llm_response: str = Field(..., min_length=2, example="Thomas Edison invented the telephone.")
+    query: NonBlankText = Field(..., json_schema_extra={"example": "Who invented the telephone?"})
+    llm_response: NonBlankText = Field(..., json_schema_extra={"example": "Thomas Edison invented the telephone."})
     top_k: Optional[int] = Field(default=3, ge=1, le=10)
+
 
 class EvidenceItem(BaseModel):
     document_name: str
     content: str
     similarity_score: float
+
 
 class DetectionResponse(BaseModel):
     verdict: str
@@ -61,281 +104,254 @@ class DetectionResponse(BaseModel):
     similarity_scores: List[float]
     metadata: Dict[str, Any]
 
-@app.on_event("startup")
-def startup_event():
-    try:
-        init_db()
-        logger.info("Database initialized successfully.")
-    except Exception as e:
-        logger.warning(f"Database initialization deferred: {e}")
 
-# Frontend Routes
+# ---------------------------------------------------------------------------------------------
+# Frontend routes
+# ---------------------------------------------------------------------------------------------
+def _page(name: str) -> FileResponse:
+    path = FRONTEND_DIR / name
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="Page not found")
+    return FileResponse(str(path))
+
+
 @app.get("/", response_class=FileResponse)
 async def serve_index():
-    index_path = os.path.join(FRONTEND_DIR, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-    raise HTTPException(status_code=404, detail="Frontend index.html not found")
+    return _page("index.html")
+
 
 @app.get("/dashboard", response_class=FileResponse)
 async def serve_dashboard():
-    dash_path = os.path.join(FRONTEND_DIR, "dashboard.html")
-    if os.path.exists(dash_path):
-        return FileResponse(dash_path)
-    return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
+    return _page("dashboard.html")
+
 
 @app.get("/history", response_class=FileResponse)
 async def serve_history():
-    hist_path = os.path.join(FRONTEND_DIR, "history.html")
-    if os.path.exists(hist_path):
-        return FileResponse(hist_path)
-    return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
+    return _page("history.html")
 
-# Core API Endpoints
+
+# ---------------------------------------------------------------------------------------------
+# API. Handlers are plain `def` on purpose: they call blocking libraries (psycopg2, SQLAlchemy,
+# SentenceTransformers, requests, pypdf), so FastAPI runs them in its threadpool instead of on the event loop.
+# ---------------------------------------------------------------------------------------------
 @app.get("/api/health")
-async def health_check():
-    return {"status": "healthy", "service": "GroundTruth AI Engine", "version": "3.1.0"}
+def health_check():
+    db_info = database.database_status()
+    try:
+        with database.engine.connect() as conn:
+            conn.exec_driver_sql("SELECT 1")
+        db_info["reachable"] = True
+    except Exception:
+        logger.warning("Health check: database unreachable", exc_info=True)
+        db_info["reachable"] = False
+    llm = {"enabled": config.USE_LLM, "model": config.OLLAMA_MODEL, "reachable": None}
+    if config.USE_LLM:
+        try:
+            llm["reachable"] = requests.get(f"{config.OLLAMA_URL}/api/tags", timeout=1.5).status_code == 200
+        except requests.RequestException:
+            llm["reachable"] = False
+    degraded = db_info["fallback_active"] or not db_info["reachable"] or (config.USE_LLM and not llm["reachable"])
+    return {"status": "degraded" if degraded else "healthy", "service": "GroundTruth AI Engine",
+            "version": VERSION, "database": db_info, "llm": llm}
+
 
 @app.post("/detect", response_model=DetectionResponse)
 @app.post("/api/detect", response_model=DetectionResponse)
-async def detect_hallucination(request: DetectionRequest, db: Session = Depends(get_db)):
+def detect_hallucination(request: DetectionRequest, db: Session = Depends(get_db)):
+    top_k = request.top_k or 3
     try:
-        # Step 1: Retrieve Evidence via RAG
-        top_k = request.top_k or 3
         retrieved_docs = retrieve_context(request.query, top_k=top_k)
-        
-        evidence_list = []
-        similarity_scores = []
-        context_texts = []
+    except RetrievalUnavailable:
+        logger.exception("Retrieval unavailable for /detect")
+        raise api_error(503, "retrieval_unavailable",
+                        "Evidence retrieval is temporarily unavailable, so no verdict was produced.")
 
-        for doc in retrieved_docs:
-            score = round(float(doc.get("score", 0.0)), 4)
-            text = doc.get("content", doc.get("text", ""))
-            source = doc.get("source", doc.get("document_name", "Knowledge Base"))
-            
-            evidence_list.append(EvidenceItem(
-                document_name=source,
-                content=text,
-                similarity_score=score
-            ))
-            similarity_scores.append(score)
-            context_texts.append(f"[{source}]: {text}")
+    evidence_list, similarity_scores, context_texts = [], [], []
+    for doc in retrieved_docs:
+        score = round(float(doc.get("score", 0.0)), 4)
+        source = doc.get("source") or "Knowledge Base"
+        text = doc.get("content") or ""
+        evidence_list.append(EvidenceItem(document_name=source, content=text, similarity_score=score))
+        similarity_scores.append(score)
+        context_texts.append(f"[{source}]: {text}")
 
-        full_context = "\n\n".join(context_texts) if context_texts else "No relevant context found in knowledge base."
+    if not retrieved_docs:
+        result = {"verdict": INSUFFICIENT, "confidence": 0.0, "engine": "none", "model": None, "fallback_reason": None,
+                  "reason": "No evidence was retrieved from the knowledge base, so the response cannot be verified."}
+    else:
+        result = evaluate_hallucination(request.query, request.llm_response, "\n\n".join(context_texts))
 
-        # Step 2: LLM Evaluation
-        eval_result = evaluate_hallucination(
-            query=request.query,
-            response=request.llm_response,
-            context=full_context
-        )
+    confidence_pct = round(float(result["confidence"]) * 100, 2)
+    reason = result["reason"]
 
-        verdict = eval_result.get("verdict", "Hallucinated")
-        confidence = float(eval_result.get("confidence", 0.85))
-        confidence_pct = round(confidence * 100, 2) if confidence <= 1.0 else round(confidence, 2)
-        reason = eval_result.get("reason", eval_result.get("explanation", "Evaluation completed."))
+    history_saved = True
+    try:
+        db.add(DetectionHistory(query=request.query, llm_response=request.llm_response, verdict=result["verdict"],
+                                confidence=confidence_pct, reason=reason, engine=result["engine"]))
+        db.commit()
+    except SQLAlchemyError:
+        db.rollback()
+        history_saved = False
+        logger.exception("Failed to record detection history")
 
-        # Step 3: Save to DB History
-        try:
-            history_entry = DetectionHistory(
-                query=request.query,
-                llm_response=request.llm_response,
-                verdict=verdict,
-                confidence=confidence_pct,
-                reason=reason
-            )
-            db.add(history_entry)
-            db.commit()
-        except Exception as db_err:
-            logger.error(f"Failed to record history: {db_err}")
-            db.rollback()
+    db_info = database.database_status()
+    return DetectionResponse(
+        verdict=result["verdict"],
+        confidence=confidence_pct,
+        confidence_score=confidence_pct,
+        reason=reason,
+        explanation=reason,
+        retrieved_evidence=evidence_list,
+        similarity_scores=similarity_scores,
+        metadata={
+            "top_k_requested": top_k,
+            "evidence_count": len(evidence_list),
+            "engine": result["engine"],
+            "model_used": result["model"],
+            "fallback_reason": result["fallback_reason"],
+            "database_backend": db_info["backend"],
+            "retrieval_mode": db_info["retrieval_mode"],
+            "degraded": bool(db_info["fallback_active"] or result["fallback_reason"] not in (None, "llm_disabled")),
+            "history_saved": history_saved,
+        },
+    )
 
-        return DetectionResponse(
-            verdict=verdict,
-            confidence=confidence_pct,
-            confidence_score=confidence_pct,
-            reason=reason,
-            explanation=reason,
-            retrieved_evidence=evidence_list,
-            similarity_scores=similarity_scores,
-            metadata={
-                "top_k_requested": top_k,
-                "evidence_count": len(evidence_list),
-                "model_used": "Llama-3.2-3B-RAG-Judge"
-            }
-        )
 
-    except Exception as e:
-        logger.error(f"Detection error: {str(e)}", exc_info=True)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Hallucination detection failed: {str(e)}"
-        )
+_SAFE_CHARS = re.compile(r"[^A-Za-z0-9._-]+")
+
+
+def safe_display_name(filename: Optional[str]) -> str:
+    """Never trust the client filename: keep only the last path component and an allow-listed character set."""
+    name = (filename or "").replace("\\", "/").split("/")[-1]
+    name = _SAFE_CHARS.sub("_", name).strip("._")[:80]
+    return name or "document"
+
+
+def resolve_inside(directory: Path, name: str) -> Path:
+    base = directory.resolve()
+    target = (base / name).resolve()
+    if target.parent != base:
+        raise api_error(400, "invalid_filename", "Invalid file name.")
+    return target
+
 
 @app.post("/api/upload")
-async def upload_document(file: UploadFile = File(...)):
-    """Uploads a .txt or .pdf file, chunks it, and ingests it into the vector database matching exact schema."""
-    filename = file.filename
-    extracted_text = ""
-    fn_lower = filename.lower() if filename else ""
+def upload_document(file: UploadFile = File(...)):
+    """Validate, extract, deduplicate (by SHA-256 of the file bytes), chunk, embed and index a .txt/.pdf file.
 
-    # Validate file extension
-    if not (fn_lower.endswith(".txt") or fn_lower.endswith(".pdf")):
-        raise HTTPException(
-            status_code=400, 
-            detail="Unsupported file format. Please upload a .txt or .pdf file."
-        )
+    Consistency: the file is written to a temporary name, chunks are inserted, the file is atomically renamed
+    into place, then the transaction commits. Any failure removes the temporary/new file and rolls back.
+    """
+    display_name = safe_display_name(file.filename)
+    extension = Path(display_name).suffix.lower()
+    if extension not in SUPPORTED_EXTENSIONS:
+        raise api_error(400, "unsupported_file_type", "Unsupported file format. Please upload a .txt or .pdf file.")
+
+    data = file.file.read()
+    if not data:
+        raise api_error(400, "empty_file", "The uploaded file is empty.")
+    try:
+        text = extract_text(data, extension)
+    except DocumentParseError as exc:
+        raise api_error(400, "invalid_document", str(exc))
+    if not text.strip():
+        raise api_error(400, "no_text", "No text could be extracted from the file (scanned PDF without OCR, or empty).")
+
+    digest = file_hash(data)
+    storage_name = f"{digest[:16]}_{display_name}"
+    config.DOCUMENTS_DIR.mkdir(parents=True, exist_ok=True)
+    dest = resolve_inside(config.DOCUMENTS_DIR, storage_name)
+    duplicate = lambda existing: {  # noqa: E731
+        "status": "duplicate", "filename": existing, "chunks_ingested": 0,
+        "message": f"This document is already indexed as '{existing}'; nothing was added.",
+    }
 
     try:
-        file_bytes = await file.read()
-        file_hash = hashlib.md5(file_bytes).hexdigest()
+        with database.db_connection() as conn:
+            existing = database.find_document_by_hash(conn, digest)
+            if existing:
+                return duplicate(existing)
 
-        # Extract text from file
-        if fn_lower.endswith(".pdf"):
-            pdf_reader = pypdf.PdfReader(io.BytesIO(file_bytes))
-            for page in pdf_reader.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    extracted_text += page_text + "\n"
+            chunks, embeddings = prepare_chunks(text)
+            if not chunks:
+                raise api_error(400, "no_text", "No indexable text was found in the file.")
 
-            # OCR Fallback for scanned/image-based PDFs
-            if not extracted_text.strip():
-                logger.info(f"pypdf yielded no text for {filename}. Attempting OCR fallback...")
-                try:
-                    import pdf2image
-                    import pytesseract
+            tmp = dest.with_name(f".{uuid.uuid4().hex}.uploading")
+            existed_before = dest.exists()
+            moved = False
+            try:
+                tmp.write_bytes(data)
+                inserted = index_document(conn, storage_name, digest, chunks, embeddings)
+                if inserted == 0:  # a concurrent upload of identical content committed first
+                    conn.rollback()
+                    return duplicate(database.find_document_by_hash(conn, digest) or storage_name)
+                os.replace(tmp, dest)
+                moved = True
+                conn.commit()
+            except BaseException:
+                if moved and not existed_before:
+                    dest.unlink(missing_ok=True)
+                raise
+            finally:
+                tmp.unlink(missing_ok=True)  # no-op after a successful os.replace
+    except HTTPException:
+        raise
+    except (DatabaseUnavailable, EmbeddingUnavailable):
+        logger.exception("Upload failed: dependency unavailable")
+        raise api_error(503, "service_unavailable", "The document index is temporarily unavailable. Please retry.")
+    except Exception:
+        # Driver errors surface here (the connection was rolled back and closed by db_connection()).
+        error_id = uuid.uuid4().hex[:12]
+        logger.exception("Upload failed (error_id=%s)", error_id)
+        raise HTTPException(status_code=500, detail={"error": "upload_failed",
+                                                     "message": "The document could not be indexed.",
+                                                     "error_id": error_id})
 
-                    images = pdf2image.convert_from_bytes(file_bytes)
-                    for img in images:
-                        ocr_text = pytesseract.image_to_string(img)
-                        if ocr_text:
-                            extracted_text += ocr_text + "\n"
-                except Exception as ocr_err:
-                    logger.warning(f"OCR fallback unavailable: {ocr_err}")
+    return {
+        "status": "success",
+        "filename": storage_name,
+        "original_filename": display_name,
+        "chunks_ingested": inserted,
+        "message": f"Successfully ingested '{display_name}' with {inserted} text chunk(s).",
+    }
 
-        else:
-            extracted_text = file_bytes.decode("utf-8")
-
-        if not extracted_text.strip():
-            raise HTTPException(
-                status_code=400, 
-                detail="The uploaded PDF appears to be a scanned image or empty. Try converting it to a text-selectable PDF or uploading a .txt file."
-            )
-
-        # Save copy locally to data/documents/
-        save_path = os.path.join(BASE_DIR, "data", "documents", filename)
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        with open(save_path, "wb") as f:
-            f.write(file_bytes)
-
-        # RAG Ingestion Pipeline
-        from backend.rag.ingest import chunk_text
-        from backend.rag.embeddings import get_embedding
-        from backend.database import get_connection
-
-        chunks = chunk_text(extracted_text)
-        conn = get_connection()
-        cursor = conn.cursor()
-
-        is_postgres = hasattr(conn, "status") or "psycopg" in str(type(conn)).lower()
-        
-        # Ensure target table exists matching schema
-        if is_postgres:
-            cursor.execute("CREATE EXTENSION IF NOT EXISTS vector;")
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS document_chunks (
-                    id SERIAL PRIMARY KEY,
-                    source TEXT NOT NULL,
-                    file_hash TEXT NOT NULL,
-                    chunk_number INTEGER NOT NULL,
-                    content TEXT NOT NULL,
-                    embedding vector(384)
-                );
-            """)
-        else:
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS document_chunks (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    source TEXT NOT NULL,
-                    file_hash TEXT NOT NULL,
-                    chunk_number INTEGER NOT NULL,
-                    content TEXT NOT NULL
-                );
-            """)
-
-        conn.commit()
-
-        # Insert chunks & embeddings matching table structure exactly
-        inserted_count = 0
-        for idx, chunk in enumerate(chunks, start=1):
-            embedding = get_embedding(chunk)
-            if is_postgres:
-                cursor.execute(
-                    """
-                    INSERT INTO document_chunks (source, file_hash, chunk_number, content, embedding)
-                    VALUES (%s, %s, %s, %s, %s::vector)
-                    """,
-                    (filename, file_hash, idx, chunk, str(embedding))
-                )
-            else:
-                cursor.execute(
-                    """
-                    INSERT INTO document_chunks (source, file_hash, chunk_number, content)
-                    VALUES (?, ?, ?, ?)
-                    """,
-                    (filename, file_hash, idx, chunk)
-                )
-            inserted_count += 1
-
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-        return {
-            "status": "success",
-            "filename": filename,
-            "chunks_ingested": inserted_count,
-            "message": f"Successfully ingested '{filename}' with {inserted_count} text chunk(s)!"
-        }
-
-    except HTTPException as http_exc:
-        raise http_exc
-    except Exception as e:
-        logger.error(f"Error processing uploaded document: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to process document: {str(e)}")
 
 @app.get("/api/history")
-async def get_history(limit: int = 10, db: Session = Depends(get_db)):
+def get_history(limit: int = Query(10, ge=1, le=100), db: Session = Depends(get_db)):
     try:
         records = db.query(DetectionHistory).order_by(DetectionHistory.created_at.desc()).limit(limit).all()
-        return [
-            {
-                "id": r.id,
-                "query": r.query,
-                "llm_response": r.llm_response,
-                "verdict": r.verdict,
-                "confidence": round(r.confidence * 100, 2) if r.confidence is not None and r.confidence <= 1.0 else (round(r.confidence, 2) if r.confidence is not None else 0.0),
-                "reason": r.reason,
-                "created_at": r.created_at.isoformat() if r.created_at else None
-            }
-            for r in records
-        ]
-    except Exception as e:
-        logger.error(f"Error fetching history: {e}")
-        return []
+    except SQLAlchemyError:
+        logger.exception("Failed to read history")
+        raise api_error(503, "database_unavailable", "History is temporarily unavailable.")
+    return [
+        {
+            "id": r.id,
+            "query": r.query,
+            "llm_response": r.llm_response,
+            "verdict": r.verdict,
+            "confidence": round(r.confidence, 2) if r.confidence is not None else None,
+            "reason": r.reason,
+            "engine": r.engine,
+            "created_at": r.created_at.isoformat() if r.created_at else None,
+        }
+        for r in records
+    ]
+
 
 @app.get("/api/stats")
-async def get_stats(db: Session = Depends(get_db)):
+def get_stats(db: Session = Depends(get_db)):
     try:
-        total = db.query(DetectionHistory).count()
-        supported = db.query(DetectionHistory).filter(DetectionHistory.verdict.ilike("Supported")).count()
-        hallucinated = db.query(DetectionHistory).filter(DetectionHistory.verdict.ilike("Hallucinated")).count()
-        
-        return {
-            "total_evaluations": total,
-            "supported_count": supported,
-            "hallucinated_count": hallucinated,
-            "hallucination_rate": round((hallucinated / total * 100), 2) if total > 0 else 0.0
-        }
-    except Exception as e:
-        return {"total_evaluations": 0, "supported_count": 0, "hallucinated_count": 0, "hallucination_rate": 0.0}
+        rows = db.query(DetectionHistory.verdict, func.count(DetectionHistory.id)).group_by(DetectionHistory.verdict).all()
+    except SQLAlchemyError:
+        logger.exception("Failed to compute stats")
+        raise api_error(503, "database_unavailable", "Statistics are temporarily unavailable.")
+    counts = {verdict: n for verdict, n in rows}
+    total = sum(counts.values())
+    hallucinated = counts.get("Hallucinated", 0)
+    return {
+        "total_evaluations": total,
+        "supported_count": counts.get("Supported", 0),
+        "hallucinated_count": hallucinated,
+        "insufficient_evidence_count": counts.get(INSUFFICIENT, 0),
+        "hallucination_rate": round(hallucinated / total * 100, 2) if total else 0.0,
+    }

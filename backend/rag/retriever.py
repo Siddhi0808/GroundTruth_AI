@@ -1,9 +1,16 @@
 import logging
-from typing import List, Dict, Any
-from backend.database import get_connection
-from backend.rag.embeddings import get_embedding
+import re
+from typing import Any, Dict, List
+
+from backend import database as db
+from backend.rag.embeddings import EmbeddingUnavailable, get_embedding
 
 logger = logging.getLogger("groundtruth_ai")
+
+
+class RetrievalUnavailable(Exception):
+    """Retrieval could not run (database or embedding model failure). Not the same as 'no evidence found'."""
+
 
 class RetrievedChunk(dict):
     """Chunk result supporting both dictionary and attribute-based access."""
@@ -15,96 +22,75 @@ class RetrievedChunk(dict):
         self.chunk_number = chunk_number
         self.distance = distance
 
-def retrieve_context(query: str, top_k: int = 3) -> List[Dict[str, Any]]:
-    top_k = top_k or 3
-    query_vector = get_embedding(query)
-    results = []
 
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
+_STOP_WORDS = {'what', 'which', 'where', 'when', 'who', 'whom', 'how', 'why', 'that', 'this', 'these', 'those',
+               'the', 'and', 'its', 'for', 'with', 'from', 'into', 'does', 'did', 'are', 'was', 'were', 'been',
+               'have', 'has', 'had', 'tell', 'about', 'explain', 'describe'}
 
-        is_postgres = hasattr(conn, "status") or "psycopg" in str(type(conn)).lower()
 
-        if is_postgres:
-            # PostgreSQL pgvector similarity query
-            query_sql = """
-                SELECT source, chunk_number, content,
-                       (embedding <=> %s::vector) as distance,
-                       1 - (embedding <=> %s::vector) as score
-                FROM document_chunks
-                ORDER BY embedding <=> %s::vector
-                LIMIT %s;
+def _stems(text: str) -> set:
+    words = {w for w in re.findall(r'\b[a-zA-Z]{3,}\b', (text or "").lower())}
+    return {w[:5] if len(w) >= 5 else w for w in words}
+
+
+def _vector_search(query: str, top_k: int) -> List[RetrievedChunk]:
+    query_vector = str(get_embedding(query))
+    with db.db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
             """
-            cursor.execute(query_sql, (str(query_vector), str(query_vector), str(query_vector), top_k))
-            rows = cursor.fetchall()
+            WITH q AS (SELECT %s::vector AS v)
+            SELECT source, chunk_number, content,
+                   (embedding <=> q.v) AS distance,
+                   1 - (embedding <=> q.v) AS score
+            FROM document_chunks, q
+            WHERE embedding IS NOT NULL
+            ORDER BY embedding <=> q.v
+            LIMIT %s;
+            """,
+            (query_vector, top_k),
+        )
+        rows = cur.fetchall()
+        cur.close()
+    return [RetrievedChunk(source=r["source"], content=r["content"], score=float(r["score"]),
+                           chunk_number=int(r["chunk_number"]), distance=float(r["distance"])) for r in rows]
 
-            for row in rows:
-                src = row.get("source") if isinstance(row, dict) else row[0]
-                chk = row.get("chunk_number", 1) if isinstance(row, dict) else row[1]
-                cnt = row.get("content") if isinstance(row, dict) else row[2]
-                dist = float(row.get("distance", 0.0) if isinstance(row, dict) else row[3])
-                scr = float(row.get("score", 0.0) if isinstance(row, dict) else row[4])
 
-                results.append(RetrievedChunk(
-                    source=src or "Knowledge Base",
-                    content=cnt or "",
-                    score=float(scr or 0.0),
-                    chunk_number=int(chk or 1),
-                    distance=float(dist or 0.0)
-                ))
-        else:
-            # SQLite fallback query (content-aware ranking when pgvector is not available)
-            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='document_chunks';")
-            if cursor.fetchone():
-                cursor.execute("SELECT source, chunk_number, content FROM document_chunks;")
-                all_rows = cursor.fetchall()
+def _keyword_search(query: str, top_k: int) -> List[RetrievedChunk]:
+    """Degraded-mode ranking used only on the SQLite fallback: overlap of 5-character word stems.
+    `score` is the fraction of query stems found in the chunk (a lexical score, not a cosine similarity)."""
+    q_words = {w for w in re.findall(r'\b[a-zA-Z]{3,}\b', query.lower()) if w not in _STOP_WORDS}
+    q_stems = {w[:5] if len(w) >= 5 else w for w in q_words} or _stems(query)
+    with db.db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT source, chunk_number, content FROM document_chunks;")
+        rows = cur.fetchall()
+        cur.close()
+    scored = []
+    for row in rows:
+        matches = len(q_stems & _stems(row["content"]))
+        if q_stems & _stems(row["source"]):
+            matches += 3
+        if matches == 0:
+            continue
+        score = round(min(1.0, matches / max(len(q_stems), 1)), 4)
+        scored.append((matches, score, row))
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return [RetrievedChunk(source=r["source"], content=r["content"], score=s,
+                           chunk_number=int(r["chunk_number"]), distance=round(1.0 - s, 4))
+            for _, s, r in scored[:top_k]]
 
-                import re
-                stop_words = {'what', 'which', 'where', 'when', 'who', 'whom', 'how', 'why', 'that', 'this', 'these', 'those', 'the', 'and', 'its', 'for', 'with', 'from', 'into', 'does', 'did', 'are', 'was', 'were', 'been', 'have', 'has', 'had', 'tell', 'about', 'explain', 'describe', 'research', 'according', 'verified', 'reference', 'documentation'}
-                q_words = {w for w in re.findall(r'\b[a-zA-Z]{3,}\b', query.lower()) if w not in stop_words}
-                if not q_words:
-                    q_words = set(re.findall(r'\b[a-zA-Z]{3,}\b', query.lower()))
-                q_stems = {w[:5] if len(w) >= 5 else w for w in q_words}
 
-                scored_rows = []
-                for row in all_rows:
-                    src = row["source"] if hasattr(row, "keys") else (row[0] if isinstance(row, tuple) else row.get("source"))
-                    chk = row["chunk_number"] if hasattr(row, "keys") else (row[1] if isinstance(row, tuple) else row.get("chunk_number", 1))
-                    cnt = row["content"] if hasattr(row, "keys") else (row[2] if isinstance(row, tuple) else row.get("content"))
-                    cnt_words = set(re.findall(r'\b[a-zA-Z]{3,}\b', (cnt or "").lower()))
-                    cnt_stems = {w[:5] if len(w) >= 5 else w for w in cnt_words}
-                    match_count = len(q_stems & cnt_stems) if q_stems else 0
-
-                    src_words = set(re.findall(r'\b[a-zA-Z]{3,}\b', (src or "").lower()))
-                    src_stems = {w[:5] if len(w) >= 5 else w for w in src_words}
-                    if q_stems & src_stems:
-                        match_count += 3
-
-                    score = round(min(0.95, 0.60 + (match_count / max(len(q_stems), 1)) * 0.35), 4) if match_count > 0 else 0.50
-                    scored_rows.append((match_count, score, src, chk, cnt))
-
-                # Order by match relevance descending, then take top_k
-                scored_rows.sort(key=lambda x: (x[0], x[1]), reverse=True)
-                for item in scored_rows[:top_k]:
-                    results.append(RetrievedChunk(
-                        source=item[2] or "Knowledge Base",
-                        content=item[4] or "",
-                        score=item[1],
-                        chunk_number=int(item[3] or 1),
-                        distance=round(1.0 - item[1], 4)
-                    ))
-
-        cursor.close()
-        conn.close()
-
-    except Exception as e:
-        logger.warning(f"Vector search exception: {e}")
-
-    return results
-
-class ContextRetriever:
-    def retrieve(self, query: str, top_k: int = 3) -> List[RetrievedChunk]:
-        return retrieve_context(query, top_k=top_k)
-
-retriever = ContextRetriever()
+def retrieve_context(query: str, top_k: int = 3) -> List[Dict[str, Any]]:
+    """Top-k evidence chunks for `query`. Returns [] only when nothing matches (e.g. empty knowledge base);
+    raises RetrievalUnavailable when the database or embedding model fails."""
+    top_k = top_k or 3
+    try:
+        if db.is_postgres():
+            return _vector_search(query, top_k)
+        return _keyword_search(query, top_k)
+    except (db.DatabaseUnavailable, EmbeddingUnavailable) as exc:
+        raise RetrievalUnavailable(str(exc)) from exc
+    except Exception as exc:  # driver-level errors (e.g. connection dropped mid-query)
+        logger.exception("Retrieval failed")
+        raise RetrievalUnavailable("retrieval query failed") from exc
