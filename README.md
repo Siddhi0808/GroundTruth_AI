@@ -4,7 +4,7 @@
 
 GroundTruth AI checks an LLM's answer against a document knowledge base. It retrieves the most relevant passages for the question and a judge labels the answer **Supported**, **Hallucinated**, or **Insufficient Evidence**, with a confidence value, a reason, the evidence passages, and which engine made the decision.
 
-> This README describes the code on this branch. Earlier versions of this README reported 89.30% accuracy / 92.27% F1; those numbers came from the rule-based fallback judge on a synthetic dev set that the rules had been tuned on, most likely using SQLite keyword retrieval. See [Evaluation](#evaluation) for current, reproducible results, including a held-out set.
+> This README describes the current code. Earlier versions of this README reported 89.30% accuracy / 92.27% F1; those numbers came from the rule-based fallback judge on a synthetic dev set that the rules had been tuned on, most likely using SQLite keyword retrieval. See [Evaluation](#evaluation) for current, reproducible results, including a held-out set.
 
 ---
 
@@ -156,7 +156,7 @@ Legacy results (`benchmarks/legacy/`) are kept for reference only. They were pro
 ```bash
 TEST_DATABASE_URL=postgresql:///groundtruth_test python -m pytest -q    # PostgreSQL tests are skipped if unset
 ```
-149 tests (many parametrised over SQLite and PostgreSQL). The suite covers chunk token limits and overlap; each rule of the deterministic judge, including the audit's false positives; LLM output validation (malformed, extra text, missing, null, or unexpected labels, out-of-range values) with a mocked Ollama; fallback reporting; retrieval on both backends; infrastructure failures (503, no silent `[]`); every endpoint's validation and error bodies (no leaked internals); upload path traversal, dedup (sequential and concurrent), and cleanup on failure; history/stats; the history-table migration; the config / Compose / `.env` contract; and a static XSS check on the frontend. CI runs everything against a pgvector service; Ollama is never required.
+151 tests (149 pass; 2 are backend-specific checks that are skipped by design; many tests run on both SQLite and PostgreSQL). The suite covers chunk token limits and overlap; each rule of the deterministic judge, including the audit's false positives; LLM output validation (malformed, extra text, missing, null, or unexpected labels, out-of-range values) with a mocked Ollama; fallback reporting; retrieval on both backends; infrastructure failures (503, no silent `[]`); every endpoint's validation and error bodies (no leaked internals); upload path traversal, dedup (sequential and concurrent), and cleanup on failure; history/stats; the history-table migration; the config / Compose / `.env` contract; and a static XSS check on the frontend. CI (GitHub Actions) runs everything against a pgvector service and passes; Ollama is never required. Test fixtures force a throwaway `DATABASE_URL`, so tests can never touch a real database.
 
 Manually verified on 2026-09-26: the full UI flow (detect with the live LLM, upload, duplicate upload, history, dashboard) against local Postgres and Ollama, plus a stored-XSS payload rendering as text in `/history`.
 
