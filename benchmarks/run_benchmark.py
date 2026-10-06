@@ -33,6 +33,7 @@ DEV_3WAY = {"Supported": SUPPORTED, "ZeroEvidence": INSUFFICIENT}
 
 
 def load_cases(path: Path):
+    """Load a dataset (list or {"cases": [...]}) and fill in the 3-way expected label."""
     raw = json.loads(path.read_text())
     cases = raw["cases"] if isinstance(raw, dict) else raw
     for c in cases:  # dev_v1 predates the 3-way label; derive it from the category
@@ -41,6 +42,7 @@ def load_cases(path: Path):
 
 
 def stratified_sample(cases, n, seed):
+    """Sample about `n` cases, keeping each category's share of the dataset."""
     rng = random.Random(seed)
     by_cat = {}
     for c in cases:
@@ -53,6 +55,7 @@ def stratified_sample(cases, n, seed):
 
 
 def git_state():
+    """(short commit, dirty?) of the working tree, or (None, None) outside git."""
     try:
         commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True).strip()
         dirty = bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True).strip())
@@ -62,6 +65,7 @@ def git_state():
 
 
 def main():
+    """Run retrieval + judge over every case and write metrics with the full run configuration."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset", required=True)
     ap.add_argument("--engine", choices=["heuristic", "llm"], required=True)

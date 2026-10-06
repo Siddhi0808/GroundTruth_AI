@@ -13,6 +13,7 @@ SUPPORTED = "Supported"
 
 
 def _prf(tp: int, fp: int, fn: int) -> Dict[str, float]:
+    """Precision/recall/F1 (in %) for one class."""
     p = tp / (tp + fp) if tp + fp else 0.0
     r = tp / (tp + fn) if tp + fn else 0.0
     f = 2 * p * r / (p + r) if p + r else 0.0
@@ -20,6 +21,7 @@ def _prf(tp: int, fp: int, fn: int) -> Dict[str, float]:
 
 
 def score(records: List[Dict]) -> Dict:
+    """Binary, 3-way and per-category metrics for a list of benchmark records."""
     y_true = [r["expected_verdict"] != SUPPORTED for r in records]   # True = not supported
     y_pred = [r["predicted_verdict"] != SUPPORTED for r in records]
     tp = sum(t and p for t, p in zip(y_true, y_pred))

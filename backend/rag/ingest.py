@@ -34,6 +34,7 @@ def index_document(conn, source: str, file_hash: str, chunks: List[str], embeddi
 
 
 def ingest(rebuild: bool = False, folder=None) -> dict:
+    """Index every readable file in `folder` (default DOCUMENTS_DIR), skipping content already indexed."""
     db.init_db()
     folder = folder or config.DOCUMENTS_DIR
     documents = load_documents(folder)

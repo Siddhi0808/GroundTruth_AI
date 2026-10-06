@@ -22,10 +22,12 @@ class DocumentParseError(ValueError):
 
 
 def file_hash(data: bytes) -> str:
+    """SHA-256 of the raw file bytes: the deduplication key."""
     return hashlib.sha256(data).hexdigest()
 
 
 def extract_text(data: bytes, extension: str, allow_ocr: bool = True) -> str:
+    """Text of a .txt (UTF-8) or .pdf file. Raises DocumentParseError with a user-safe message."""
     extension = extension.lower()
     if extension == ".txt":
         if b"\x00" in data:

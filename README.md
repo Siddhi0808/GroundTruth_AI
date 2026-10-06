@@ -63,7 +63,7 @@ Browser (vanilla JS) ──POST /detect──▶ FastAPI (backend/main.py)
 
 ## Setup
 
-Prerequisites: Python 3.11+, PostgreSQL 14+ with the [pgvector](https://github.com/pgvector/pgvector) extension, optionally [Ollama](https://ollama.com), and optionally `poppler-utils` + `tesseract-ocr` for OCR.
+Prerequisites: Python 3.12+ (the pinned scipy needs it), PostgreSQL 14+ with the [pgvector](https://github.com/pgvector/pgvector) extension, optionally [Ollama](https://ollama.com), and optionally `poppler-utils` + `tesseract-ocr` for OCR.
 
 ```bash
 python -m venv venv && source venv/bin/activate
@@ -156,7 +156,7 @@ Legacy results (`benchmarks/legacy/`) are kept for reference only. They were pro
 ```bash
 TEST_DATABASE_URL=postgresql:///groundtruth_test python -m pytest -q    # PostgreSQL tests are skipped if unset
 ```
-151 tests (149 pass; 2 are backend-specific checks that are skipped by design; many tests run on both SQLite and PostgreSQL). The suite covers chunk token limits and overlap; each rule of the deterministic judge, including the audit's false positives; LLM output validation (malformed, extra text, missing, null, or unexpected labels, out-of-range values) with a mocked Ollama; fallback reporting; retrieval on both backends; infrastructure failures (503, no silent `[]`); every endpoint's validation and error bodies (no leaked internals); upload path traversal, dedup (sequential and concurrent), and cleanup on failure; history/stats; the history-table migration; the config / Compose / `.env` contract; and a static XSS check on the frontend. CI (GitHub Actions) runs everything against a pgvector service and passes; Ollama is never required. Test fixtures force a throwaway `DATABASE_URL`, so tests can never touch a real database.
+154 tests (152 pass; 2 are backend-specific checks that are skipped by design; many tests run on both SQLite and PostgreSQL). The suite covers chunk token limits and overlap; each rule of the deterministic judge, including the audit's false positives; LLM output validation (malformed, extra text, missing, null, or unexpected labels, out-of-range values) with a mocked Ollama; fallback reporting; retrieval on both backends; infrastructure failures (503, no silent `[]`); every endpoint's validation and error bodies (no leaked internals); upload path traversal, dedup (sequential and concurrent), and cleanup on failure; history/stats; the history-table migration; the config / Compose / `.env` contract; and a static XSS check on the frontend. CI (GitHub Actions) runs everything against a pgvector service and passes; Ollama is never required. Test fixtures force a throwaway `DATABASE_URL`, so tests can never touch a real database.
 
 Manually verified on 2026-09-26: the full UI flow (detect with the live LLM, upload, duplicate upload, history, dashboard) against local Postgres and Ollama, plus a stored-XSS payload rendering as text in `/history`.
 

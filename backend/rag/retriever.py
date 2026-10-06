@@ -29,11 +29,13 @@ _STOP_WORDS = {'what', 'which', 'where', 'when', 'who', 'whom', 'how', 'why', 't
 
 
 def _stems(text: str) -> set:
+    """Lower-cased 5-character prefixes of the words in `text` (crude stemming for keyword mode)."""
     words = {w for w in re.findall(r'\b[a-zA-Z]{3,}\b', (text or "").lower())}
     return {w[:5] if len(w) >= 5 else w for w in words}
 
 
 def _vector_search(query: str, top_k: int) -> List[RetrievedChunk]:
+    """Cosine-distance search with pgvector; `score` is the cosine similarity (1 - distance)."""
     query_vector = str(get_embedding(query))
     with db.db_connection() as conn:
         cur = conn.cursor()

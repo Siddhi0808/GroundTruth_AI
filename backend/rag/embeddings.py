@@ -24,6 +24,7 @@ _inference_lock = threading.Lock()
 
 
 def get_model() -> SentenceTransformer:
+    """Load the SentenceTransformer once, preferring the local cache before downloading."""
     global _model
     if _model is None:
         with _model_lock:

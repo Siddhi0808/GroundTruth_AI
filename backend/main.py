@@ -63,6 +63,7 @@ if FRONTEND_DIR.exists():
 # Errors: safe messages for clients, full details in server logs
 # ---------------------------------------------------------------------------------------------
 def api_error(status_code: int, code: str, message: str) -> HTTPException:
+    """HTTPException with the API's standard error body: {"detail": {"error": code, "message": text}}."""
     return HTTPException(status_code=status_code, detail={"error": code, "message": message})
 
 
@@ -83,18 +84,21 @@ NonBlankText = Annotated[str, StringConstraints(strip_whitespace=True, min_lengt
 
 
 class DetectionRequest(BaseModel):
+    """Body of POST /detect. Text fields are stripped and must keep at least 2 characters."""
     query: NonBlankText = Field(..., json_schema_extra={"example": "Who invented the telephone?"})
     llm_response: NonBlankText = Field(..., json_schema_extra={"example": "Thomas Edison invented the telephone."})
     top_k: Optional[int] = Field(default=3, ge=1, le=10)
 
 
 class EvidenceItem(BaseModel):
+    """One retrieved chunk shown to the client as evidence."""
     document_name: str
     content: str
     similarity_score: float
 
 
 class DetectionResponse(BaseModel):
+    """Verdict plus evidence. `confidence_score`/`explanation` duplicate `confidence`/`reason` for older clients."""
     verdict: str
     confidence: float
     confidence_score: float
@@ -109,6 +113,7 @@ class DetectionResponse(BaseModel):
 # Frontend routes
 # ---------------------------------------------------------------------------------------------
 def _page(name: str) -> FileResponse:
+    """Serve a frontend HTML page, or 404 if the frontend folder is missing."""
     path = FRONTEND_DIR / name
     if not path.exists():
         raise HTTPException(status_code=404, detail="Page not found")
@@ -136,6 +141,7 @@ async def serve_history():
 # ---------------------------------------------------------------------------------------------
 @app.get("/api/health")
 def health_check():
+    """Report database backend/reachability and Ollama reachability; 'degraded' if anything is off."""
     db_info = database.database_status()
     try:
         with database.engine.connect() as conn:
@@ -158,6 +164,7 @@ def health_check():
 @app.post("/detect", response_model=DetectionResponse)
 @app.post("/api/detect", response_model=DetectionResponse)
 def detect_hallucination(request: DetectionRequest, db: Session = Depends(get_db)):
+    """Retrieve evidence for the query, judge the response against it, record history, return the verdict."""
     top_k = request.top_k or 3
     try:
         retrieved_docs = retrieve_context(request.query, top_k=top_k)
@@ -228,6 +235,7 @@ def safe_display_name(filename: Optional[str]) -> str:
 
 
 def resolve_inside(directory: Path, name: str) -> Path:
+    """Return `directory/name`, refusing any name that would land outside `directory` (path traversal guard)."""
     base = directory.resolve()
     target = (base / name).resolve()
     if target.parent != base:
@@ -318,6 +326,7 @@ def upload_document(file: UploadFile = File(...)):
 
 @app.get("/api/history")
 def get_history(limit: int = Query(10, ge=1, le=100), db: Session = Depends(get_db)):
+    """Most recent detections, newest first."""
     try:
         records = db.query(DetectionHistory).order_by(DetectionHistory.created_at.desc()).limit(limit).all()
     except SQLAlchemyError:
@@ -340,6 +349,7 @@ def get_history(limit: int = Query(10, ge=1, le=100), db: Session = Depends(get_
 
 @app.get("/api/stats")
 def get_stats(db: Session = Depends(get_db)):
+    """Verdict totals and hallucination rate over the whole detection history."""
     try:
         rows = db.query(DetectionHistory.verdict, func.count(DetectionHistory.id)).group_by(DetectionHistory.verdict).all()
     except SQLAlchemyError:

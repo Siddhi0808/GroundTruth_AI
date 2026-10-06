@@ -1,4 +1,5 @@
 """B07/B10/B21: schema, idempotent inserts, concurrency dedup, connection cleanup, backend selection."""
+import os
 import sqlite3
 import threading
 
@@ -99,6 +100,17 @@ def test_history_migration_adds_engine_column(tmp_path):
 def test_unreachable_postgres_fails_fast_without_fallback():
     with pytest.raises(database.DatabaseUnavailable):
         database.configure_database("postgresql://nobody@127.0.0.1:1/none", allow_fallback=False)
+
+
+def test_postgres_scheme_alias_is_accepted(monkeypatch):
+    """`postgres://` (Heroku-style) must not be mistaken for an unreachable database."""
+    if not os.getenv("TEST_DATABASE_URL", "").startswith("postgresql://"):
+        pytest.skip("TEST_DATABASE_URL (postgresql://...) not set; PostgreSQL tests skipped")
+    database.configure_database(os.environ["TEST_DATABASE_URL"].replace("postgresql://", "postgres://", 1),
+                                allow_fallback=False)
+    assert database.database_status()["backend"] == "postgres"
+    with database.db_connection() as conn:
+        conn.cursor().execute("SELECT 1;")
 
 
 def test_unreachable_postgres_falls_back_visibly_when_allowed(tmp_path, monkeypatch):

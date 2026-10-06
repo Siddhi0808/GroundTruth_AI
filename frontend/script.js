@@ -1,5 +1,7 @@
 // All server/user-controlled values are rendered with textContent / DOM nodes, never innerHTML.
 
+// Turn any API error body into one readable line: FastAPI 422 lists, our {error, message, error_id}
+// objects, or plain strings.
 function apiErrorMessage(data, status) {
     const detail = data && data.detail;
     if (typeof detail === 'string') return detail;
@@ -8,6 +10,7 @@ function apiErrorMessage(data, status) {
     return `Server returned status ${status}`;
 }
 
+// CSS class for a verdict label; anything unexpected is shown as "insufficient".
 function verdictClass(verdict) {
     const v = (verdict || '').toLowerCase();
     if (v === 'supported') return 'supported';
@@ -15,6 +18,7 @@ function verdictClass(verdict) {
     return 'insufficient';
 }
 
+// Detector page: submit the query/response pair to /detect and render the report.
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('detect-form');
     const btnSubmit = document.getElementById('btn-submit');
@@ -71,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Fill the report panel: verdict banner, confidence bar, which engine judged, reason, evidence cards.
     function renderResults(data) {
         const cls = verdictClass(data.verdict);
         const colors = { supported: '#10b981', hallucinated: '#ef4444', insufficient: '#f59e0b' };
@@ -126,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// File Upload Integration
+// Knowledge-base upload: send the chosen .txt/.pdf to /api/upload, which indexes it (or reports a duplicate).
 const fileInput = document.getElementById('file-input');
 const fileNameDisplay = document.getElementById('file-name-display');
 const btnUpload = document.getElementById('btn-upload');
@@ -175,6 +180,7 @@ if (uploadForm) {
             uploadStatus.textContent = `❌ Upload error: ${err.message}`;
         } finally {
             btnUpload.textContent = 'Upload & Index';
+            btnUpload.disabled = fileInput.files.length === 0;  // allow retry after an error
         }
     });
 }

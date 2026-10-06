@@ -79,6 +79,16 @@ def test_failures_fall_back_to_rules_and_say_why(fake_ollama, behaviour, reason)
     assert out["verdict"] == "Supported"  # decided by the rules, not invented
 
 
+@pytest.mark.parametrize("body", [["not", "an", "object"], {"response": {"verdict": "Supported"}}])
+def test_unexpected_ollama_body_falls_back_instead_of_crashing(monkeypatch, body):
+    import backend.llm.judge as judge_mod
+    from conftest import FakeResponse
+    monkeypatch.setattr(judge_mod.requests, "post", lambda *a, **k: FakeResponse(payload=body))
+    monkeypatch.setattr(config, "USE_LLM", True)
+    out = evaluate_hallucination("q", "Bell patented the telephone in 1876.", CTX)
+    assert (out["engine"], out["fallback_reason"]) == ("heuristic", "llm_invalid_output")
+
+
 def test_llm_disabled_is_reported(monkeypatch):
     monkeypatch.setattr(config, "USE_LLM", False)
     out = evaluate_hallucination("q", "Bell patented the telephone in 1876.", CTX)

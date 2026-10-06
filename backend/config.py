@@ -14,6 +14,7 @@ load_dotenv(BASE_DIR / ".env", override=False)
 
 
 def _bool(name: str, default: bool) -> bool:
+    """Boolean env var; accepts 1/true/yes/on (case-insensitive)."""
     return os.getenv(name, str(default)).strip().lower() in {"1", "true", "yes", "on"}
 
 

@@ -33,10 +33,12 @@ Base = declarative_base()
 
 
 def _utcnow():
+    """Naive UTC timestamp (the history column is timezone-naive on both backends)."""
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 class DetectionHistory(Base):
+    """One row per /detect call, including which engine produced the verdict."""
     __tablename__ = "detection_history"
 
     id = Column(Integer, primary_key=True)
@@ -71,6 +73,7 @@ def _psycopg_dsn(url: str) -> str:
 
 
 def _set_sqlite(path: str, fallback: bool, reason: Optional[str]):
+    """Point all module-level handles at a SQLite file (explicit sqlite:// URL or degraded fallback)."""
     global BACKEND, DATABASE_URL, USE_SQLITE, FALLBACK_ACTIVE, FALLBACK_REASON, engine, SessionLocal, _sqlite_path
     _sqlite_path = path
     DATABASE_URL = f"sqlite:///{path}"
@@ -84,6 +87,8 @@ def configure_database(url: Optional[str] = None, allow_fallback: Optional[bool]
     global BACKEND, DATABASE_URL, USE_SQLITE, FALLBACK_ACTIVE, FALLBACK_REASON, engine, SessionLocal
     global _configured, DEDUP_CONSTRAINT_OK
     url = url or config.build_database_url()
+    if url.startswith("postgres://"):  # SQLAlchemy 2 rejects this alias; it would look like "unreachable"
+        url = "postgresql://" + url[len("postgres://"):]
     allow_fallback = config.ALLOW_SQLITE_FALLBACK if allow_fallback is None else allow_fallback
     DEDUP_CONSTRAINT_OK = None
     if engine is not None:
@@ -114,6 +119,7 @@ def configure_database(url: Optional[str] = None, allow_fallback: Optional[bool]
 
 
 def ensure_configured() -> None:
+    """Select the backend once, thread-safely, on first use."""
     if not _configured:
         with _lock:
             if not _configured:
@@ -121,11 +127,13 @@ def ensure_configured() -> None:
 
 
 def is_postgres() -> bool:
+    """True when the vector (pgvector) path is active."""
     ensure_configured()
     return BACKEND == "postgres"
 
 
 def database_status() -> dict:
+    """Backend summary used by /api/health, /detect metadata and benchmark results."""
     ensure_configured()
     return {
         "backend": BACKEND,
@@ -179,6 +187,7 @@ def db_connection():
 
 
 def _first_value(row):
+    """First column of a row from either driver (psycopg2 dict rows or sqlite3 rows)."""
     if row is None:
         return None
     if isinstance(row, dict):
@@ -259,10 +268,12 @@ def init_db():
 # Chunk queries shared by upload and batch ingestion
 # ---------------------------------------------------------------------------------------------
 def _ph() -> str:
+    """SQL parameter placeholder for the active driver."""
     return "%s" if BACKEND == "postgres" else "?"
 
 
 def find_document_by_hash(conn, file_hash: str) -> Optional[str]:
+    """Source name of an already-indexed file with this content hash, or None."""
     cur = conn.cursor()
     try:
         cur.execute(f"SELECT source FROM document_chunks WHERE file_hash = {_ph()} LIMIT 1;", (file_hash,))
@@ -299,6 +310,7 @@ def insert_chunks(conn, source: str, file_hash: str, chunks: Sequence[str],
 
 
 def count_chunks(conn) -> Tuple[int, int]:
+    """(total chunks, distinct documents) currently indexed."""
     cur = conn.cursor()
     try:
         cur.execute("SELECT COUNT(*) AS n, COUNT(DISTINCT file_hash) AS d FROM document_chunks;")
